@@ -1,0 +1,45 @@
+.venv/
+.env
+.env.*
+!.env.example
+*.env
+*.env.*
+!*.env.example
+__pycache__/
+*.pyc
+.cache/
+backend/data/runtime/
+backend/data/chroma_db/
+backend/data/uploads/
+backend/benchmark/snapshot.json
+allowance.json
+/.private/
+
+# Secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+.private/
+*.pem
+*.key
+
+# Virtual environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+
+# Local storage
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+chroma_db/
+raw/
+
+# Local execution evidence
+/docs/evidence/

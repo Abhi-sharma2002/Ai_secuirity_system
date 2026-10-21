@@ -1,0 +1,13 @@
+{
+  "provider": "groq",
+  "allowance_id": "replace-with-account-confirmed-allowance-identifier",
+  "confirmed_free_promotional": false,
+  "approved_model": "REPLACE_WITH_VERIFIED_ACCESSIBLE_MODEL",
+  "expires_at": "2000-01-01T00:00:00Z",
+  "max_calls": 4,
+  "max_reserved_tokens": 128000,
+  "chat_completions_supported": false,
+  "structured_outputs_supported": false,
+  "max_output_tokens_supported": false,
+  "confirmation_note": "Replace only after inspecting actual free/promotional eligibility and the selected model capabilities. No balance API is assumed."
+}

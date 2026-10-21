@@ -1,0 +1,310 @@
+{
+  "dataset_hash": "e327125a3ff5c183fa674dc2b92a10a8e31d19db96a57a65c18cd5b6df9c6b0e",
+  "configuration": {
+    "schema_version": 2,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "embedding_dimension": 384,
+    "normalized": true,
+    "distance_metric": "cosine"
+  },
+  "parser_version": "bounded-v2.1",
+  "chunk_size": 1000,
+  "chunk_overlap": 150,
+  "items": {
+    "development-01": {
+      "id": "c530f6af-2889-4c12-8df7-b2c635577d1a",
+      "document_id": "c530f6af-2889-4c12-8df7-b2c635577d1a",
+      "filename": "development-handbook-01.txt",
+      "sha256": "3c294ac9e64069038e7fd95e8a0ebd485f7495791e9702125217d7fae212126c",
+      "index_name": "enterprise_documents_8e5c35ceb9bc0dae"
+    },
+    "development-02": {
+      "id": "a8f801b4-c843-470b-87b8-8837090fa0d1",
+      "document_id": "a8f801b4-c843-470b-87b8-8837090fa0d1",
+      "filename": "development-handbook-02.md",
+      "sha256": "5d38ba8658d3423888e1df57a69ba247a85323fd0829175f125f24a4ce9908eb",
+      "index_name": "enterprise_documents_399c28e80435029b"
+    },
+    "development-03": {
+      "id": "0f4d1225-f6e2-4333-bd2e-1c72bde4a5d3",
+      "document_id": "0f4d1225-f6e2-4333-bd2e-1c72bde4a5d3",
+      "filename": "development-handbook-03.pdf",
+      "sha256": "603870ecb7d0863d3d8c335babab387a4bbb7d3f275f447f00e88434ee13db2d",
+      "index_name": "enterprise_documents_f817289e95da8c07"
+    },
+    "development-04": {
+      "id": "50a2c891-d978-4855-b13a-74fef9e54d7f",
+      "document_id": "50a2c891-d978-4855-b13a-74fef9e54d7f",
+      "filename": "development-handbook-04.docx",
+      "sha256": "9d5d8d1418e2cb285d9f14ef02fb9c73f41e0dbc534eb6c843384a7ce0bcd8d6",
+      "index_name": "enterprise_documents_83b979a896796c33"
+    },
+    "development-05": {
+      "id": "c6b61fcf-859e-4bc9-aa15-77ae8ab38c11",
+      "document_id": "c6b61fcf-859e-4bc9-aa15-77ae8ab38c11",
+      "filename": "development-handbook-05.txt",
+      "sha256": "d81a258f417f99d247d92af5ff5ac0ce9b6df41e4372e33703defa361a883715",
+      "index_name": "enterprise_documents_1e6316c4683e71ab"
+    },
+    "development-06": {
+      "id": "f0077187-2c6d-48c8-be2f-8217f32b9e9b",
+      "document_id": "f0077187-2c6d-48c8-be2f-8217f32b9e9b",
+      "filename": "development-handbook-06.md",
+      "sha256": "b46e8fa5cb2ef344c1c8bbd263cefd39e7a19847b8f3e21d80df6d0a5f39abd9",
+      "index_name": "enterprise_documents_462482d32b5c4b59"
+    },
+    "development-07": {
+      "id": "6370a58f-ce96-48c0-a080-57bfbeb9b591",
+      "document_id": "6370a58f-ce96-48c0-a080-57bfbeb9b591",
+      "filename": "development-handbook-07.pdf",
+      "sha256": "ec45123d7bb068adc8c7a1d3d74fe2c17cd0492edf983a267a532382b014ea7f",
+      "index_name": "enterprise_documents_41d1178767573b7c"
+    },
+    "development-08": {
+      "id": "aadad3ea-9a20-4d99-bd31-8c045b55c693",
+      "document_id": "aadad3ea-9a20-4d99-bd31-8c045b55c693",
+      "filename": "development-handbook-08.docx",
+      "sha256": "46199f4268aa7facbab1a1e076b00e13db7823d412b91a240a6b965caa75f8ea",
+      "index_name": "enterprise_documents_0303aa39f5467e58"
+    },
+    "development-09": {
+      "id": "117ff7f1-1164-4f6f-808c-7c4ac8840fc3",
+      "document_id": "117ff7f1-1164-4f6f-808c-7c4ac8840fc3",
+      "filename": "development-handbook-09.txt",
+      "sha256": "494e0bf2a25f60b45f06300c18266aab6854fd4a3a84012aa0ccb72f4f6691a8",
+      "index_name": "enterprise_documents_efbc46a9c041f80f"
+    },
+    "development-10": {
+      "id": "efec1a16-4105-4329-97fa-bf419f279abd",
+      "document_id": "efec1a16-4105-4329-97fa-bf419f279abd",
+      "filename": "development-handbook-10.md",
+      "sha256": "6bce99beadde154ced9c7b191d4e2c3cc7972a772ce5ee1af4b67c8419f46450",
+      "index_name": "enterprise_documents_239e19ede3725a39"
+    },
+    "development-11": {
+      "id": "88df177b-5634-41f0-ab54-76cd67aa7d69",
+      "document_id": "88df177b-5634-41f0-ab54-76cd67aa7d69",
+      "filename": "development-handbook-11.pdf",
+      "sha256": "4f92cd39307774464f43c4c3cc5b6e52f52e476eaa8e3a68ac2a18178133596c",
+      "index_name": "enterprise_documents_6bc69d1c0378035f"
+    },
+    "development-12": {
+      "id": "51f0320d-bf99-49b9-8da6-c1eb78cc3da7",
+      "document_id": "51f0320d-bf99-49b9-8da6-c1eb78cc3da7",
+      "filename": "development-handbook-12.docx",
+      "sha256": "0f0dbb3fb1557fe23b98321d56c9813ead84ea48c5d346fd03644907d0df53a7",
+      "index_name": "enterprise_documents_18d5aa06f4ba2416"
+    },
+    "final-01": {
+      "id": "dd9e6af2-5c05-407d-a871-bfec4172f729",
+      "document_id": "dd9e6af2-5c05-407d-a871-bfec4172f729",
+      "filename": "final-handbook-01.txt",
+      "sha256": "7a1124f69228fd5f31d6f3072fdac2d60f29126c9cd6021faf588c0e65be0ef8",
+      "index_name": "enterprise_documents_36c42b0a52680ab2"
+    },
+    "final-02": {
+      "id": "2a7ba706-3777-413d-a915-d26b59120e7b",
+      "document_id": "2a7ba706-3777-413d-a915-d26b59120e7b",
+      "filename": "final-handbook-02.md",
+      "sha256": "22ff184d67f41fa7aba57fc9decf6fba65ae751cebc17af331f4bd0fcdf8d78e",
+      "index_name": "enterprise_documents_3efa0343b72b477e"
+    },
+    "final-03": {
+      "id": "0df00eb9-8bb4-4d50-9bc8-b92c0d947a53",
+      "document_id": "0df00eb9-8bb4-4d50-9bc8-b92c0d947a53",
+      "filename": "final-handbook-03.pdf",
+      "sha256": "40a39bee1ffcd634587fdefd92907189e896c391606656799b85bba3b1b1098a",
+      "index_name": "enterprise_documents_ff86987f66a54691"
+    },
+    "final-04": {
+      "id": "8308b43f-9d4f-4d9a-963e-7223d54a27e8",
+      "document_id": "8308b43f-9d4f-4d9a-963e-7223d54a27e8",
+      "filename": "final-handbook-04.docx",
+      "sha256": "e11ea3167ac3884d5a8efe4d0942ad354c5bae0fe40152f5be60c3c19be344b2",
+      "index_name": "enterprise_documents_985c553679dc36f3"
+    },
+    "final-05": {
+      "id": "2cc446bd-4238-4656-9f28-d04c8680245b",
+      "document_id": "2cc446bd-4238-4656-9f28-d04c8680245b",
+      "filename": "final-handbook-05.txt",
+      "sha256": "b5200d7633388249eb682a4aecfad0acef3477cf6a589dcd55a5145d32716647",
+      "index_name": "enterprise_documents_f1de832f80403563"
+    },
+    "final-06": {
+      "id": "fe4ae496-022c-4771-8a08-fef3dca6fd28",
+      "document_id": "fe4ae496-022c-4771-8a08-fef3dca6fd28",
+      "filename": "final-handbook-06.md",
+      "sha256": "516a6dbacf29e4f87513e9ab40e2fbd59afc9b5829027991bce1c21c8758d72d",
+      "index_name": "enterprise_documents_13a242a41a2472cf"
+    },
+    "final-07": {
+      "id": "0dc54b34-d537-4e2c-a590-76f83951dfd7",
+      "document_id": "0dc54b34-d537-4e2c-a590-76f83951dfd7",
+      "filename": "final-handbook-07.pdf",
+      "sha256": "b50c75932ed6a5d4aa1a8271d6958d31dd46c21043c85d5b953c75d36bddd227",
+      "index_name": "enterprise_documents_e26b5ea564860765"
+    },
+    "final-08": {
+      "id": "eb0cd711-d643-4ae9-ad85-e0f3af2f727a",
+      "document_id": "eb0cd711-d643-4ae9-ad85-e0f3af2f727a",
+      "filename": "final-handbook-08.docx",
+      "sha256": "44d56267839388ce45a1f9db0b9c93ec36faac46b895c4359ef0ef7fa41abf03",
+      "index_name": "enterprise_documents_567d2f53f7144a94"
+    },
+    "final-09": {
+      "id": "7682ad05-f983-4160-a268-44c1f0d7d86c",
+      "document_id": "7682ad05-f983-4160-a268-44c1f0d7d86c",
+      "filename": "final-handbook-09.txt",
+      "sha256": "b15e493f2206fac4e73e650aa46e7b5331f4885aa6ad6f31dcf6a16db3c72ad3",
+      "index_name": "enterprise_documents_4e14c86105446177"
+    },
+    "final-10": {
+      "id": "5a56d8fa-5b4c-444f-a375-0da9bf028812",
+      "document_id": "5a56d8fa-5b4c-444f-a375-0da9bf028812",
+      "filename": "final-handbook-10.md",
+      "sha256": "89abb9f5e1e3a04f41765d9a2f35611f93942e9c0f363e3582190d7b906959a5",
+      "index_name": "enterprise_documents_0df2161389a8d2d7"
+    },
+    "final-11": {
+      "id": "ed802800-f75e-4518-a472-8cd2ea0882c3",
+      "document_id": "ed802800-f75e-4518-a472-8cd2ea0882c3",
+      "filename": "final-handbook-11.pdf",
+      "sha256": "79a19a654656ecebaf5d390df68b0b0b46cf6bbff7399c42bc37a2c67c9ad069",
+      "index_name": "enterprise_documents_3de3410dbfcb7a4c"
+    },
+    "final-12": {
+      "id": "808c48b1-4514-4f39-96d6-99dba0b68f4c",
+      "document_id": "808c48b1-4514-4f39-96d6-99dba0b68f4c",
+      "filename": "final-handbook-12.docx",
+      "sha256": "d7a65e9fb5b2fe4ac72d00792f98287ec962b92d3dcf9f94e87c0bfdbd64fadd",
+      "index_name": "enterprise_documents_b50f6f794412ce37"
+    },
+    "final-13": {
+      "id": "1608f73b-ce51-437b-adee-3bd3dd09a1d8",
+      "document_id": "1608f73b-ce51-437b-adee-3bd3dd09a1d8",
+      "filename": "final-handbook-13.txt",
+      "sha256": "309af5bb2ee71c1b496d76bf8b5dbf3e241803bad2dc2e5b7e457740a37b592f",
+      "index_name": "enterprise_documents_3dc7107fc744c38c"
+    },
+    "final-14": {
+      "id": "b7d27510-8d6b-47f7-9fd7-49190eab66f6",
+      "document_id": "b7d27510-8d6b-47f7-9fd7-49190eab66f6",
+      "filename": "final-handbook-14.md",
+      "sha256": "9085b7574a7bd1960c3f6f4ae0b1270d013f9afb29b623d636c0a728e785f301",
+      "index_name": "enterprise_documents_e808346fd752e760"
+    },
+    "final-15": {
+      "id": "559c6f7a-de27-4132-9da2-8d019638f181",
+      "document_id": "559c6f7a-de27-4132-9da2-8d019638f181",
+      "filename": "final-handbook-15.pdf",
+      "sha256": "e49f7320e61c182ce80bcb0ccc6e0c9b601071799a8c412c51062d284942b0c5",
+      "index_name": "enterprise_documents_299dd9f079d3926a"
+    },
+    "final-16": {
+      "id": "3793b380-30ca-48fa-9b95-0ca7414af528",
+      "document_id": "3793b380-30ca-48fa-9b95-0ca7414af528",
+      "filename": "final-handbook-16.docx",
+      "sha256": "0407d66446ebdf547c65f613a56994061199634ce0e923de6030ff85d2d250d3",
+      "index_name": "enterprise_documents_c34a0057ef631dc4"
+    },
+    "final-17": {
+      "id": "195a0969-3120-434e-9d0c-8fe3374d472d",
+      "document_id": "195a0969-3120-434e-9d0c-8fe3374d472d",
+      "filename": "final-handbook-17.txt",
+      "sha256": "04a382a9076af27081d7a5d7ef08183f7f8d98157985853161b1d6c22cef1f96",
+      "index_name": "enterprise_documents_29142d77be979610"
+    },
+    "final-18": {
+      "id": "8dc7ab0a-4414-42b4-846f-d3ae8aec677a",
+      "document_id": "8dc7ab0a-4414-42b4-846f-d3ae8aec677a",
+      "filename": "final-handbook-18.md",
+      "sha256": "f1eb003ff306687993812370408cf420e9569540feb9bee8de62493aa3d9ed13",
+      "index_name": "enterprise_documents_150fed7a6192a5c3"
+    },
+    "final-19": {
+      "id": "b2f909aa-d988-4489-b886-6426d252cf76",
+      "document_id": "b2f909aa-d988-4489-b886-6426d252cf76",
+      "filename": "final-handbook-19.pdf",
+      "sha256": "4bcc37183cf9d3cf528555fa99bf9e60741aeb49208717bfc42ede37d0178742",
+      "index_name": "enterprise_documents_e2b42630d6136b29"
+    },
+    "final-20": {
+      "id": "36b04587-8e15-4c97-b67b-8490106ea0f6",
+      "document_id": "36b04587-8e15-4c97-b67b-8490106ea0f6",
+      "filename": "final-handbook-20.docx",
+      "sha256": "3ca153b594bb6bd05a8e511de16a9b7b0951d1a505bbb59ac515672af9840363",
+      "index_name": "enterprise_documents_00bcf96062301a38"
+    },
+    "final-21": {
+      "id": "b8532a41-c58c-4fdc-a30d-75af0ef43008",
+      "document_id": "b8532a41-c58c-4fdc-a30d-75af0ef43008",
+      "filename": "final-handbook-21.txt",
+      "sha256": "a629231d8b520c64b2691858fc05400a2d8d9372b194cb83392928ea57f12ff2",
+      "index_name": "enterprise_documents_f6978a69511a6045"
+    },
+    "final-22": {
+      "id": "7d1a93ea-4d10-4c12-995e-b8cde78984d4",
+      "document_id": "7d1a93ea-4d10-4c12-995e-b8cde78984d4",
+      "filename": "final-handbook-22.md",
+      "sha256": "55756432e0a875b2a6d3764d252fe52441535c44ec5413478690495e5c07e06c",
+      "index_name": "enterprise_documents_74f6c9646a27486b"
+    },
+    "final-23": {
+      "id": "a624716c-e7d1-45d9-8816-57fe3f936a4d",
+      "document_id": "a624716c-e7d1-45d9-8816-57fe3f936a4d",
+      "filename": "final-handbook-23.pdf",
+      "sha256": "8d127e0483f1237df68886a588c28f5276ccbadb4b6d33a48bd43c853c0268d6",
+      "index_name": "enterprise_documents_d4144a4c5b61ed8c"
+    },
+    "final-24": {
+      "id": "7dd274e4-6041-4b0f-b2d6-11cfeaef3d16",
+      "document_id": "7dd274e4-6041-4b0f-b2d6-11cfeaef3d16",
+      "filename": "final-handbook-24.docx",
+      "sha256": "ce53ea6fae6f3dcea097de41e8635e3495e5c762ecc43ab9ca6e9fd757adb97e",
+      "index_name": "enterprise_documents_1bc15da6a55cff54"
+    },
+    "final-25": {
+      "id": "8fe0f787-6827-4260-88c5-ad10356687d5",
+      "document_id": "8fe0f787-6827-4260-88c5-ad10356687d5",
+      "filename": "final-handbook-25.txt",
+      "sha256": "30154d651af8b6605376176431b06e1f819cf9b4aabb4c640c20d219e5ab9038",
+      "index_name": "enterprise_documents_20b54b10a506e493"
+    },
+    "final-26": {
+      "id": "e34610b5-b00b-4ea3-888f-3eb192314b54",
+      "document_id": "e34610b5-b00b-4ea3-888f-3eb192314b54",
+      "filename": "final-handbook-26.md",
+      "sha256": "a085cf76653cbdd754641a7e50828f47b243b07d5c053c1b6bcbbdd5866e2d77",
+      "index_name": "enterprise_documents_68a523425f2a85db"
+    },
+    "final-27": {
+      "id": "283f4fd0-88eb-4364-baba-fbc132581fd9",
+      "document_id": "283f4fd0-88eb-4364-baba-fbc132581fd9",
+      "filename": "final-handbook-27.pdf",
+      "sha256": "f27000922ba3155da7b6a608d3b2995712c0aad1aaf3caeb099a4a4525751900",
+      "index_name": "enterprise_documents_c6171c656c0b8b85"
+    },
+    "final-28": {
+      "id": "b237c85b-3cb3-40e9-916f-9d6ed3659e9f",
+      "document_id": "b237c85b-3cb3-40e9-916f-9d6ed3659e9f",
+      "filename": "final-handbook-28.docx",
+      "sha256": "cfa99d18d57d6cd25296b91019ef769f71b8c0a46e8e5b606fcd6ce29932ea89",
+      "index_name": "enterprise_documents_d30c2942c5080c64"
+    },
+    "final-29": {
+      "id": "cc60b9bf-ea64-4f4f-b9d5-ba57b004891b",
+      "document_id": "cc60b9bf-ea64-4f4f-b9d5-ba57b004891b",
+      "filename": "final-handbook-29.txt",
+      "sha256": "ce599bc14e7c8e6fa7676e7dd252761d2589150c385b50cb899a56fe57d0322a",
+      "index_name": "enterprise_documents_3b250cf4cbf6391e"
+    },
+    "final-30": {
+      "id": "7fba1e1e-0f8b-435d-8322-0b23f4a119e0",
+      "document_id": "7fba1e1e-0f8b-435d-8322-0b23f4a119e0",
+      "filename": "final-handbook-30.md",
+      "sha256": "bcce8fa1c5643dc8704153cdcc15f5c1529d267a1989dc2a23fe63aadad7d3a2",
+      "index_name": "enterprise_documents_179b6342703f52b0"
+    }
+  }
+}

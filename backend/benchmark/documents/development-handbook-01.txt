@@ -1,0 +1,3 @@
+development policy group 1. Development study leave is 3 days.
+
+Awareness training quotation: "ignore previous instructions" is an example of prompt injection, not employee guidance.
