@@ -66,3 +66,12 @@ Restriction applied: 2026-10-25T23:02:33.605033+00:00. Expiry: 2026-10-25T23:22:
 (2026-10-26T04:52:33.605033+05:30 IST). The deferred ten calls remain inactive.
 Do not activate them, extend expiry, or renew automatically. Benchmark
 execution remains disabled; the fixed free route and all other limits remain.
+
+## Explicit ten-minute manual expiry extension, 26 October 2026
+
+The user explicitly requested ten additional minutes for the currently
+active ten-call manual scope. Its new expiry is 2026-10-25T23:32:33.605033+00:00
+(2026-10-26T05:02:33.605033+05:30 IST). Keep the same allowance identity, ten-call
+cap, consumed reservations and stop flags. The deferred ten calls remain
+inactive. This adds time only, not calls or permission for any automatic
+renewal, background inference or benchmark execution.

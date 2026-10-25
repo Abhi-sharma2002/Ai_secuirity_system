@@ -1,5 +1,27 @@
 # Manual interactive activation — 26 October 2026
 
+## Latest explicit time extension
+
+The user requested ten more minutes while the restricted scope was active.
+This changes only the deadline. Actual update/readiness evidence:
+
+```json
+{
+  "enabled": true,
+  "call_cap": 10,
+  "remaining_calls": 9,
+  "previous_expiry_utc": "2026-10-25T23:22:33.605033+00:00",
+  "expires_at_utc": "2026-10-25T23:32:33.605033+00:00",
+  "expires_at_ist": "2026-10-26T05:02:33.605033+05:30",
+  "added_minutes": 10,
+  "deferred_calls_still_inactive": 10,
+  "same_allowance_identity": true,
+  "consumed_calls_preserved": true,
+  "prior_receipt_preserved": true,
+  "inference_requests_sent": 0
+}
+```
+
 ## Submission form fix
 
 At the user’s request, clicking “Ask once via OpenRouter” now confirms
