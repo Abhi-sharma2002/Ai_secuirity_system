@@ -9,11 +9,12 @@ import json
 import math
 import os
 from threading import RLock
-from time import perf_counter
+from time import perf_counter, sleep
 
 from pydantic import Field, ValidationError
 
 from app.evaluation.simple_config import EvaluationError, ROOT, load_config
+from app.evaluation.simple_index import collection_path, digest, embedding_identity
 from app.defenses.screening import Screening
 from app.llm.diagnostics import sanitize
 from app.rag.assistant import respond
@@ -22,6 +23,8 @@ DATASET = ROOT / 'backend/benchmark_v3'
 STORE = ROOT / '.cache/evaluation_v3'
 _CACHE = {}
 _CACHE_LOCK = RLock()
+_CALL_LOCK = RLock()
+_LAST_CALL = {'started': None, 'finished': None}
 
 
 class _ScreeningWithReasons(Screening):
@@ -33,6 +36,27 @@ def _model_call(messages, schema, stage, config):
     # Implementing an adapter is not authorization to send evaluation traffic.
     # Tests replace this boundary with explicit synthetic responses only.
     raise EvaluationError('Provider evaluation is disabled by the standing project scope; no request sent.')
+
+
+def _pace_call():
+    now = perf_counter()
+    wait = max(0.0,
+               0.0 if _LAST_CALL['started'] is None else _LAST_CALL['started'] + 3.1 - now,
+               0.0 if _LAST_CALL['finished'] is None else _LAST_CALL['finished'] + 1.0 - now)
+    if wait:
+        sleep(wait)
+    _LAST_CALL['started'] = perf_counter()
+
+
+def _invoke_model(messages, schema, stage, config):
+    # Pace each screening/generation call, including C's two separate requests.
+    # No retries or fallback dispatches; the real provider boundary remains disabled.
+    with _CALL_LOCK:
+        _pace_call()
+        try:
+            return _model_call(messages, schema, stage, config)
+        finally:
+            _LAST_CALL['finished'] = perf_counter()
 
 
 def _manifest():
@@ -54,9 +78,10 @@ def _identity(config, manifest_sha):
         identity = json.loads((STORE / 'identity.json').read_text())
     except (OSError, json.JSONDecodeError):
         raise EvaluationError('Local evaluation index is not prepared; interactive storage was not used.') from None
-    config_sha = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
+    config_sha = digest(config)
     if (not isinstance(identity, dict) or identity.get('manifest_sha256') != manifest_sha
             or identity.get('config_sha256') != config_sha
+            or identity.get('embedding_sha256') != embedding_identity()
             or not isinstance(identity.get('generation'), str) or not identity['generation']):
         raise EvaluationError('Local evaluation index identity does not match the dataset and configuration')
     return identity
@@ -64,11 +89,12 @@ def _identity(config, manifest_sha):
 
 def _retrieve(question, doc_ids, config, identity):
     # Step 6 will prepare this isolated store; never create/use the app's store.
-    if not (STORE / 'chroma').is_dir():
+    index_path = collection_path(STORE, identity)
+    if not index_path.is_dir():
         raise EvaluationError('Local evaluation Chroma index is missing')
     import chromadb
     from app.rag.embeddings import ProjectEmbeddings
-    client = chromadb.PersistentClient(path=str(STORE / 'chroma'),
+    client = chromadb.PersistentClient(path=str(index_path),
                                       settings=chromadb.Settings(anonymized_telemetry=False))
     collection = client.get_collection('benchmark_v3', embedding_function=None)
     metadata = collection.metadata or {}
@@ -98,6 +124,15 @@ def _retrieve(question, doc_ids, config, identity):
     if len({h['id'] for h in hits}) != len(hits):
         raise EvaluationError('Duplicate evaluation chunk IDs')
     return sorted(hits, key=lambda hit: (hit['distance'], hit['id']))
+
+
+def _install_retrieval(question, doc_ids, config, identity, hits):
+    """Restore this run's persisted case evidence before any mode is dispatched."""
+    with _CACHE_LOCK:
+        _CACHE.clear()
+        _CACHE.update(key=(question, tuple(sorted(doc_ids))),
+                      signature=json.dumps({'config': config, 'index': identity}, sort_keys=True),
+                      hits=deepcopy(hits), modes=set())
 
 
 def _shared_retrieval(mode, question, doc_ids, config, manifest_sha):
@@ -161,7 +196,7 @@ def ask(mode: str, question: str, doc_ids: list[str]) -> dict:
         def call(messages, schema, stage, _unused_reservation):
             nonlocal decision
             wire_schema = _ScreeningWithReasons.model_json_schema() if stage == 'screening' else schema
-            raw, trace = _model_call(messages, wire_schema, stage, config)
+            raw, trace = _invoke_model(messages, wire_schema, stage, config)
             if stage == 'screening':
                 candidate = _ScreeningWithReasons.model_validate_json(raw)
                 ids = {h['id'] for h in hits}

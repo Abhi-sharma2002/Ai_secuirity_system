@@ -48,6 +48,7 @@ class SimpleRunnerTests(unittest.TestCase):
                                                         'ANONYMIZED_TELEMETRY': 'False',
                                                         'OPENROUTER_API_KEY': 'SYNTHETIC-PRIVATE-VALUE'}))
         self.stack.enter_context(patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')))
+        self.stack.enter_context(patch.object(runner, '_pace_call'))
         runner._CACHE.clear()
         self.addCleanup(runner._CACHE.clear)
         self.retrieval = self.stack.enter_context(patch.object(runner, '_retrieve', return_value=deepcopy(HITS)))
@@ -247,14 +248,14 @@ class LocalRetrievalTests(unittest.TestCase):
                        metadatas=metas, embeddings=[vector, vector])
         with tempfile.TemporaryDirectory() as folder:
             store = Path(folder)
-            (store / 'chroma').mkdir()
+            (store / 'chroma' / identity['generation']).mkdir(parents=True)
             with patch.object(runner, 'STORE', store), patch('chromadb.PersistentClient', return_value=client) as factory, \
                     patch.object(ProjectEmbeddings, 'embed_query', return_value=vector) as embed:
                 hits = runner._retrieve(QUESTION, (DOC_IDS[0],), config, identity)
         self.assertEqual([h['id'] for h in hits], [HITS[0]['id']])
         self.assertEqual(hits[0]['text'], HITS[0]['text'])
         embed.assert_called_once_with(QUESTION)
-        self.assertEqual(factory.call_args.kwargs['path'], str(store / 'chroma'))
+        self.assertEqual(factory.call_args.kwargs['path'], str(store / 'chroma' / identity['generation']))
 
     def test_configuration_has_no_environment_provider_or_model_override(self):
         with patch.dict(os.environ, {'LLM_BACKEND': 'azure_openai', 'OPENROUTER_MODEL': 'SYNTHETIC-WRONG',

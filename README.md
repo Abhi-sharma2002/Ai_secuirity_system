@@ -53,6 +53,21 @@ SQLite, Chroma, frozen datasets, reviews and accounting are preserved.
 See [OpenRouter temporary setup](docs/OPENROUTER.md) for the fixed free route,
 private key setup, one-hour local allowance and provider limitations.
 
+## Local v3 evaluation preparation
+
+Read the case/request plan and build an isolated index with cached CPU embeddings:
+
+```bash
+.venv/bin/python backend/scripts/run_eval.py --plan --limit 3
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python backend/scripts/run_eval.py --prepare-only
+```
+
+Provider evaluation remains disabled under the current scope. The live
+`--limit 3`, `--all` and `--resume` execution commands refuse execution and
+write no evaluation records. The CSV/resume implementation is tested only with
+synthetic responses in disposable test directories. See
+[Step 6 evidence and pending live checks](docs/STEP_6_RUNNER.md).
+
 ## Understand the implementation
 
 - [Folder map and complete runtime flow](docs/architecture/RUNTIME_MAP.md)
