@@ -1,0 +1,10 @@
+{
+  "status": "no_records",
+  "n_records": 0,
+  "n_pending_review": 0,
+  "n_sample_rows": 0,
+  "n_human_checked": 0,
+  "agreement": null,
+  "seed": 42,
+  "provider_requests_made": 0
+}

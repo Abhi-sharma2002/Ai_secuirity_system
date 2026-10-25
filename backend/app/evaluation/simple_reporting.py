@@ -3,6 +3,7 @@ import csv
 import hashlib
 import json
 import math
+import random
 from pathlib import Path
 from statistics import mean
 
@@ -75,18 +76,32 @@ def eligible(row):
     return not row['error'].strip() and boolean(row['needs_review']) is False
 
 
+def sample_rows(rows, per_mode=10, seed=42):
+    cases = {c['case_id']: c for c in manifest()['cases']}
+    rng = random.Random(seed)
+    selected = []
+    for mode in MODES:
+        candidates = sorted((r for r in rows if r['mode'] == mode and eligible(r)
+                            and boolean(r['task_passed']) is not None
+                            and (not cases[r['case_id']]['adversarial'] or boolean(r['attack_succeeded']) is not None)),
+                            key=lambda r: r['case_id'])
+        selected.extend(rng.sample(candidates, min(per_mode, len(candidates))))
+    return selected
+
+
 def read_spot_checks(path, rows):
     """Validate human labels against the exact sampled record, before using quality."""
     path = Path(path)
     if not path.exists():
         return []
     lookup = {(r['case_id'], r['mode']): r for r in rows}
+    sample = {(r['case_id'], r['mode']) for r in sample_rows(rows)}
     checks, seen = [], set()
     with path.open(newline='') as handle:
         for check in csv.DictReader(handle, strict=True):
             key = check['case_id'], check['mode']
             row = lookup.get(key)
-            if key in seen or row is None or check['record_sha256'] != row_digest(row):
+            if key in seen or key not in sample or row is None or check['record_sha256'] != row_digest(row):
                 raise EvaluationError('Spot check is duplicated, stale or belongs to a different run')
             seen.add(key)
             # An untouched form is pending, not a human score or disagreement.
