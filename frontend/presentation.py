@@ -1,13 +1,14 @@
 """Display-only formatting; never creates judgments or replaces missing metrics."""
 def answer_preview(value):
-    """Copy a displayed answer/audit view, masking unverified card patterns."""
-    from app.defenses.output_screening import mask_unverified_cards
+    """Copy a UI view, masking credentials, emails, canaries and unverified cards."""
+    from frontend.redaction import mask_text, SECRET_FIELD
     if isinstance(value, str):
-        return mask_unverified_cards(value)
+        return mask_text(value)
     if isinstance(value, list):
         return [answer_preview(item) for item in value]
     if isinstance(value, dict):
-        return {answer_preview(k): answer_preview(v) for k, v in value.items()}
+        return {answer_preview(k): ('[credential hidden]' if isinstance(k, str) and SECRET_FIELD.fullmatch(k)
+                                    else answer_preview(v)) for k, v in value.items()}
     return value
 
 

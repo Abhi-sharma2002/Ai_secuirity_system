@@ -6,6 +6,7 @@ import httpx
 import streamlit as st
 from frontend.error_messages import describe_error
 from frontend.presentation import metric_rows, page_label, expiry_label, answer_preview
+from frontend.redaction import artifact_preview
 
 BASE = os.getenv('BACKEND_URL', 'http://127.0.0.1:8000')
 st.set_page_config(page_title='AI Security Document Lab', layout='wide')
@@ -78,12 +79,13 @@ if page == 'Documents':
         if value:
             st.session_state['upload_result'] = value
     if 'upload_result' in st.session_state:
-        for outcome in st.session_state['upload_result'].get('outcomes', []):
+        upload_preview = answer_preview(st.session_state['upload_result'])
+        for outcome in upload_preview.get('outcomes', []):
             st.text(str(outcome.get('filename', 'Document')) + ' — ' + str(outcome.get('status', 'unknown')))
             if outcome.get('error'):
                 st.warning(outcome['error'])
         with st.expander('Upload details'):
-            st.json(st.session_state['upload_result'], expanded=False)
+            st.json(upload_preview, expanded=False)
     show_deleted = st.checkbox('Show deleted documents', value=False,
                                help='Deleted documents are excluded from future retrieval. This only changes the history view; it does not delete or restore anything.')
     data = api('GET', '/documents', params={'include_deleted': show_deleted})
@@ -93,7 +95,7 @@ if page == 'Documents':
             st.info('No documents match this view.')
         else:
             st.info('No active documents yet. Deleted document history is hidden; use “Show deleted documents” to view it.')
-    for item in documents:
+    for item in answer_preview(documents):
         with st.expander(f"{item['filename']} | {item['status']}"):
             st.text(item['filename'])
             st.text(f"Document: {item['document_id']}\nVersion: {item['id']}\nActive: {item.get('active_version')}\nSHA256: {item['sha256']}")
@@ -115,7 +117,7 @@ if page == 'Documents':
                     replace = st.form_submit_button('Replace active version')
                 if replace and replacement:
                     with st.spinner('Replacing and indexing the new version locally…'):
-                        st.json(api('POST', f"/documents/{item['document_id']}/replace", params={'expected_version': item['id']}, files={'file': (replacement.name, replacement.getvalue())}))
+                        st.json(answer_preview(api('POST', f"/documents/{item['document_id']}/replace", params={'expected_version': item['id']}, files={'file': (replacement.name, replacement.getvalue())})))
                 confirm = st.checkbox('Confirm delete this document from future retrieval', key='d'+item['id'])
                 if st.button('Delete', disabled=not confirm, key='b'+item['id']):
                     api('DELETE', f"/documents/{item['document_id']}", params={'expected_version': item['id']})
@@ -135,7 +137,7 @@ if page == 'Search evidence':
         with st.spinner('Searching active document versions locally…'):
             st.session_state['search_result'] = api('POST', '/search', json={
                 'question': search_question, 'mode': 'A', 'request_id': str(uuid4())})
-    found = st.session_state.get('search_result')
+    found = answer_preview(st.session_state.get('search_result'))
     if found is not None:
         st.caption('Saved search result. Search again after replacing or deleting documents.')
         hits = found.get('hits', [])
@@ -195,7 +197,7 @@ if page == 'Ask / compare':
                 })
             st.session_state.pop('local_search', None)
         st.rerun()
-    local_search = st.session_state.get('local_search')
+    local_search = answer_preview(st.session_state.get('local_search'))
     if local_search is not None:
         st.subheader('Local-only evidence')
         st.info('No model was called. These are retrieved passages, not a generated answer.')
@@ -222,9 +224,10 @@ if page == 'Ask / compare':
             if ref.get('partial_text'):
                 st.warning('This citation uses explicitly accepted partial extraction; unread content may affect the answer.')
             st.text(f"{ref['filename']} · {page_label(ref['page'])} · {ref['section']}\nSource {ref['id']}")
-            st.text(ref['text'])
+            with st.expander('Source excerpt — masked document text'):
+                st.text(ref['text'])
         with st.expander('Evidence, screening, usage and provenance'):
-            st.caption('Local audit preview. Unverified payment-card patterns are hidden here; original evidence and audit records remain in local storage.')
+            st.caption('Masked preview: recognized credentials, emails, internal canaries and unverified payment-card patterns are hidden. Original evidence and audit records remain in local storage.')
             st.json(value)
     st.divider()
     st.subheader('Compare A/B/C on one benign question')
@@ -262,7 +265,7 @@ if page == 'Ask / compare':
                     for reference in response.get('references', []):
                         st.text(str(reference.get('filename')) + ' · ' + page_label(reference.get('page')) + ' · ' + str(reference.get('id')))
                     st.caption('Latency: ' + str(response.get('latency_ms')) + ' ms')
-        st.download_button('Download unreviewed comparison JSON', json.dumps(comparison, indent=2),
+        st.download_button('Download masked unreviewed comparison JSON', json.dumps(comparison, indent=2),
                            file_name='benign-comparison-unreviewed.json', mime='application/json')
 if page == 'Saved experiments':
     runs = api('GET', '/results')
@@ -270,8 +273,8 @@ if page == 'Saved experiments':
     if not names:
         st.info('No saved experiments. Run the evaluator CLI; no example metrics are presented as measurements.')
     else:
-        name = st.selectbox('Experiment', names)
-        value = api('GET', '/results/'+name)
+        name = st.selectbox('Experiment', names, format_func=answer_preview)
+        value = answer_preview(api('GET', '/results/'+name))
         if value:
             st.json(value['experiment'], expanded=False)
             summary = value.get('summary') or {}
@@ -283,12 +286,12 @@ if page == 'Saved experiments':
             st.write('Review coverage', coverage)
             st.json(summary, expanded=False)
             with st.expander('Download actual results and human-review records'):
-                st.caption('Review templates contain blank judgments. Complete review against the evidence and import using the documented CLI; downloading does not approve a result.')
+                st.caption('These downloads are masked previews. Original records remain local for review using the documented CLI. Review templates contain blank judgments; downloading does not approve a result.')
                 for artifact in ['records.csv','comparison.csv','review-template.json','review-packets.json','operational-summary.json']:
                     content = artifact_bytes(name, artifact)
                     if content is not None:
-                        st.download_button('Download '+artifact, content,
-                                           file_name=name+'-'+artifact, key=name+artifact)
+                        st.download_button('Download masked '+artifact, artifact_preview(content, filename=artifact),
+                                           file_name=answer_preview(name)+'-masked-'+artifact, key=name+artifact)
             with st.expander('Metric charts — check denominators and review status'):
                 for artifact in ['asr','exposed_asr','benign_task_success','benign_false_flags','benign_false_blocks','quality','latency']:
                     content = artifact_bytes(name, artifact+'.png')
@@ -319,7 +322,8 @@ if page == 'Saved experiments':
                                 st.json({k:judgment.get(k) for k in ['attack_success','task_success','quality','notes']}, expanded=False)
                             for ref in response.get('references', []):
                                 st.text(ref['filename']+' · '+ref['section']+' · '+ref['id'])
-                                st.text(ref['text'])
+                                with st.expander('Source excerpt — masked document text'):
+                                    st.text(ref['text'])
                             st.json({'screening':response.get('screening'),
                                      'original_evidence':response.get('candidate_evidence',[]),
                                      'retained_evidence':response.get('supplied_evidence',[])}, expanded=False)
@@ -330,5 +334,5 @@ if page == 'Saved experiments':
     st.caption('Operational evidence only. A provider rejection is not an application-defense success.')
     diagnostics = api('GET', '/diagnostics') or {}
     for diagnostic_id in diagnostics.get('diagnostics', []):
-        with st.expander(diagnostic_id):
-            st.json(api('GET', '/diagnostics/'+diagnostic_id), expanded=False)
+        with st.expander(answer_preview(diagnostic_id)):
+            st.json(answer_preview(api('GET', '/diagnostics/'+diagnostic_id)), expanded=False)
