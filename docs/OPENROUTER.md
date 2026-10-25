@@ -79,10 +79,12 @@ availability, limits, billing terms, and model behavior can change; this local
 gate cannot guarantee OpenRouter account billing. Check the dashboard before
 enabling live calls.
 
-The Ask / compare UI defaults to local-only evidence search. A separate
-per-request checkbox is required before OpenRouter reservations can be created;
-the server also blocks OpenRouter reservations if that confirmation is absent.
-When confirmed, the provider receives the question and retrieved passages for
+The Ask / compare UI defaults to local-only evidence search. Choosing OpenRouter
+and clicking “Ask once via OpenRouter” confirms external processing for that
+request; no separate checkbox is required. Merely selecting the mode or
+refreshing the page sends no question. Direct API requests still require the
+explicit external-processing field before reservations can be created.
+When submitted, the provider receives the question and retrieved passages for
 answering and, in mode C, screening. Only send content authorized for that
 provider. Uploads, indexes, and saved request results remain on local storage;
 the application does not provide encryption, access control, or secure erasure.

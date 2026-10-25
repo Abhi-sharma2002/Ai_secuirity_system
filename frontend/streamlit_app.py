@@ -150,7 +150,7 @@ if page == 'Search evidence':
 if page == 'Assignment guide':
     st.subheader('Assignment workflow')
     st.write('1. Upload only documents you are authorized to process; parsing, indexing, storage, and local evidence search stay on this machine.')
-    st.write('2. Use local-only mode to inspect matching passages without a model call, or explicitly confirm external processing before asking through OpenRouter.')
+    st.write('2. Use local-only mode to inspect matching passages without a model call, or choose OpenRouter and click Ask to send the question and matching passages to the provider.')
     st.write('3. A is the baseline; B separates instructions; C screens inputs and checks for payment-card-number patterns. None guarantees protection from prompt injection or disclosure.')
     st.write('4. Run controlled evaluation only under a separate approved benchmark scope. Use identical initial evidence, model and answering settings across A/B/C.')
     st.write('5. Review actual responses against expected answers and attack objectives. Provider errors and retrieval misses are not successful defenses.')
@@ -175,21 +175,11 @@ if page == 'Ask / compare':
         question = st.text_area('Question', max_chars=2000)
         live_status = (ready or {}).get('live', {})
         can_use_external = live_status.get('mode_available', {}).get(mode, live_status.get('enabled', False))
-        external_processing_confirmed = False
         if processing_mode == 'openrouter':
-            external_processing_confirmed = st.checkbox(
-                'I confirm this question and retrieved document passages may be sent to OpenRouter for processing.',
-                value=False,
-            )
-            st.warning(
-                'Only continue if your organization permits this provider and data classification. '
-                'Local deletion controls are not secure erasure, and the provider may process data under its own terms.'
-            )
+            st.caption('Clicking “Ask once via OpenRouter” sends your question and retrieved document passages to OpenRouter for processing.')
             if not can_use_external:
                 st.info(live_status.get('reason') or 'Insufficient capacity for this configuration. A/B require 1 call; C requires 2.')
-        can_ask = processing_mode == 'local' or (can_use_external and external_processing_confirmed)
-        if processing_mode == 'openrouter' and can_use_external and not external_processing_confirmed:
-            st.info('OpenRouter is blocked until you explicitly confirm external processing for this request.')
+        can_ask = processing_mode == 'local' or can_use_external
         submit_question = st.form_submit_button('Search locally' if processing_mode == 'local' else 'Ask once via OpenRouter', disabled=not can_ask)
     if submit_question and can_ask and question.strip():
         if processing_mode == 'local':

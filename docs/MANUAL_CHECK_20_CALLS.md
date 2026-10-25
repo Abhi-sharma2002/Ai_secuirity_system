@@ -1,5 +1,38 @@
 # Manual interactive activation — 26 October 2026
 
+## Submission form fix
+
+At the user’s request, clicking “Ask once via OpenRouter” now confirms
+external processing for the submitted question and retrieved passages.
+The separate checkbox and blocking message were removed. The previous
+checkbox was inside a form whose disabled submit button depended on that
+checkbox reaching the server, preventing a normal form submission.
+The backend still rejects direct requests without explicit confirmation,
+and expiry, consumption, stop flags and deferred capacity are unchanged.
+
+Actual UI verification against the running backend, using local GETs only:
+
+```json
+{
+  "actual_ui_rendered": true,
+  "ask_button_enabled": true,
+  "extra_processing_checkbox_present": false,
+  "only_local_gets_used": true,
+  "inference_requests_sent": 0
+}
+```
+
+Focused offline check:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 LIVE_LLM_ENABLED=false .venv/bin/python -m pytest backend/tests/frontend/test_openrouter_submission.py backend/tests/llm/test_openrouter.py -q > /tmp/ai-security-openrouter-form-tests.txt 2>&1
+```
+
+```text
+..............                                                           [100%]
+14 passed in 6.43s
+```
+
 ## Later user restriction: ten calls for twenty minutes
 
 This supersedes the active cap/deadline in the original activation record
