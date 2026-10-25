@@ -52,3 +52,17 @@ Activation: 2026-10-25T22:59:48.248634+00:00. Expiry: 2026-10-25T23:59:48.248634
 the account reported sufficient free-request capacity during preflight.
 Old receipts, consumed reservations and stop flags remain intact. This is
 a separately authorized scope, not reactivation of any old authorization.
+
+## Explicit restriction to ten calls, 26 October 2026
+
+The user reduced the active manual scope to ten provider calls for twenty
+minutes and asked to keep the other ten inactive until they ask later.
+The current receipt retains its allowance identity and consumed accounting;
+its cap is now 10 calls / 320000 local reservation units. The original
+receipt is preserved privately. This supersedes the prior active twenty-call
+cap and one-hour expiry; it does not clear any stop or consumed capacity.
+
+Restriction applied: 2026-10-25T23:02:33.605033+00:00. Expiry: 2026-10-25T23:22:33.605033+00:00
+(2026-10-26T04:52:33.605033+05:30 IST). The deferred ten calls remain inactive.
+Do not activate them, extend expiry, or renew automatically. Benchmark
+execution remains disabled; the fixed free route and all other limits remain.

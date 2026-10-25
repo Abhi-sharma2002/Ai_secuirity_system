@@ -1,5 +1,32 @@
 # Manual interactive activation — 26 October 2026
 
+## Later user restriction: ten calls for twenty minutes
+
+This supersedes the active cap/deadline in the original activation record
+below. The running backend confirmed the reduced cap without a restart.
+The other ten calls stay inactive until the user asks; no automatic
+activation or expiry renewal is scheduled. Actual restriction output:
+
+```json
+{
+  "active_call_cap": 10,
+  "remaining_calls": 10,
+  "previously_consumed_calls_preserved": 0,
+  "deferred_calls_inactive": 10,
+  "restricted_at_utc": "2026-10-25T23:02:33.605033+00:00",
+  "expires_at_utc": "2026-10-25T23:22:33.605033+00:00",
+  "expires_at_ist": "2026-10-26T04:52:33.605033+05:30",
+  "window_seconds": 1200,
+  "same_allowance_identity": true,
+  "prior_receipt_preserved": true,
+  "old_stop_flags_preserved": true,
+  "inference_requests_sent": 0,
+  "automatic_deferred_activation": false
+}
+```
+
+## Original activation record (historical)
+
 The user requested enabling twenty provider calls for manual checking. No
 background inference or benchmark run was requested or performed. The key
 authenticated through a read-only account metadata request. The fixed route
