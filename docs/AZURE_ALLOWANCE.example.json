@@ -1,0 +1,19 @@
+{
+  "provider": "azure_openai",
+  "allowance_id": "azure-development-02-20261022-v1",
+  "confirmed_free_promotional": false,
+  "approved_model": "REPLACE_WITH_ACTUAL_AZURE_DEPLOYMENT_NAME",
+  "approved_endpoint": "REPLACE_WITH_ACTUAL_NORMALIZED_AZURE_OPENAI_V1_BASE",
+  "deployment_model_version": "REPLACE_WITH_ACTUAL_DEPLOYED_MODEL_AND_VERSION",
+  "expires_at": "2000-01-01T00:00:00Z",
+  "activated_at": null,
+  "max_calls": 5,
+  "max_reserved_tokens": 160000,
+  "chat_completions_supported": false,
+  "structured_outputs_supported": false,
+  "max_output_tokens_supported": false,
+  "entitlement_expiry": null,
+  "eligibility_evidence": null,
+  "eligibility_checked_at": null,
+  "confirmation_note": "INACTIVE DRAFT. Local authorization covers one baseline then one source-reviewed paired development-02 A/B/C run, at most five provider attempts and 160000 additional units. Account free/promotional eligibility and deployment capabilities are not inferred. No activation or provider request until those facts are confirmed."
+}

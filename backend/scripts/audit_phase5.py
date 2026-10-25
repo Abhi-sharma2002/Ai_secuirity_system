@@ -1,6 +1,7 @@
 """Disposable Phase 5 real-model persistence/rebuild audit. No provider I/O.
 Run with --output for a retained report; all application writes are temporary.
 """
+from app.rag import retrieval
 import argparse
 import hashlib
 import io
@@ -19,8 +20,8 @@ def digest(value):
 
 def isolated(root):
     from app.core.config import settings, LiveSettings
-    from app.core import registry as reg
-    from app.ingestion import indexer
+    from app.storage import registry as reg
+    from app.rag import indexer
     root = root.resolve(strict=True)
     assert root.parent == Path('/tmp') and root.name.startswith('phase5-')
     paths = [reg.ROOT, settings.app_data_directory, settings.db_path, indexer.DB_PATH,
@@ -32,14 +33,14 @@ def isolated(root):
 
 
 def registry_rows():
-    from app.core import registry as reg
+    from app.storage import registry as reg
     with reg.connect() as db:
         return {t: [dict(row) for row in db.execute('SELECT * FROM '+t+' ORDER BY id')]
                 for t in ('documents', 'versions', 'calls', 'allowance', 'requests')}
 
 
 def vectors_inventory():
-    from app.ingestion import indexer
+    from app.rag import indexer
     client = indexer.get_client()
     result = {}
     for c in client.list_collections():
@@ -53,9 +54,10 @@ def vectors_inventory():
 
 def worker(stage, root):
     paths = isolated(root)
-    from app.core import registry as reg
+    from app.storage import registry as reg
     from app.core.config import settings
-    from app.ingestion import lifecycle as life, indexer, parsers
+    from app.ingestion import lifecycle as life, parsers
+    from app.rag import indexer
     from app.rag import embeddings, retriever
     manifest = root / 'manifest.json'
     if stage == 'write':
@@ -78,7 +80,7 @@ def worker(stage, root):
         deleted = ingest('retired expense.txt', 'DELETED: Expense receipts are due in thirteen days.')
         life.delete(deleted['document_id'], deleted['id'])
         other = ingest('support hours.txt', 'CURRENT: IT support is available Monday through Friday from nine until five.')
-        found = life.search('What is the annual leave entitlement?')
+        found = retrieval.search('What is the annual leave entitlement?')
         assert {h['version_id'] for h in found['hits']} == {active['id'], other['id']}
         model = embeddings.get_embedding_model()
         assert str(model.device) == 'cpu'
@@ -135,7 +137,7 @@ def worker(stage, root):
          patch.object(Collection, 'add', side_effect=forbidden), patch.object(Collection, 'upsert', side_effect=forbidden), \
          patch.object(Collection, 'update', side_effect=forbidden), patch.object(Collection, 'modify', side_effect=forbidden), \
          patch.object(retriever, 'embed_texts', side_effect=query):
-        found = life.search('What is the current annual leave entitlement?')
+        found = retrieval.search('What is the current annual leave entitlement?')
     expected = {i['id']: i for i in data['active']}
     assert {h['version_id'] for h in found['hits']} == set(expected)
     assert query_count == len(expected)

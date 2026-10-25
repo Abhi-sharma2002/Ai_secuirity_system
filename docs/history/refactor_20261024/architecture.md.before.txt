@@ -1,0 +1,21 @@
+# Current architecture
+
+See REPORT.md for the complete architecture/threat model and Mermaid diagram.
+Streamlit calls FastAPI only. API snapshots SQLite active versions and performs
+local pinned CPU/Chroma retrieval before the shared rag/assistant A/B/C service.
+The common approval/reservation client routes Azure OpenAI v1 only;no historical
+Groq/NVIDIA fallback is active. Strict answer/screening schemas and reference-ID
+validation precede plain-text UI rendering. Semantic source support is human
+review,not an ID check.
+
+Parsers use bounded subprocesses;index generations are verified before active
+pointer swaps. Deletion affects future retrieval,not historical snapshots.
+Benchmark selection,immutable manifests,semantic sidecars and human scoring are
+evaluator-only;they never enter runtime evidence or privileged application rules.
+Reporting is offline and exports to fresh directories without touching registry
+state. Synthetic presentation fixtures remain outside genuine experiment storage.
+
+Actual Azure baseline/paired benign integration succeeded. Development produced18
+reviewed benign records and stopped on HTTP400; no completed attack comparison
+exists. Default launcher disables answering; the original stop is preserved.
+Previous architecture text is retained in history/offline_handoff_20261023/.

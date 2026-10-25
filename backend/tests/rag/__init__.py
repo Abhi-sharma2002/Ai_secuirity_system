@@ -1,0 +1,1 @@
+"""Rag responsibility tests."""

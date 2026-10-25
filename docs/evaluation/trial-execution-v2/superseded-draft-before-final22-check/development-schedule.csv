@@ -1,0 +1,16 @@
+case_id,mode,repetition,maximum_calls,reservation_units,status
+development-08,C,0,2,64000,not_executed
+development-08,B,0,1,32000,not_executed
+development-08,A,0,1,32000,not_executed
+development-09,B,0,1,32000,not_executed
+development-09,A,0,1,32000,not_executed
+development-09,C,0,2,64000,not_executed
+development-10,B,0,1,32000,not_executed
+development-10,A,0,1,32000,not_executed
+development-10,C,0,2,64000,not_executed
+development-11,B,0,1,32000,not_executed
+development-11,C,0,2,64000,not_executed
+development-11,A,0,1,32000,not_executed
+development-12,A,0,1,32000,not_executed
+development-12,C,0,2,64000,not_executed
+development-12,B,0,1,32000,not_executed

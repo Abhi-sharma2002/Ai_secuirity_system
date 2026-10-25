@@ -1,0 +1,132 @@
+"""One explicitly authorized paid development evaluation, never repairs or retries.
+
+No action on import. Current user authorization: twelve development cases,
+paired A/B/C once,48 attempts/1536000 units,2hours. Historical receipts stay intact.
+"""
+import contextlib
+from datetime import datetime,timedelta,timezone
+import fcntl
+import hashlib
+import json
+import os
+from pathlib import Path
+import traceback
+from app.storage import registry as reg
+from app.core.config import LiveSettings
+from app.evaluation import experiment as exp
+from app.llm import client as live
+from app.llm.experiment_settings import identity_settings
+from app.rag import assistant
+
+RUN_ID='azure-development-12cases-v1'
+ALLOWANCE_ID='azure-development-12cases-20261023-v1'
+ROOT=Path(__file__).resolve().parents[2]
+
+
+def exclusive(path,value):
+    with path.open('x') as out:json.dump(value,out,indent=2)
+
+
+def main():
+    os.environ.update(LIVE_LLM_ENABLED='false',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
+    config=LiveSettings.from_env()
+    old_receipt=config.allowance_file
+    old_bytes=old_receipt.read_bytes()
+    old=live.Approval.model_validate_json(old_bytes)
+    if live.allowance_capacity(old)['stopped']:
+        raise live.LiveBlocked('Unresolved Azure integration stop; no new execution')
+    prepared=json.loads((ROOT/'docs/evidence/development-approval-preparation-v1/binding.json').read_text())
+    prepared_hash=prepared.pop('binding_sha256')
+    if exp.digest(prepared)!=prepared_hash:raise ValueError('Preparation binding drift')
+    current=exp.execution_identity()
+    before=prepared['execution_identity']
+    changed=[p for p,h in current['sources'].items() if before['sources'].get(p)!=h]
+    if set(changed)!={'backend/app/llm/client.py','backend/app/evaluation/experiment.py'} or set(current['sources'])!=set(before['sources']):
+        raise ValueError('Unexpected source drift from successful integration')
+    if any(current[k]!=before[k] for k in current if k!='sources'):
+        raise ValueError('Dependency/retrieval/timeout identity drift')
+    manifest=json.loads((exp.DATASET/'manifest.json').read_text())
+    snapshot=json.loads((exp.DATASET/'snapshot.json').read_text())
+    if (exp.digest(manifest)!=prepared['dataset_hash'] or exp.digest(snapshot)!=prepared['index_snapshot_hash']
+            or exp.semantics.snapshot()!=prepared['semantic_rules']
+            or hashlib.sha256(exp.SCORING_SPEC.read_bytes()).hexdigest()!=prepared['scoring_spec_hash']
+            or hashlib.sha256((exp.DATASET/'annotations.json').read_bytes()).hexdigest()!=prepared['annotation_hash']
+            or assistant.PROMPT_HASH!=prepared['prompt_hash']
+            or exp.digest(assistant.Answer.model_json_schema())!=prepared['settings']['answer_schema_sha256']
+            or exp.digest(assistant.Screening.model_json_schema())!=prepared['settings']['screening_schema_sha256']
+            or config.model!=prepared['model']['deployment'] or config.request_timeout_seconds!=30
+            or hashlib.sha256(config.base_url.encode()).hexdigest()!=prepared['model']['endpoint_sha256']):
+        raise ValueError('Model/prompt/schema/evidence/configuration drift')
+    paired=reg.ROOT/'experiments/azure-development-02-ABC-v1'
+    if json.loads((paired/'integration-diagnostics.json').read_text())['outcome']!='completed_review_pending':
+        raise ValueError('Successful integration evidence required')
+    folder=reg.ROOT/'experiments'/RUN_ID
+    receipt=old_receipt.parent/'azure_development_allowance_v1.json'
+    if receipt.exists() or folder.exists():raise live.LiveBlocked('Single-use development receipt/run exists; no duplicate grant or rerun')
+    with reg.connect() as db:
+        previous=[dict(r) for r in db.execute('SELECT * FROM allowance')]
+        previous_calls={r['id']:hashlib.sha256(r['data'].encode()).hexdigest() for r in db.execute('SELECT id,data FROM calls')}
+        if db.execute('SELECT 1 FROM calls WHERE allowance_id=?',(ALLOWANCE_ID,)).fetchone():
+            raise live.LiveBlocked('Existing development cumulative history; no duplicate grant')
+    now=datetime.now(timezone.utc)
+    cases=[f'development-{n:02d}' for n in range(1,13)]
+    approval=live.Approval(provider='azure_openai',allowance_id=ALLOWANCE_ID,
+        confirmed_free_promotional=False,approved_model=config.model,approved_endpoint=config.base_url,
+        deployment_model_version=prepared['model']['model_and_version'],activated_at=now,expires_at=now+timedelta(hours=2),
+        max_calls=48,max_reserved_tokens=1536000,chat_completions_supported=True,
+        structured_outputs_supported=True,max_output_tokens_supported=True,entitlement_expiry='unknown',
+        paid_azure_test_authorized=True,
+        paid_authorization_basis='Current user explicitly authorizes paid Azure DEVELOPMENT evaluation: twelve documented development cases, A/B/C once,36 records, max48 attempts and1536000 additional local units, two-hour window; no final/retries/repairs/reruns/probes.',
+        confirmation_note='Actual quota unknown; charges accepted for this workload. Generic prepared serial zero-added-delay pacing preserved. Temperature/provider seed not sent, cap700, timeout30, retries0. History retained.',
+        development_scope=live.DevelopmentScope(run_id=RUN_ID,case_ids=cases,
+            execution_identity_sha256=exp.digest(current),preparation_binding_sha256=prepared_hash))
+    rebound={'run_id':RUN_ID,'execution_identity':current,'execution_identity_sha256':exp.digest(current),
+        'prepared_binding_sha256':prepared_hash,'approved_policy_source_changes':changed,
+        'dataset_hash':prepared['dataset_hash'],'index_snapshot_hash':prepared['index_snapshot_hash'],
+        'prompt_hash':prepared['prompt_hash'],'semantic_rules_sha256':prepared['semantic_rules']['sha256'],
+        'settings':identity_settings(),'pacing':{'concurrency':1,'added_delay_seconds':0},
+        'activated_at':now.isoformat(),'expires_at':approval.expires_at.isoformat(),'human_review':'pending',
+        'holdout_status':'exposed_for_audit','untouched_holdout':False}
+    with (reg.ROOT/'backend.lock').open('a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        fd=os.open(receipt,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(fd,'w') as out:out.write(approval.model_dump_json(indent=2))
+        folder.mkdir(exist_ok=False)
+        exclusive(folder/'activation-and-binding.json',rebound)
+        summary={'run_id':RUN_ID,'started_at':now.isoformat(),'outcome':'in_progress','error':None}
+        try:
+            os.environ.update(AZURE_OPENAI_ALLOWANCE_FILE=str(receipt),LIVE_LLM_ENABLED='true',FREE_ONLY='false')
+            with (folder/'evaluator-console.log').open('x') as log,contextlib.redirect_stdout(log):
+                exp.run(RUN_ID,'development','paired',1,5,True)
+            summary['outcome']='completed_human_review_pending'
+        except BaseException as exc:
+            summary.update(outcome='stopped_no_retry',error={'exception_type':type(exc).__name__,
+                'frames':[{'file':Path(f.filename).name,'line':f.lineno,'function':f.name} for f in traceback.extract_tb(exc.__traceback__)]})
+            with reg.connect() as db:
+                db.execute('INSERT OR IGNORE INTO allowance VALUES(?,?,?,1)',(hashlib.sha256(approval.model_dump_json().encode()).hexdigest(),0,0))
+                db.execute('UPDATE allowance SET stopped=1 WHERE id=?',(hashlib.sha256(approval.model_dump_json().encode()).hexdigest(),))
+        finally:
+            os.environ['LIVE_LLM_ENABLED']='false'
+            summary.update(finished_at=datetime.now(timezone.utc).isoformat(),capacity=live.allowance_capacity(approval),expires_at=approval.expires_at.isoformat())
+            # Export even partial execution, without re-execution or semantic grading.
+            if (folder/'experiment.json').exists() and not (folder/'review-template.json').exists():
+                try:
+                    with (folder/'offline-export-console.log').open('x') as log,contextlib.redirect_stdout(log):exp.report(folder)
+                except Exception as exc:summary['export_error_type']=type(exc).__name__
+            rows=[json.loads(p.read_text()) for p in folder.glob('case-*.json')]
+            calls=[c for r in rows for c in r['response'].get('calls',[])]
+            with reg.connect() as db:
+                prior_unchanged=all(dict(db.execute('SELECT * FROM allowance WHERE id=?',(r['id'],)).fetchone())==r for r in previous)
+                calls_unchanged=all(hashlib.sha256(db.execute('SELECT data FROM calls WHERE id=?',(rid,)).fetchone()['data'].encode()).hexdigest()==h for rid,h in previous_calls.items())
+            summary.update(scheduled_records=36,recorded_records=len(rows),
+                operationally_completed=sum(r['response']['status'] in exp.COMPLETED for r in rows),
+                operational_errors=[{'case_id':r['case_id'],'mode':r['mode'],'status':r['response']['status'],'error':r['response'].get('error')} for r in rows if r['response']['status'] not in exp.COMPLETED],
+                actual_provider_attempts=len(calls),known_reported_input_tokens=sum((c.get('usage') or {}).get('input_tokens',0) for c in calls),
+                known_reported_output_tokens=sum((c.get('usage') or {}).get('output_tokens',0) for c in calls),
+                unknown_usage_calls=sum(c.get('usage') is None for c in calls),human_reviewed_records=0,
+                old_receipt_unchanged=old_receipt.read_bytes()==old_bytes,historical_allowances_unchanged=prior_unchanged,historical_calls_unchanged=calls_unchanged,
+                live_enabled_on_exit=False)
+            exclusive(folder/'operational-summary.json',summary)
+            print(json.dumps(summary))
+
+if __name__=='__main__':main()

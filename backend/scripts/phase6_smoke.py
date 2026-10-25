@@ -10,7 +10,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from app.core.config import LiveSettings
-from app.core import registry as reg
+from app.storage import registry as reg
 from app.evaluation import experiment as exp
 from app.rag import assistant
 from app.llm import client as live

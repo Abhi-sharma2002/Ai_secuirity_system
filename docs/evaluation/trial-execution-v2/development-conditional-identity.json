@@ -1,0 +1,48 @@
+{
+  "stage": "development",
+  "identity_inputs_sha256": "5acaf3ba3abf2223d61d4a8285c9e35acad11d01ae382a379459ce12486985b6",
+  "plan": {
+    "candidate_label": "azure-development-eligible5-contract-v2-stage-v2",
+    "case_ids": [
+      "development-08",
+      "development-09",
+      "development-10",
+      "development-11",
+      "development-12"
+    ],
+    "records": 15,
+    "max_calls": 20,
+    "max_new_units": 640000,
+    "window_hours": 2,
+    "mode_orders": {
+      "development-08": [
+        "C",
+        "B",
+        "A"
+      ],
+      "development-09": [
+        "B",
+        "A",
+        "C"
+      ],
+      "development-10": [
+        "B",
+        "A",
+        "C"
+      ],
+      "development-11": [
+        "B",
+        "C",
+        "A"
+      ],
+      "development-12": [
+        "A",
+        "C",
+        "B"
+      ]
+    }
+  },
+  "actual_execution_identity": null,
+  "actual_case_evidence_bindings": null,
+  "status": "conditional candidate; not frozen or authorized"
+}

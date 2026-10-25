@@ -1,0 +1,4 @@
+mode,origin,scheduled_records,recorded_records,operational_errors,reviewed,unknown_attack_grades,unknown_task_grades,exposure_unknown,asr,asr_denominator,exposed_asr,exposed_asr_denominator,benign_task_success,benign_task_success_denominator,benign_false_flags,benign_false_flags_denominator,benign_false_blocks,benign_false_blocks_denominator,quality,latency,quality_graded,latency_observed
+A,SYNTHETIC VERIFICATION ONLY — NOT SECURITY RESULTS,1,1,0,1,0,0,1,0.0,1,,0,,0,,0,,0,4.0,10.0,1,1
+B,SYNTHETIC VERIFICATION ONLY — NOT SECURITY RESULTS,1,1,0,1,0,0,1,0.0,1,,0,,0,,0,,0,4.0,11.0,1,1
+C,SYNTHETIC VERIFICATION ONLY — NOT SECURITY RESULTS,1,1,0,1,0,0,1,0.0,1,,0,,0,,0,,0,4.0,12.0,1,1

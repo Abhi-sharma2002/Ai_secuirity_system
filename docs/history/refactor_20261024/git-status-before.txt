@@ -1,0 +1,136 @@
+ M .env.example
+ M README.md
+ M backend/.env.example
+ M backend/app/api/runtime.py
+ M backend/app/core/config.py
+ M backend/app/core/environment.py
+ M backend/app/defenses/baseline_runner.py
+ M backend/app/defenses/instruction_separation.py
+ M backend/app/defenses/instruction_separation_runner.py
+ M backend/app/defenses/screening.py
+ M backend/app/evaluation/experiment.py
+ M backend/app/llm/__init__.py
+ M backend/app/llm/client.py
+ M backend/app/rag/assistant.py
+ M backend/requirements.txt
+ M backend/scripts/smoke_preflight.py
+ M backend/tests/test_environment.py
+ M backend/tests/test_exposure_audit.py
+ D backend/tests/test_groq_endpoint.py
+ M backend/tests/test_runtime_v2.py
+ M backend/tests/test_smoke_preflight.py
+ M docs/ACCEPTANCE_MATRIX.md
+ M docs/DATASET.md
+ M docs/DECISIONS.md
+ M docs/DEMO.md
+ M docs/HANDOVER.md
+ M docs/IMPLEMENTATION_STATUS.md
+ M docs/PROJECT_CONTRACT.md
+ M docs/REPORT.md
+ M docs/SCORING.md
+ M docs/VERIFICATION.md
+ M docs/architecture.md
+ M docs/threat_model.md
+ M frontend/streamlit_app.py
+?? backend/app/evaluation/legacy_rubrics.py
+?? backend/app/evaluation/presentation.py
+?? backend/app/evaluation/provider_outcomes.py
+?? backend/app/evaluation/semantics.py
+?? backend/app/llm/azure_openai.py
+?? backend/app/llm/diagnostics.py
+?? backend/app/llm/experiment_settings.py
+?? backend/app/llm/nvidia_nim.py
+?? backend/benchmark/revisions/legacy-e037-task-v2/
+?? backend/benchmark/revisions/phase12-approved-v1/
+?? backend/historical_tests/
+?? backend/scripts/azure_live_integration.py
+?? backend/scripts/export_experiment.py
+?? backend/scripts/groq_restore_attempt.py
+?? backend/scripts/nvidia_abc_smoke.py
+?? backend/scripts/nvidia_baseline_attempt.py
+?? backend/scripts/phase6_auth_attempt.py
+?? backend/scripts/prepare_offline_demo.py
+?? backend/scripts/prepare_screening_revision.py
+?? backend/scripts/run_approved_stage.py
+?? backend/scripts/run_authorized_development.py
+?? backend/scripts/run_development07_diagnostic.py
+?? backend/scripts/run_development08_screening_probe.py
+?? backend/scripts/verify_local_workflow.py
+?? backend/tests/README.md
+?? backend/tests/offline_settings.py
+?? backend/tests/test_answer_content.py
+?? backend/tests/test_app_launcher.py
+?? backend/tests/test_azure_openai.py
+?? backend/tests/test_development_paid_scope.py
+?? backend/tests/test_diagnostic_preparation.py
+?? backend/tests/test_legacy_e037_rubric.py
+?? backend/tests/test_live_readiness_budget.py
+?? backend/tests/test_nvidia_abc_smoke.py
+?? backend/tests/test_paid_azure_test.py
+?? backend/tests/test_phase12_semantics.py
+?? backend/tests/test_phase6_auth_attempt.py
+?? backend/tests/test_phase7_separation.py
+?? backend/tests/test_phase8_screening.py
+?? backend/tests/test_phase9_evaluation.py
+?? backend/tests/test_presentation_exports.py
+?? backend/tests/test_provider_diagnostics.py
+?? backend/tests/test_provider_endpoint.py
+?? backend/tests/test_provider_outcomes.py
+?? backend/tests/test_result_artifacts.py
+?? backend/tests/test_runtime_completion.py
+?? backend/tests/test_saved_400_diagnosis.py
+?? backend/tests/test_screening_probe_gate.py
+?? backend/tests/test_screening_revision_proposal.py
+?? backend/tests/test_staged_scope.py
+?? backend/tests/test_unknown_entitlement.py
+?? docs/ACTIVE_RUNTIME_IMPLEMENTATION.md
+?? docs/ASK_BUDGET_READINESS_FIX_20261022.md
+?? docs/ASK_LIVE_STATUS_20261022.md
+?? docs/ASSIGNMENT_HANDOFF_20261023.md
+?? docs/ASSIGNMENT_TRACEABILITY.md
+?? docs/AZURE_ALLOWANCE.example.json
+?? docs/AZURE_DEPLOYMENT_COMPATIBILITY_20261023.md
+?? docs/AZURE_DEVELOPMENT_EXECUTION_20261023.md
+?? docs/AZURE_DEVELOPMENT_POLICY_20261023.md
+?? docs/AZURE_LOADING_AND_SETTINGS_V2_20261023.md
+?? docs/AZURE_OPENAI.md
+?? docs/AZURE_PAID_BASELINE_RESULT_20261023.md
+?? docs/AZURE_PAIRED_INTEGRATION_RESULT_20261023.md
+?? docs/AZURE_RESUME_STATUS_20261023.md
+?? docs/CONSOLIDATED_EXECUTION_APPROVAL_20261023.md
+?? docs/CONTINUATION_PREPARATION_STATUS_20261023.md
+?? docs/CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md
+?? docs/DEVELOPMENT07_DIAGNOSTIC_PREPARATION_20261023.md
+?? docs/DEVELOPMENT07_DIAGNOSTIC_RESULT_20261023.md
+?? docs/DEVELOPMENT07_HTTP400_DIAGNOSIS_20261023.md
+?? docs/DEVELOPMENT08_SCREENING_PROBE_RESULT_20261023.md
+?? docs/DEVELOPMENT08_SCREENING_REVISION_PROPOSAL_20261023.md
+?? docs/DEVELOPMENT_EVALUATION_APPROVAL_20261023.md
+?? docs/DIAGNOSTIC_TRIAL_WORKFLOW_20261023.md
+?? docs/END_TO_END_HANDOVER_20261023.md
+?? docs/GROQ_REPLACED_KEY_ATTEMPT_20261022.md
+?? docs/GROQ_RESTORE_ATTEMPT_20261022.md
+?? docs/INSTALLATION.md
+?? docs/LOCAL_WORKFLOW_VERIFICATION_20261023.md
+?? docs/NVIDIA_ABC_SMOKE_RESULT_20261022.md
+?? docs/NVIDIA_ANSWER_CONTENT_FIX_20261022.md
+?? docs/NVIDIA_BASELINE_RESULT_20261022.md
+?? docs/NVIDIA_HOSTED_CONFIGURATION.md
+?? docs/PANEL_WALKTHROUGH.md
+?? docs/PHASE6_AUTH_ATTEMPT_20261022.md
+?? docs/PHASE7_INSTRUCTION_SEPARATION.md
+?? docs/PHASE8_SCREENING_VERIFICATION.md
+?? docs/PHASE9_EVALUATION_VERIFICATION.md
+?? docs/README_PRE_AZURE_20261022.md
+?? docs/RESULTS_GUIDE.md
+?? docs/REVIEWED_PANEL_COMPLETION_20261023.md
+?? docs/ROADMAP_STATUS.md
+?? docs/STAGED_AUTHORIZATION_20261023.md
+?? docs/STAGED_DEVELOPMENT_REVIEW_BATCH_20261023.md
+?? docs/STAGED_EXECUTION_HANDOVER_20261023.md
+?? docs/demo-fixtures/
+?? docs/history/
+?? docs/panel/
+?? docs/reviews/
+?? frontend/error_messages.py
+?? run_app.py

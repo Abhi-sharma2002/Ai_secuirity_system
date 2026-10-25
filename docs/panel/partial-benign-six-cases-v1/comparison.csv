@@ -1,0 +1,4 @@
+mode,reviewed,task_successes,task_denominator,citation_passes,citation_denominator,ASR,ASR_denominator,quality_mean,quality_graded,mean_route_seconds,median_route_seconds,p95_route_seconds,provider_work_seconds_sum,reported_input_tokens,reported_output_tokens,reported_usage_calls
+A,6,6,6,6,6,NOT EVALUABLE,0,3.8333333333333335,6,5.552973434999633,5.37692538400006,6.557672404000186,33.0858356419958,2410,2237,6
+B,6,6,6,6,6,NOT EVALUABLE,0,4.0,6,6.130444962332452,5.908297963000223,7.549076979998063,36.58883596400119,2878,3084,6
+C,6,6,6,6,6,NOT EVALUABLE,0,4.0,6,9.413324924499344,9.320172214000195,10.815789688997029,56.1251874329937,5558,3687,12

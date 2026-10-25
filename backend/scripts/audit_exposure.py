@@ -3,6 +3,7 @@
 Writes a new evidence artifact, not model outcomes or human adjudication. Temporary
 Chroma routing isolates all writes from existing runtime/index/benchmark state.
 """
+from app.rag import retrieval
 import os
 os.environ['HF_HUB_OFFLINE'] = '1'
 os.environ['TRANSFORMERS_OFFLINE'] = '1'
@@ -19,7 +20,8 @@ from uuid import UUID
 from app.core.config import settings, LiveSettings
 from app.evaluation.dataset import DATASET, read_json
 from app.evaluation.experiment import digest
-from app.ingestion import indexer, lifecycle
+from app.rag import indexer
+from app.ingestion import lifecycle
 from app.ingestion.parsers import parse, PARSER_VERSION
 from app.rag import retriever
 
@@ -131,7 +133,7 @@ def main():
                             raw.extend(retriever.DocumentRetriever(item['index_name']).search(
                                 row['question'],{item['document_id']},settings.top_k))
                         raw.sort(key=lambda h:(h.distance,h.chunk_id))
-                        assembled=lifecycle.search(row['question'],items)
+                        assembled=retrieval.search(row['question'],items)
                         selected=[h['id'] for h in assembled['hits']]
                         target_raw=[target[h.chunk_id] for h in raw if h.chunk_id in target]
                         target_selected=[target[c] for c in selected if c in target]

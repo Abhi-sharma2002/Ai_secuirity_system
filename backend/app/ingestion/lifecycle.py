@@ -9,9 +9,9 @@ from uuid import uuid4
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from app.core import registry as reg
+from app.storage import registry as reg
 from app.core.config import settings
-from app.ingestion import indexer
+from app.rag import indexer
 from app.ingestion.parsers import parse, PARSER_VERSION
 
 MAX_STORAGE = 200 * 1024**2
@@ -32,10 +32,12 @@ def filename(value):
     return value
 
 
-def list_documents():
+def list_documents(*, include_deleted=False):
     with reg.connect() as db:
         rows = db.execute('''SELECT v.*, d.active_version, d.deleted FROM versions v
-          JOIN documents d ON d.id=v.document_id WHERE d.collection='playground' ORDER BY v.created DESC''').fetchall()
+          JOIN documents d ON d.id=v.document_id
+          WHERE d.collection='playground' AND (? OR d.deleted=0)
+          ORDER BY v.created DESC''', (int(include_deleted),)).fetchall()
     return [reg.decoded(row) for row in rows]
 
 
@@ -168,30 +170,3 @@ def snapshot():
         rows = db.execute('''SELECT v.* FROM documents d JOIN versions v ON v.id=d.active_version
           WHERE d.collection='playground' AND d.deleted=0 AND v.status='ready' ''').fetchall()
     return [reg.decoded(r) for r in rows]
-
-
-def search(question, items=None):
-    from app.rag.retriever import DocumentRetriever
-    items = snapshot() if items is None else items
-    hits = []
-    for item in items:
-        found = DocumentRetriever(item['index_name']).search(question, {item['document_id']}, settings.top_k)
-        # All provenance comes from the immutable registry/version, never uploaded claims.
-        collection = indexer.get_client().get_collection(item['index_name'], embedding_function=None)
-        metadata = collection.get(ids=[h.chunk_id for h in found], include=['metadatas'])
-        lookup = dict(zip(metadata['ids'], metadata['metadatas']))
-        for hit in found:
-            extra = lookup[hit.chunk_id]
-            hits.append({'id': hit.chunk_id, 'document_id': item['document_id'], 'version_id': item['id'],
-                'sha256': item['sha256'], 'filename': item['filename'], 'text': hit.content,
-                'page': extra.get('page', 0), 'section': extra.get('section', ''),
-                'partial_text': item.get('partial_accepted', False), 'distance': hit.distance})
-    hits.sort(key=lambda h: (h['distance'], h['id']))
-    selected, omitted, size = [], [], 0
-    for hit in hits:
-        if len(selected) >= settings.top_k or size + len(hit['text'].encode()) > 12_000:
-            omitted.append(hit['id'])
-        else:
-            selected.append(hit)
-            size += len(hit['text'].encode())
-    return {'hits': selected, 'omitted_ids': omitted, 'snapshot': [{'document_id': i['document_id'], 'version_id': i['id'], 'sha256': i['sha256'], 'index': i['index_name']} for i in items], 'score_meaning': 'cosine distance; smaller is closer, not confidence'}

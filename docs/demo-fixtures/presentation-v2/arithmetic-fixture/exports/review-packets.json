@@ -1,0 +1,116 @@
+{
+  "label": "SYNTHETIC VERIFICATION ONLY \u2014 NOT SECURITY RESULTS",
+  "packets": [
+    {
+      "record_binding": "da1a2458cf39b1b493a824993aef84b21fde741c916508b18008199f8457dd7c",
+      "record": {
+        "experiment_id": "SYNTHETIC-PRESENTATION-FIXTURE",
+        "case_id": "case",
+        "mode": "A",
+        "repetition": 0,
+        "specification_hash": null
+      },
+      "rubric_version": "human-v1",
+      "criteria": {
+        "case_id": "case",
+        "adversarial": true,
+        "channel": "indirect",
+        "subtype": "overt_override",
+        "query": "SYNTHETIC question",
+        "expected_task": "SYNTHETIC task",
+        "attack_objective": "SYNTHETIC objective"
+      },
+      "response": {
+        "status": "answered",
+        "answer": "SYNTHETIC ONLY",
+        "candidate_evidence": [
+          {
+            "source_id": "one",
+            "text": "original"
+          }
+        ],
+        "supplied_evidence": [],
+        "calls": [],
+        "latency_ms": 10
+      },
+      "semantic_review": null,
+      "output_origin": "synthetic_fixture",
+      "scoring_spec_hash": null,
+      "criteria_provenance": "saved_case_only; historical semantic version may be unknown"
+    },
+    {
+      "record_binding": "dcf221322b9cd0b9f69a64fb9a2a4b6be5804fb7968d59cd77de9e31c963caed",
+      "record": {
+        "experiment_id": "SYNTHETIC-PRESENTATION-FIXTURE",
+        "case_id": "case",
+        "mode": "B",
+        "repetition": 0,
+        "specification_hash": null
+      },
+      "rubric_version": "human-v1",
+      "criteria": {
+        "case_id": "case",
+        "adversarial": true,
+        "channel": "indirect",
+        "subtype": "overt_override",
+        "query": "SYNTHETIC question",
+        "expected_task": "SYNTHETIC task",
+        "attack_objective": "SYNTHETIC objective"
+      },
+      "response": {
+        "status": "answered",
+        "answer": "SYNTHETIC ONLY",
+        "candidate_evidence": [
+          {
+            "source_id": "one",
+            "text": "original"
+          }
+        ],
+        "supplied_evidence": [],
+        "calls": [],
+        "latency_ms": 11
+      },
+      "semantic_review": null,
+      "output_origin": "synthetic_fixture",
+      "scoring_spec_hash": null,
+      "criteria_provenance": "saved_case_only; historical semantic version may be unknown"
+    },
+    {
+      "record_binding": "5fe675e64b575a3ef5cf463d221c730a5f1a41827eff176a63aac9335e8bcc3e",
+      "record": {
+        "experiment_id": "SYNTHETIC-PRESENTATION-FIXTURE",
+        "case_id": "case",
+        "mode": "C",
+        "repetition": 0,
+        "specification_hash": null
+      },
+      "rubric_version": "human-v1",
+      "criteria": {
+        "case_id": "case",
+        "adversarial": true,
+        "channel": "indirect",
+        "subtype": "overt_override",
+        "query": "SYNTHETIC question",
+        "expected_task": "SYNTHETIC task",
+        "attack_objective": "SYNTHETIC objective"
+      },
+      "response": {
+        "status": "answered",
+        "answer": "SYNTHETIC ONLY",
+        "candidate_evidence": [
+          {
+            "source_id": "one",
+            "text": "original"
+          }
+        ],
+        "supplied_evidence": [],
+        "calls": [],
+        "latency_ms": 12
+      },
+      "semantic_review": null,
+      "output_origin": "synthetic_fixture",
+      "scoring_spec_hash": null,
+      "criteria_provenance": "saved_case_only; historical semantic version may be unknown"
+    }
+  ]
+}

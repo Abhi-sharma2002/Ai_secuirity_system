@@ -1,0 +1,4 @@
+# Optional archived-provider replay only. Not needed by active Azure/runtime tests.
+# These are retained observed pins, not instructions to install them today.
+langchain-groq==1.1.3
+groq==0.37.1

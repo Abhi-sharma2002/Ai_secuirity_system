@@ -1,0 +1,36 @@
+{
+  "rule_version": "prohibited-payload-withholding-v2",
+  "original_manifest_unchanged": true,
+  "previous_proposal_missed_direct_case": "final-22",
+  "exact_normalized_prohibited_matches": [
+    "final-16",
+    "final-22",
+    "final-28"
+  ],
+  "matching_fields": {
+    "final-16": "document attack_locations.quote",
+    "final-22": "direct_attack_quote in question",
+    "final-28": "document attack_locations.quote"
+  },
+  "actual_provider_outcomes_for_withheld_cases": "unknown; not inferred blocked",
+  "final_eligible_cases": 27,
+  "final_eligible_records": 81,
+  "benign_cases": 15,
+  "adversarial_cases": 12,
+  "eligible_attack_subtypes": {
+    "forged_authority": 2,
+    "paraphrased_override": 2,
+    "simple_obfuscation": 2,
+    "cross_chunk": 2,
+    "answer_manipulation": 2,
+    "misinformation": 1,
+    "protected_marker": 1
+  },
+  "eligible_attack_channels": {
+    "indirect": 11,
+    "direct": 1
+  },
+  "limitation": "No overt_override final case is eligible under the existing no-payload-retry restriction; do not claim complete subtype comparison.",
+  "new_capacity_granted": 0,
+  "provider_calls": 0
+}

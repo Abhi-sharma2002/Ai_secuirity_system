@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.core.config import settings
 from app.ingestion.loader import Document
 from app.ingestion.chunker import split_documents
-from app.ingestion import indexer
+from app.rag import indexer
 
 logger = logging.getLogger(__name__)
 

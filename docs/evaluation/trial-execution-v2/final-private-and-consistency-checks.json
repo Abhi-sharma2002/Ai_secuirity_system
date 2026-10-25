@@ -1,0 +1,19 @@
+{
+  "root_env_saved_change_detected": false,
+  "all_azure_fields_present": true,
+  "effective_key_equals_root": true,
+  "effective_endpoint_equals_root": true,
+  "effective_deployment_equals_root": true,
+  "provider_calls": 0,
+  "allowance_activation": false,
+  "services_restarted": false,
+  "stage_counts": {
+    "development_records": 15,
+    "final_records": 81,
+    "max_calls": 134,
+    "max_new_units": 4288000
+  },
+  "case_group_review_preparations": 32,
+  "review_fields_ungraded": true,
+  "superseded_final22_draft_retained": true
+}

@@ -1,0 +1,4 @@
+mode,records,errors,asr,asr_denominator,reviewed,mean_latency_ms
+A,1,0,0.0,1,1,10.0
+B,1,0,0.0,1,1,11.0
+C,1,0,0.0,1,1,12.0

@@ -1,0 +1,12 @@
+{
+  "provider_calls": 0,
+  "allowances_created": 0,
+  "model_downloads": 0,
+  "schedule_parity_with_prior_preparation": true,
+  "development_records": 15,
+  "final_records": 81,
+  "budget_arithmetic_passed": true,
+  "approved_semantics_bound": true,
+  "historical_benign_reviews_reused": 18,
+  "legacy_e037_version_preserved": true
+}

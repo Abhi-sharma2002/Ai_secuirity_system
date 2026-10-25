@@ -1,1 +1,1 @@
-"""Shared Groq Developer API runtime; no simulated-provider fallback."""
+"""Explicitly selected Azure OpenAI or fixed OpenRouter free-model runtime."""

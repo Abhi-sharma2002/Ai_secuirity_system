@@ -2,8 +2,8 @@
 import argparse
 import json
 from pathlib import Path
-from app.core import registry as reg
-from app.ingestion import indexer
+from app.storage import registry as reg
+from app.rag import indexer
 from app.ingestion.lifecycle import _chunks
 from app.ingestion.parsers import PARSER_VERSION
 

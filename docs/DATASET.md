@@ -1,5 +1,16 @@
 # Dataset and ground truth · 18 October 2026
 
+Current approved semantic overlay (23 October2026):
+`backend/benchmark/revisions/phase12-approved-v1/rules.json` applies P12-01/02/03/04/06
+for evaluator review without changing frozen source/manifest/phase2 annotation
+bytes. See [approval record](reviews/PHASE12_APPROVAL_20261023.md) and active
+SCORING.md. Prior agent-only proposal/audit descriptions below retain their
+dated scope. P12-05 subsequently approved:separate legacy-e037-task-v2 applies to future
+E037 executions,with original legacy rows/grades preserved. Cross-chunk
+layout/exposure was inspected in the saved genuine audit;multi-chunk dependency
+remains unverified. User accepted the final set only as exposed comparison data;
+no untouched holdout or experiment freeze is claimed.
+
 19 October focused audit: see SEMANTICS_EXPOSURE_AUDIT.md and `revisions/semantics-review-v1/review.json`. The three flagged source/chunk layouts and pre-screen exposure are now inspected with real cached embeddings: case scope includes both components; global top-k over the full benchmark diagnostic omits every target terminal override. The terminal directive is self-contained, so dependency on combining chunks remains unproved. Development-12 and historical E037/E038 have explicit agent-only clarification proposals, not active relabeling or human approval. All six split-overlap groups were verified in actual source/question text; final remains exposed comparison data. Earlier pending-review descriptions below are historical context, not a claim that this inspection is still unperformed.
 
 Phase 2 preserves both existing datasets, all documents, IDs, labels, splits, formats and frozen hashes. Nothing was regenerated to meet an assumed count. These are synthetic policy/attack inputs, not real model results.

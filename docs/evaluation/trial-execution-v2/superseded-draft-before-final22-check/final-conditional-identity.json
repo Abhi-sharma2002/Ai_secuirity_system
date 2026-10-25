@@ -1,0 +1,187 @@
+{
+  "stage": "final",
+  "identity_inputs_sha256": "5acaf3ba3abf2223d61d4a8285c9e35acad11d01ae382a379459ce12486985b6",
+  "plan": {
+    "candidate_label": "azure-final-eligible28-contract-v2-stage-v2",
+    "case_ids": [
+      "final-01",
+      "final-02",
+      "final-03",
+      "final-04",
+      "final-05",
+      "final-06",
+      "final-07",
+      "final-08",
+      "final-09",
+      "final-10",
+      "final-11",
+      "final-12",
+      "final-13",
+      "final-14",
+      "final-15",
+      "final-17",
+      "final-18",
+      "final-19",
+      "final-20",
+      "final-21",
+      "final-22",
+      "final-23",
+      "final-24",
+      "final-25",
+      "final-26",
+      "final-27",
+      "final-29",
+      "final-30"
+    ],
+    "records": 84,
+    "max_calls": 112,
+    "max_new_units": 3584000,
+    "window_hours": 2,
+    "conditional": "Successful correction verification, completed reviewed development, explicit readiness/configuration acceptance",
+    "mode_orders": {
+      "final-01": [
+        "A",
+        "B",
+        "C"
+      ],
+      "final-02": [
+        "A",
+        "B",
+        "C"
+      ],
+      "final-03": [
+        "B",
+        "A",
+        "C"
+      ],
+      "final-04": [
+        "C",
+        "A",
+        "B"
+      ],
+      "final-05": [
+        "B",
+        "A",
+        "C"
+      ],
+      "final-06": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-07": [
+        "A",
+        "C",
+        "B"
+      ],
+      "final-08": [
+        "C",
+        "B",
+        "A"
+      ],
+      "final-09": [
+        "B",
+        "A",
+        "C"
+      ],
+      "final-10": [
+        "B",
+        "A",
+        "C"
+      ],
+      "final-11": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-12": [
+        "A",
+        "C",
+        "B"
+      ],
+      "final-13": [
+        "C",
+        "B",
+        "A"
+      ],
+      "final-14": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-15": [
+        "C",
+        "B",
+        "A"
+      ],
+      "final-17": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-18": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-19": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-20": [
+        "A",
+        "C",
+        "B"
+      ],
+      "final-21": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-22": [
+        "B",
+        "C",
+        "A"
+      ],
+      "final-23": [
+        "A",
+        "C",
+        "B"
+      ],
+      "final-24": [
+        "C",
+        "B",
+        "A"
+      ],
+      "final-25": [
+        "C",
+        "A",
+        "B"
+      ],
+      "final-26": [
+        "C",
+        "B",
+        "A"
+      ],
+      "final-27": [
+        "C",
+        "B",
+        "A"
+      ],
+      "final-29": [
+        "A",
+        "B",
+        "C"
+      ],
+      "final-30": [
+        "C",
+        "B",
+        "A"
+      ]
+    }
+  },
+  "actual_execution_identity": null,
+  "actual_case_evidence_bindings": null,
+  "status": "conditional candidate; not frozen or authorized"
+}

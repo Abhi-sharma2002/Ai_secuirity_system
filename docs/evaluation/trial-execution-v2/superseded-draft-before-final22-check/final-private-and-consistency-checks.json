@@ -1,0 +1,17 @@
+{
+  "root_env_saved_change_detected": false,
+  "all_azure_fields_present": true,
+  "effective_key_equals_root": true,
+  "effective_endpoint_equals_root": true,
+  "effective_deployment_equals_root": true,
+  "inherited_azure_overrides_present": false,
+  "credential_values_displayed": false,
+  "credential_edits_by_agent": false,
+  "provider_calls": 0,
+  "allowance_activation": false,
+  "services_restarted": false,
+  "planned_records_and_budget_arithmetic_passed": true,
+  "no_candidate_allocation_exists": true,
+  "historical_benign_approvals_preserved": 18,
+  "original_development07_ungraded": true
+}

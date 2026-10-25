@@ -1,0 +1,10 @@
+{
+  "18_approved_benign_records": true,
+  "18_bindings_match": true,
+  "recomputed_metrics_match": true,
+  "ASR_null_all_modes": true,
+  "quality_sum71": true,
+  "token_sum19854": true,
+  "coverage_sums36": true,
+  "seven_pngs": true
+}

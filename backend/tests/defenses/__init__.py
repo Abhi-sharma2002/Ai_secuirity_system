@@ -1,0 +1,1 @@
+"""Defenses responsibility tests."""

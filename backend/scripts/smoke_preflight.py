@@ -3,8 +3,9 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from pydantic import ValidationError
 from app.core.config import LiveSettings, settings
@@ -12,17 +13,18 @@ from app.evaluation import experiment as exp
 from app.llm.client import Approval
 
 CASE_IDS = ['development-01', 'development-02', 'development-07']
-RUN_ID = 'dev-smoke-20261020-v1'
 
 
 def local_status(config, workload):
     path=config.allowance_file
-    result={'provider':'groq','credentials_present':bool(config.api_key),
+    result={'provider':config.provider,'credentials_present':bool(config.api_key),
         'model_configured':bool(config.model),'live_enabled':config.enabled,'free_only':config.free_only,
-        'provider_sdk_installed':importlib.util.find_spec('langchain_groq') is not None,
+        'provider_transport_installed':importlib.util.find_spec('httpx') is not None,
         'allowance_path_configured':path is not None,'allowance_exists':bool(path and path.is_file()),
         'allowance_schema_valid':False,'allowance_model_matches':None,'allowance_not_expired':None,
         'allowance_free_confirmed':None,'allowance_capabilities_confirmed':None,
+        'allowance_provider_matches':None,'allowance_endpoint_matches':None,
+        'allowance_azure_terms_valid':None,
         'allowance_total_budget_sufficient':None,'allowance_remaining_budget_sufficient':None,
         'ledger_checked_read_only':False,'local_approval_checks_pass':False}
     if not result['allowance_exists']:return result
@@ -38,7 +40,19 @@ def local_status(config, workload):
         return result
     except Exception:
         result['allowance_error']='unreadable_or_invalid_json';return result
+    now=datetime.now(timezone.utc)
+    terms=bool(approved.deployment_model_version and approved.eligibility_evidence
+        and approved.eligibility_checked_at and approved.eligibility_checked_at.tzinfo is not None
+        and approved.activated_at and approved.activated_at.tzinfo is not None
+        and approved.eligibility_checked_at <= approved.activated_at <= now
+        and approved.expires_at == approved.activated_at+timedelta(hours=1)
+        and approved.entitlement_expiry is not None)
+    if isinstance(approved.entitlement_expiry,datetime):
+        terms=terms and approved.entitlement_expiry.tzinfo is not None and approved.entitlement_expiry>=approved.expires_at
     result.update(allowance_schema_valid=True,
+        allowance_provider_matches=approved.provider==config.provider=='azure_openai',
+        allowance_endpoint_matches=bool(config.base_url) and approved.approved_endpoint==config.base_url,
+        allowance_azure_terms_valid=terms,
         allowance_model_matches=bool(config.model) and approved.approved_model==config.model,
         allowance_not_expired=approved.expires_at.tzinfo is not None and approved.expires_at>datetime.now(timezone.utc),
         allowance_free_confirmed=approved.confirmed_free_promotional,
@@ -51,8 +65,9 @@ def local_status(config, workload):
             with sqlite3.connect(dbpath.as_uri()+'?mode=ro',uri=True) as db:
                 used=[json.loads(row[0]) for row in db.execute('SELECT data FROM calls WHERE allowance_id=?',(approved.allowance_id,))]
                 fingerprint=hashlib.sha256(approved.model_dump_json().encode()).hexdigest()
-                stopped=db.execute('SELECT stopped FROM allowance WHERE id=?',(fingerprint,)).fetchone()
-            quota_stopped=bool(stopped and stopped[0]) or any(row.get('error') in {'insufficient_quota','quota_or_rate_limit'} for row in used)
+                fingerprints={fingerprint,*(row.get('approval_fingerprint') for row in used)}
+                stopped=any(row[1] and row[0] in fingerprints for row in db.execute('SELECT id,stopped FROM allowance'))
+            quota_stopped=stopped or any(row.get('error') in {'insufficient_quota','quota_or_rate_limit'} for row in used)
         else:used=[];quota_stopped=False
         result.update(ledger_checked_read_only=True,allowance_quota_stopped=quota_stopped,
             allowance_remaining_budget_sufficient=not quota_stopped and
@@ -60,7 +75,8 @@ def local_status(config, workload):
                 sum(row.get('reservation',0) for row in used)+workload['conservative_reserved_tokens']<=approved.max_reserved_tokens)
     except Exception:result['ledger_error']='cannot_verify_cumulative_usage'
     result['local_approval_checks_pass']=all(result[k] is True for k in (
-        'allowance_schema_valid','allowance_model_matches','allowance_not_expired',
+        'allowance_schema_valid','allowance_provider_matches','allowance_endpoint_matches',
+        'allowance_azure_terms_valid','allowance_model_matches','allowance_not_expired',
         'allowance_free_confirmed','allowance_capabilities_confirmed',
         'allowance_total_budget_sufficient','allowance_remaining_budget_sufficient'))
     return result
@@ -68,13 +84,17 @@ def local_status(config, workload):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--run-id',help='Optional operator-proposed name; never creates or binds an experiment')
     args=p.parse_args()
+    if args.run_id and not re.fullmatch(r'[A-Za-z0-9_-]{1,80}',args.run_id):p.error('Invalid proposed run ID')
     workload=exp.plan('development',1,case_ids=CASE_IDS)
     config=LiveSettings.from_env()
     status=local_status(config,workload)
-    folder=exp.reg.ROOT/'experiments'/RUN_ID
+    folder=exp.reg.ROOT/'experiments'/args.run_id if args.run_id else None
     report={'provenance':{'author_role':'agent','human_approved':False,'live_calls':0},
-        'run_id':RUN_ID,'result_directory':str(folder),'fresh_result_directory':not folder.exists(),
+        'run_id':args.run_id,'result_directory':str(folder) if folder else None,
+        'fresh_result_directory':not folder.exists() if folder else None,
+        'execution_identity_bound':False,'activation_performed':False,
         'protocol':'paired','evidence_scope':'retrieved within each case fixture allowlist; not full corpus',
         'workload':workload,'status':status,'retrieval_settings':{'top_k':settings.top_k,
         'chunk_size':settings.chunk_size,'chunk_overlap':settings.chunk_overlap,'context_text_bytes':12000},

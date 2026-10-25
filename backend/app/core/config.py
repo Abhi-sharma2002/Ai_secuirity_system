@@ -6,6 +6,8 @@ from pathlib import Path
 from app.core.environment import resolve_path
 
 ROOT = Path(__file__).resolve().parents[2]
+OPENROUTER_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free'
+OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
 
 
 def path_setting(name: str, default: Path) -> Path:
@@ -29,15 +31,42 @@ class LiveSettings:
     model: str = field(repr=False)
     allowance_file: Path | None = None
     request_timeout_seconds: float = 30.0
+    provider: str = 'azure_openai'
+    base_url: str = ''
+    auth_mode: str = 'api-key'
+    reasoning_effort: str | None = None
 
     @classmethod
     def from_env(cls):
         free_only = boolean('FREE_ONLY', True)
         enabled = boolean('LIVE_LLM_ENABLED', False)
-        key = os.getenv('GROQ_API_KEY', '').strip()
-        model = os.getenv('GROQ_MODEL', '').strip()
-        if enabled and (not key or not model):
-            raise ValueError('Live mode requires backend GROQ_API_KEY and GROQ_MODEL')
+        provider = os.getenv('LLM_BACKEND', 'azure_openai').strip().lower()
+        if provider == 'azure_openai':
+            key = os.getenv('AZURE_OPENAI_API_KEY', '').strip()
+            model = os.getenv('AZURE_OPENAI_DEPLOYMENT', '').strip()
+            base_url = azure_base_url(os.getenv('AZURE_OPENAI_ENDPOINT', '').strip())
+            if enabled:
+                missing = [name for name, value in (
+                    ('AZURE_OPENAI_API_KEY', key), ('AZURE_OPENAI_ENDPOINT', base_url),
+                    ('AZURE_OPENAI_DEPLOYMENT', model)) if not value]
+                if missing:
+                    raise ValueError('Live Azure configuration missing: ' + ', '.join(missing))
+            auth_mode = 'api-key'
+            allowance_name = 'AZURE_OPENAI_ALLOWANCE_FILE'
+            allowance_default = '.private/azure_allowance.json'
+        elif provider == 'openrouter':
+            key = os.getenv('OPENROUTER_API_KEY', '').strip()
+            model = os.getenv('OPENROUTER_MODEL', OPENROUTER_MODEL).strip()
+            if model != OPENROUTER_MODEL:
+                raise ValueError(f'OPENROUTER_MODEL must be {OPENROUTER_MODEL}')
+            base_url = OPENROUTER_BASE_URL
+            if enabled and not key:
+                raise ValueError('Live OpenRouter configuration missing: OPENROUTER_API_KEY')
+            auth_mode = 'bearer'
+            allowance_name = 'OPENROUTER_ALLOWANCE_FILE'
+            allowance_default = '.private/openrouter_allowance.json'
+        else:
+            raise ValueError('LLM_BACKEND must be azure_openai or openrouter; historical providers are disabled')
         try:
             timeout = float(os.getenv('LLM_REQUEST_TIMEOUT_SECONDS', '30'))
             import math
@@ -45,9 +74,29 @@ class LiveSettings:
                 raise ValueError()
         except ValueError:
             raise ValueError('LLM_REQUEST_TIMEOUT_SECONDS must be finite and positive') from None
-        allowance = os.getenv('FREE_ALLOWANCE_FILE', '').strip()
+        allowance = os.getenv(allowance_name, allowance_default).strip()
         return cls(free_only, enabled, key, model,
-                   resolve_path(allowance) if allowance else None, timeout)
+                   resolve_path(allowance) if allowance else None, timeout, provider, base_url, auth_mode, None)
+
+
+def azure_base_url(endpoint: str) -> str:
+    """Accept Azure resource roots or the v1 base; never redirect keys elsewhere."""
+    if not endpoint:
+        return ''
+    from urllib.parse import urlsplit
+    try:
+        url = urlsplit(endpoint)
+        valid = (url.scheme == 'https' and url.hostname and not url.username and not url.password
+                 and not url.query and not url.fragment and url.port in (None, 443)
+                 and url.path.rstrip('/') in ('', '/openai/v1', '/openai/v1/responses', '/openai/v1/chat/completions')
+                 and any(url.hostname.endswith(suffix) for suffix in (
+                     '.openai.azure.com', '.services.ai.azure.com', '.cognitiveservices.azure.com',
+                     '.openai.azure.us', '.openai.azure.cn')))
+    except ValueError:
+        valid = False
+    if not valid:
+        raise ValueError('AZURE_OPENAI_ENDPOINT must be an HTTPS Azure resource root or /openai/v1 base, without credentials, query or deployment path')
+    return f'https://{url.hostname}/openai/v1'
 
 
 def integer(name: str, default: int, minimum: int = 1) -> int:

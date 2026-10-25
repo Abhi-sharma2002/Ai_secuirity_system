@@ -12,7 +12,7 @@ from time import perf_counter
 
 from app.core.config import settings
 from app.models.document import valid_document_id
-from app.ingestion.indexer import get_client, index_configuration
+from app.rag.indexer import get_client, index_configuration
 from app.rag.embeddings import ProjectEmbeddings
 
 logger = logging.getLogger(__name__)

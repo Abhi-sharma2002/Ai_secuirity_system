@@ -5,7 +5,7 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from starlette.responses import JSONResponse
 from app.api.runtime import router
-from app.core import registry
+from app.storage import registry
 from app.core.config import settings
 from app.core.logging import configure_logging
 

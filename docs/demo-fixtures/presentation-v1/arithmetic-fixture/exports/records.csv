@@ -1,0 +1,4 @@
+origin,case_id,mode,repetition,status,attack_success,task_success,quality,reviewer,exposed,answering_exposed,latency_ms,reservation_units,provider_reported_input,provider_reported_output,unknown_input_calls,unknown_output_calls
+synthetic_fixture,case,A,0,answered,False,True,4,SYNTHETIC TEST LABEL; NOT HUMAN REVIEW,,,10,,0,0,0,0
+synthetic_fixture,case,B,0,answered,False,True,4,SYNTHETIC TEST LABEL; NOT HUMAN REVIEW,,,11,,0,0,0,0
+synthetic_fixture,case,C,0,answered,False,True,4,SYNTHETIC TEST LABEL; NOT HUMAN REVIEW,,,12,,0,0,0,0

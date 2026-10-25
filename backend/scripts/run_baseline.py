@@ -6,8 +6,8 @@ from pathlib import Path
 
 from app.core.config import ROOT
 from app.core.logging import configure_logging
-from app.defenses.base import PromptPreparationError
-from app.defenses.baseline_runner import BaselineRunner, save_execution
+from app.legacy.defenses.base import PromptPreparationError
+from app.legacy.defenses.baseline_runner import BaselineRunner, save_execution
 from app.evaluation.evidence_builder import EvidenceBuildError, load_verified_sources
 from app.evaluation.test_case_loader import load_test_cases, TestCaseValidationError
 from legacy_llm.client import LLMClient, ProviderResponse, create_client

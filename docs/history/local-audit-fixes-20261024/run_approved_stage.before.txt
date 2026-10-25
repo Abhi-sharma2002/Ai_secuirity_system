@@ -1,0 +1,91 @@
+"""User-approved trial-only stages; no automatic final activation or retries."""
+import argparse,contextlib,json,os,hashlib,fcntl
+from datetime import datetime,timedelta,timezone
+from pathlib import Path
+from app.core.config import LiveSettings
+from app.storage import registry as reg
+from app.llm import client as live
+from app.evaluation import experiment as exp
+from app.rag import assistant
+ROOT=Path(__file__).resolve().parents[2]
+DEV='azure-development-08-12-stage-v1'
+FINAL='azure-final-eligible28-stage-v1'
+INTERACTIVE='azure-interactive-benign-stage-v1'
+
+
+def main(stage):
+    os.environ.update(LIVE_LLM_ENABLED='false',FREE_ONLY='true',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
+    config=LiveSettings.from_env()
+    proposal=json.loads((ROOT/'docs/evidence/consolidated-remaining-execution-proposal-v1.json').read_text())
+    key={'development_remaining':'development','final_exposed':'final','interactive':'interactive'}[stage]
+    plan=proposal['plans'][key];ids=plan.get('case_ids',[])
+    run_id={'development_remaining':DEV,'final_exposed':FINAL,'interactive':INTERACTIVE}[stage]
+    folder=reg.ROOT/('interactive' if stage=='interactive' else 'experiments')/run_id
+    receipt=ROOT/'.private'/(run_id+'-allowance.json')
+    if receipt.exists() or folder.exists():raise live.LiveBlocked('Stage already activated/attempted; no renewal or duplicate grant')
+    if stage=='final_exposed':
+        dev=reg.ROOT/'experiments'/DEV
+        state=json.loads((dev/'stage-summary.json').read_text())
+        rows=exp.saved_rows(dev,json.loads((dev/'experiment.json').read_text())['specification'])
+        if state['outcome']!='completed_review_pending' or len(rows)!=15 or any(r['response']['status'] not in exp.COMPLETED or not r['judgment'].get('reviewer') or type(r['judgment'].get('task_success')) is not bool or type(r['judgment'].get('attack_success')) is not bool for r in rows):
+            raise live.LiveBlocked('Final requires completed and genuinely reviewed development')
+    draft=json.loads((ROOT/'.private/azure_development07_diagnostic_receipt.DRAFT.json').read_text())
+    prepared=json.loads((ROOT/'docs/evidence/development-approval-preparation-v1/binding.json').read_text())
+    if (assistant.PROMPT_HASH!=prepared['prompt_hash'] or exp.digest(assistant.Answer.model_json_schema())!=prepared['settings']['answer_schema_sha256']
+            or exp.digest(assistant.Screening.model_json_schema())!=prepared['settings']['screening_schema_sha256']
+            or config.model!=draft['model'] or config.request_timeout_seconds!=30 or hashlib.sha256(config.base_url.encode()).hexdigest()!=draft['endpoint_sha256']
+            or hashlib.sha256((exp.DATASET/'annotations.json').read_bytes()).hexdigest()!=prepared['annotation_hash']
+            or exp.semantics.snapshot()!=prepared['semantic_rules']
+            or exp.digest(json.loads((exp.DATASET/'manifest.json').read_text()))!=prepared['dataset_hash']
+            or exp.digest(json.loads((exp.DATASET/'snapshot.json').read_text()))!=prepared['index_snapshot_hash']):
+        raise live.LiveBlocked('Prepared model/prompt/schema/evidence/settings drift')
+    now=datetime.now(timezone.utc);identity=exp.execution_identity()
+    a=live.Approval(provider='azure_openai',allowance_id=run_id,confirmed_free_promotional=True,
+        approved_model=config.model,approved_endpoint=config.base_url,deployment_model_version=draft['model_version'],
+        activated_at=now,expires_at=now+timedelta(hours=plan['proposed_window_hours']),max_calls=plan['max_calls'],max_reserved_tokens=plan['max_new_units'],
+        chat_completions_supported=True,structured_outputs_supported=True,max_output_tokens_supported=True,entitlement_expiry='unknown',eligibility_checked_at=now,
+        eligibility_evidence='User confirmed valid remaining Azure trial credits and enabled spending protection; repeated confirmation waived. Accepted user-reported facts, not independently verified balance. Trial credits only; no upgrade, spending-limit removal or out-of-pocket consent.',
+        confirmation_note='User attachment explicitly approves this exact staged scope, budget and window. Preserve historical provider stops. No forbidden payload retries, automatic repairs/fallbacks or probes. Final conditional on actual reviewed development; interactive separate.',
+        staged_scope=live.StagedScope(stage=stage,run_id=run_id,case_ids=ids,execution_identity_sha256=exp.digest(identity),
+            recovery_basis='Explicit staged authorization links original development07 failure and its provider-filter diagnostic; those stopped histories remain immutable. Only different eligible records or benign interactive use allowed.'))
+    with (reg.ROOT/'backend.lock').open('a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        with reg.connect() as db:
+            prior=[dict(r) for r in db.execute('SELECT * FROM allowance')]
+            old_calls={r['id']:hashlib.sha256(r['data'].encode()).hexdigest() for r in db.execute('SELECT id,data FROM calls')}
+            if db.execute('SELECT 1 FROM calls WHERE allowance_id=?',(run_id,)).fetchone():raise live.LiveBlocked('Existing cumulative usage')
+            # Only the documented original stop and confirmed provider-filter stops are recoverable.
+            allowed={'azure-development-12cases-20261023-v1','azure-development07-A-diagnostic-v1'}
+            for r in db.execute('SELECT allowance_id,data,status FROM calls'):
+                data=json.loads(r['data'])
+                if data.get('error') and (data.get('settings') or {}).get('provider')=='azure_openai' and r['allowance_id'] not in allowed:
+                    if not (stage=='interactive' and r['allowance_id']==DEV and (data.get('provider_error_code')=='content_filter' or (data.get('http_status')==200 and data.get('finish_reason')=='length' and data.get('response_validation_error')=='empty_content' and (data.get('usage') or {}).get('output_tokens')==700))):
+                        raise live.LiveBlocked('Additional unresolved provider stop outside linked recovery')
+        fd=os.open(receipt,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(fd,'w') as out:out.write(a.model_dump_json(indent=2))
+        folder.mkdir(parents=True,exist_ok=False)
+        (folder/'stage-binding.json').write_text(json.dumps({'scope':a.staged_scope.model_dump(),'identity':identity,'proposal':plan,'activated_at':now.isoformat(),'expires_at':a.expires_at.isoformat(),'excluded_cases':['development-07','final-16','final-28'],'original_provider_block_is_not_defense_success':True},indent=2))
+        summary={'stage':stage,'run_id':run_id,'outcome':'interactive_ready' if stage=='interactive' else 'in_progress','started_at':now.isoformat()}
+        try:
+            os.environ.update(AZURE_OPENAI_ALLOWANCE_FILE=str(receipt),LIVE_LLM_ENABLED='true')
+            live.approval()
+            if stage!='interactive':
+                with (folder/'console.log').open('x') as log,contextlib.redirect_stdout(log):exp.run(run_id,'development' if stage=='development_remaining' else 'final','paired',1,5,True,case_ids=ids)
+                summary['outcome']='completed_review_pending'
+        except BaseException as exc:
+            summary.update(outcome='stopped_no_retry',exception_type=type(exc).__name__)
+            with reg.connect() as db:
+                fingerprint=hashlib.sha256(a.model_dump_json().encode()).hexdigest()
+                db.execute('INSERT OR IGNORE INTO allowance VALUES(?,?,?,1)',(fingerprint,0,0));db.execute('UPDATE allowance SET stopped=1 WHERE id=?',(fingerprint,))
+        finally:
+            os.environ['LIVE_LLM_ENABLED']='false'
+            if stage!='interactive' and (folder/'experiment.json').exists() and not (folder/'review-template.json').exists():
+                with (folder/'offline-export.log').open('x') as log,contextlib.redirect_stdout(log):exp.report(folder)
+            rows=[json.loads(p.read_text()) for p in folder.glob('case-*.json')];calls=[c for r in rows for c in r['response'].get('calls',[])]
+            with reg.connect() as db:
+                preserved=all(dict(db.execute('SELECT * FROM allowance WHERE id=?',(r['id'],)).fetchone())==r for r in prior) and all(hashlib.sha256(db.execute('SELECT data FROM calls WHERE id=?',(rid,)).fetchone()['data'].encode()).hexdigest()==h for rid,h in old_calls.items())
+            summary.update(finished_at=datetime.now(timezone.utc).isoformat(),expires_at=a.expires_at.isoformat(),capacity=live.allowance_capacity(a),historical_accounting_preserved=preserved,recorded=len(rows),completed=sum(r['response']['status'] in exp.COMPLETED for r in rows),calls=len(calls),known_input=sum((c.get('usage') or {}).get('input_tokens',0) for c in calls),known_output=sum((c.get('usage') or {}).get('output_tokens',0) for c in calls),unknown_usage_calls=sum(c.get('usage') is None for c in calls),errors=[{'case':r['case_id'],'mode':r['mode'],'status':r['response']['status'],'error':r['response'].get('error'),'provider_code':(r['response'].get('calls') or [{}])[-1].get('provider_error_code')} for r in rows if r['response']['status'] not in exp.COMPLETED])
+            (folder/'stage-summary.json').write_text(json.dumps(summary,indent=2));print(json.dumps(summary))
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=['development_remaining','final_exposed','interactive']);main(p.parse_args().stage)

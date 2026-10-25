@@ -6,8 +6,8 @@ import tempfile
 from pathlib import Path
 from uuid import uuid4
 from fastapi.testclient import TestClient
-from app.core import registry as reg
-from app.ingestion import indexer
+from app.storage import registry as reg
+from app.rag import indexer
 from app.main import app
 
 

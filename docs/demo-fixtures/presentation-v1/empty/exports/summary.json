@@ -1,0 +1,627 @@
+{
+  "execution_identity": {
+    "experiment_id": "SYNTHETIC-PRESENTATION-FIXTURE",
+    "protocol": "paired",
+    "output_origin": "synthetic_fixture",
+    "workload": {
+      "case_attempts": 3
+    }
+  },
+  "review_packets": [],
+  "coverage": {
+    "partial": true,
+    "unreviewed": 0,
+    "uncertain": 0
+  },
+  "all_scheduled": {
+    "attempts": 3,
+    "recorded": 0,
+    "unscheduled": 3,
+    "operationally_completed": 0
+  },
+  "by_mode": {
+    "A": {
+      "scheduled_records": 0,
+      "operational_errors": 0,
+      "evaluable_operational": 0,
+      "outcomes": {},
+      "blocked": 0,
+      "partial_or_interrupted": 0,
+      "operational_by_status": {},
+      "attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_task_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "attacked_task_completion": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "exposed_attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_blocks": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_flags": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_screening_unavailable": 0,
+      "attack_not_exposed": 0,
+      "reviewed": 0,
+      "latency_ms": {
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "observed": 0,
+        "unknown": 0
+      },
+      "usage": {
+        "reported_input": 0,
+        "reported_output": 0,
+        "unknown_calls": 0,
+        "unknown_input_calls": 0,
+        "unknown_output_calls": 0
+      },
+      "quality": {
+        "graded": 0,
+        "mean": null,
+        "unknown": 0
+      },
+      "exposure_unknown": 0,
+      "by_subtype": {},
+      "by_channel": {},
+      "stage_calls": {},
+      "local_reservations": {
+        "known_units": 0,
+        "unknown_records": 0
+      },
+      "exposure": {
+        "initial_absent": 0,
+        "removed_before_answering": 0,
+        "removed_by_screening": 0,
+        "presented_to_answering": 0,
+        "answering_unknown": 0,
+        "direct_input_records": 0,
+        "followed": {
+          "successes": 0,
+          "denominator": 0,
+          "rate": null,
+          "unknown": 0
+        }
+      },
+      "injection_only": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "misinformation": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      }
+    },
+    "B": {
+      "scheduled_records": 0,
+      "operational_errors": 0,
+      "evaluable_operational": 0,
+      "outcomes": {},
+      "blocked": 0,
+      "partial_or_interrupted": 0,
+      "operational_by_status": {},
+      "attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_task_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "attacked_task_completion": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "exposed_attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_blocks": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_flags": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_screening_unavailable": 0,
+      "attack_not_exposed": 0,
+      "reviewed": 0,
+      "latency_ms": {
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "observed": 0,
+        "unknown": 0
+      },
+      "usage": {
+        "reported_input": 0,
+        "reported_output": 0,
+        "unknown_calls": 0,
+        "unknown_input_calls": 0,
+        "unknown_output_calls": 0
+      },
+      "quality": {
+        "graded": 0,
+        "mean": null,
+        "unknown": 0
+      },
+      "exposure_unknown": 0,
+      "by_subtype": {},
+      "by_channel": {},
+      "stage_calls": {},
+      "local_reservations": {
+        "known_units": 0,
+        "unknown_records": 0
+      },
+      "exposure": {
+        "initial_absent": 0,
+        "removed_before_answering": 0,
+        "removed_by_screening": 0,
+        "presented_to_answering": 0,
+        "answering_unknown": 0,
+        "direct_input_records": 0,
+        "followed": {
+          "successes": 0,
+          "denominator": 0,
+          "rate": null,
+          "unknown": 0
+        }
+      },
+      "injection_only": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "misinformation": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      }
+    },
+    "C": {
+      "scheduled_records": 0,
+      "operational_errors": 0,
+      "evaluable_operational": 0,
+      "outcomes": {},
+      "blocked": 0,
+      "partial_or_interrupted": 0,
+      "operational_by_status": {},
+      "attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_task_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "attacked_task_completion": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "exposed_attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_blocks": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_flags": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_screening_unavailable": 0,
+      "attack_not_exposed": 0,
+      "reviewed": 0,
+      "latency_ms": {
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "observed": 0,
+        "unknown": 0
+      },
+      "usage": {
+        "reported_input": 0,
+        "reported_output": 0,
+        "unknown_calls": 0,
+        "unknown_input_calls": 0,
+        "unknown_output_calls": 0
+      },
+      "quality": {
+        "graded": 0,
+        "mean": null,
+        "unknown": 0
+      },
+      "exposure_unknown": 0,
+      "by_subtype": {},
+      "by_channel": {},
+      "stage_calls": {},
+      "local_reservations": {
+        "known_units": 0,
+        "unknown_records": 0
+      },
+      "exposure": {
+        "initial_absent": 0,
+        "removed_before_answering": 0,
+        "removed_by_screening": 0,
+        "presented_to_answering": 0,
+        "answering_unknown": 0,
+        "direct_input_records": 0,
+        "followed": {
+          "successes": 0,
+          "denominator": 0,
+          "rate": null,
+          "unknown": 0
+        }
+      },
+      "injection_only": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "misinformation": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      }
+    }
+  },
+  "common_evaluable_pairs": 0,
+  "common_paired": {
+    "A": {
+      "scheduled_records": 0,
+      "operational_errors": 0,
+      "evaluable_operational": 0,
+      "outcomes": {},
+      "blocked": 0,
+      "partial_or_interrupted": 0,
+      "operational_by_status": {},
+      "attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_task_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "attacked_task_completion": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "exposed_attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_blocks": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_flags": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_screening_unavailable": 0,
+      "attack_not_exposed": 0,
+      "reviewed": 0,
+      "latency_ms": {
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "observed": 0,
+        "unknown": 0
+      },
+      "usage": {
+        "reported_input": 0,
+        "reported_output": 0,
+        "unknown_calls": 0,
+        "unknown_input_calls": 0,
+        "unknown_output_calls": 0
+      },
+      "quality": {
+        "graded": 0,
+        "mean": null,
+        "unknown": 0
+      },
+      "exposure_unknown": 0,
+      "by_subtype": {},
+      "by_channel": {},
+      "stage_calls": {},
+      "local_reservations": {
+        "known_units": 0,
+        "unknown_records": 0
+      },
+      "exposure": {
+        "initial_absent": 0,
+        "removed_before_answering": 0,
+        "removed_by_screening": 0,
+        "presented_to_answering": 0,
+        "answering_unknown": 0,
+        "direct_input_records": 0,
+        "followed": {
+          "successes": 0,
+          "denominator": 0,
+          "rate": null,
+          "unknown": 0
+        }
+      },
+      "injection_only": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "misinformation": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      }
+    },
+    "B": {
+      "scheduled_records": 0,
+      "operational_errors": 0,
+      "evaluable_operational": 0,
+      "outcomes": {},
+      "blocked": 0,
+      "partial_or_interrupted": 0,
+      "operational_by_status": {},
+      "attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_task_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "attacked_task_completion": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "exposed_attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_blocks": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_flags": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_screening_unavailable": 0,
+      "attack_not_exposed": 0,
+      "reviewed": 0,
+      "latency_ms": {
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "observed": 0,
+        "unknown": 0
+      },
+      "usage": {
+        "reported_input": 0,
+        "reported_output": 0,
+        "unknown_calls": 0,
+        "unknown_input_calls": 0,
+        "unknown_output_calls": 0
+      },
+      "quality": {
+        "graded": 0,
+        "mean": null,
+        "unknown": 0
+      },
+      "exposure_unknown": 0,
+      "by_subtype": {},
+      "by_channel": {},
+      "stage_calls": {},
+      "local_reservations": {
+        "known_units": 0,
+        "unknown_records": 0
+      },
+      "exposure": {
+        "initial_absent": 0,
+        "removed_before_answering": 0,
+        "removed_by_screening": 0,
+        "presented_to_answering": 0,
+        "answering_unknown": 0,
+        "direct_input_records": 0,
+        "followed": {
+          "successes": 0,
+          "denominator": 0,
+          "rate": null,
+          "unknown": 0
+        }
+      },
+      "injection_only": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "misinformation": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      }
+    },
+    "C": {
+      "scheduled_records": 0,
+      "operational_errors": 0,
+      "evaluable_operational": 0,
+      "outcomes": {},
+      "blocked": 0,
+      "partial_or_interrupted": 0,
+      "operational_by_status": {},
+      "attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_task_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "attacked_task_completion": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "exposed_attack_success": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "benign_blocks": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_flags": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "benign_screening_unavailable": 0,
+      "attack_not_exposed": 0,
+      "reviewed": 0,
+      "latency_ms": {
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "observed": 0,
+        "unknown": 0
+      },
+      "usage": {
+        "reported_input": 0,
+        "reported_output": 0,
+        "unknown_calls": 0,
+        "unknown_input_calls": 0,
+        "unknown_output_calls": 0
+      },
+      "quality": {
+        "graded": 0,
+        "mean": null,
+        "unknown": 0
+      },
+      "exposure_unknown": 0,
+      "by_subtype": {},
+      "by_channel": {},
+      "stage_calls": {},
+      "local_reservations": {
+        "known_units": 0,
+        "unknown_records": 0
+      },
+      "exposure": {
+        "initial_absent": 0,
+        "removed_before_answering": 0,
+        "removed_by_screening": 0,
+        "presented_to_answering": 0,
+        "answering_unknown": 0,
+        "direct_input_records": 0,
+        "followed": {
+          "successes": 0,
+          "denominator": 0,
+          "rate": null,
+          "unknown": 0
+        }
+      },
+      "injection_only": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      },
+      "misinformation": {
+        "successes": 0,
+        "denominator": 0,
+        "rate": null,
+        "unknown": 0
+      }
+    }
+  },
+  "limitations": "Handcrafted synthetic cases. Unknown grades and operational errors are not resisted attacks. Repeats are not independent cases. Paired latency excludes initial retrieval. No cost estimate without dated prices.",
+  "presentation": {
+    "label": "SYNTHETIC VERIFICATION ONLY \u2014 NOT SECURITY RESULTS",
+    "synthetic": true,
+    "review_complete": false
+  }
+}

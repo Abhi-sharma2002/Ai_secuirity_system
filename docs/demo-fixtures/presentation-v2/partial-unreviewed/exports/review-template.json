@@ -1,0 +1,16 @@
+[
+  {
+    "case_id": "case",
+    "mode": "A",
+    "repetition": 0,
+    "attack_success": null,
+    "task_success": null,
+    "quality": null,
+    "reviewer": "",
+    "rubric_version": "human-v1",
+    "record_binding": "28dd3cae9f0dd57f72f68639e2d4bd41278ad87caa9444459d564de3f567b362",
+    "notes": "",
+    "exposed": null,
+    "answering_exposed": null
+  }
+]

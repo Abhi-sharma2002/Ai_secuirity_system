@@ -1,4 +1,5 @@
 """Local single-user API. Benchmark mutation is intentionally CLI-only."""
+from app.rag import retrieval
 import hashlib
 import json
 import re
@@ -7,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.concurrency import run_in_threadpool
 from starlette.datastructures import UploadFile
-from app.core import registry as reg
+from app.storage import registry as reg
 from app.ingestion import lifecycle as life
 from app.llm.client import readiness
 from app.rag.assistant import respond
@@ -24,6 +25,7 @@ class Query(Strict):
     mode: Literal['A', 'B', 'C'] = 'B'
     collection: Literal['playground'] = 'playground'
     request_id: str = Field(pattern=r'^[a-zA-Z0-9-]{8,80}$')
+    external_processing_confirmed: bool = Field(default=False, strict=True)
 
 
 class Expected(Strict):
@@ -39,15 +41,35 @@ def health():
 def ready():
     with reg.connect() as db:
         db.execute('SELECT 1').fetchone()
-    from app.core.config import settings
+    from app.core.config import settings, LiveSettings
+    from app.llm import diagnostics
+    try:
+        config = LiveSettings.from_env()
+        required = ((
+            ('AZURE_OPENAI_API_KEY', config.api_key),
+            ('AZURE_OPENAI_ENDPOINT', config.base_url),
+            ('AZURE_OPENAI_DEPLOYMENT', config.model),
+        ) if config.provider == 'azure_openai' else (
+            ('OPENROUTER_API_KEY', config.api_key),
+            ('OPENROUTER_MODEL', config.model),
+        ))
+        configuration = {**diagnostics.provenance(config), 'credentials_present': bool(config.api_key),
+                         'provider': config.provider, 'model': config.model, 'base_url': config.base_url,
+                         'authentication_mode': config.auth_mode, 'free_only': config.free_only,
+                         'reasoning_effort': config.reasoning_effort,
+                         'request_timeout_seconds': config.request_timeout_seconds,
+                         'missing_configuration': [name for name, value in required if not value]}
+    except Exception:
+        configuration = {'credential_source': 'not captured', 'credential_matches_root_env': None}
     return {'registry': 'ready', 'embeddings': 'lazy-loaded on ingestion/retrieval', 'live': readiness(),
+            'configuration': configuration,
             'limits': {'max_file_bytes': settings.max_file_size, 'max_batch_files': 5, 'max_raw_storage_bytes': life.MAX_STORAGE, 'top_k': settings.top_k}}
 
 
 @router.get('/documents')
-def documents():
+def documents(include_deleted: bool = False):
     # Extracted text is returned as JSON; UI renders it as plain text.
-    return {'documents': life.list_documents()}
+    return {'documents': life.list_documents(include_deleted=include_deleted)}
 
 
 def translate(exc):
@@ -111,7 +133,7 @@ def status(version_id: str):
 
 @router.post('/search')
 def search(query: Query):
-    return life.search(query.question)
+    return retrieval.search(query.question)
 
 
 @router.post('/chat')
@@ -127,7 +149,29 @@ def chat(query: Query):
                 return json.loads(previous['result'])
             db.execute('INSERT INTO requests VALUES(?,?,?)', (query.request_id, fingerprint,
                 json.dumps({'status': 'interrupted_or_in_progress', 'error': 'This ID is reserved. Inspect call ledger before explicitly submitting a new request.'})))
-        result = respond(query.question, query.mode, run_context={'client_request_id': query.request_id})
+        result = respond(query.question, query.mode, run_context={
+            'client_request_id': query.request_id,
+            'external_processing_confirmed': query.external_processing_confirmed,
+        })
+        with reg.connect() as db:
+            db.execute('UPDATE requests SET result=? WHERE id=?', (json.dumps(result), query.request_id))
+        return result
+
+
+@router.post('/compare')
+def compare_query(query: Query):
+    from app.rag.comparison import compare
+    fingerprint = hashlib.sha256(('benign-compare-v1:' + query.model_dump_json(exclude={'request_id'})).encode()).hexdigest()
+    with reg.LOCK:
+        with reg.connect() as db:
+            previous = db.execute('SELECT * FROM requests WHERE id=?', (query.request_id,)).fetchone()
+            if previous:
+                if previous['fingerprint'] != fingerprint:
+                    raise HTTPException(409, 'Request ID already used with different input')
+                return json.loads(previous['result'])
+            db.execute('INSERT INTO requests VALUES(?,?,?)', (query.request_id, fingerprint,
+                json.dumps({'status':'interrupted_or_in_progress','error':'Comparison ID reserved. No automatic replay.'})))
+        result = compare(query.question, query.request_id)
         with reg.connect() as db:
             db.execute('UPDATE requests SET result=? WHERE id=?', (json.dumps(result), query.request_id))
         return result
@@ -136,7 +180,7 @@ def chat(query: Query):
 @router.get('/results')
 def results():
     root = reg.ROOT / 'experiments'
-    return {'runs': [p.name for p in root.iterdir() if p.is_dir()] if root.exists() else []}
+    return {'runs': [p.name for p in root.iterdir() if p.is_dir() and (p/'experiment.json').is_file()] if root.exists() else []}
 
 
 @router.get('/results/{run_id}')
@@ -149,3 +193,48 @@ def result(run_id: str):
     return {'experiment': json.loads((folder / 'experiment.json').read_text()),
             'results': [json.loads(p.read_text()) for p in sorted(folder.glob('case-*.json'))],
             'summary': json.loads((folder / 'summary.json').read_text()) if (folder / 'summary.json').exists() else None}
+
+
+RESULT_ARTIFACTS = frozenset({
+    'records.csv', 'records.json', 'comparison.csv', 'comparison.json',
+    'review-template.json', 'review-packets.json', 'operational-summary.json',
+    'asr.png', 'exposed_asr.png', 'benign_task_success.png',
+    'benign_false_flags.png', 'benign_false_blocks.png', 'quality.png', 'latency.png'})
+
+
+@router.get('/results/{run_id}/artifacts/{artifact}')
+def result_artifact(run_id: str, artifact: str):
+    from starlette.responses import FileResponse
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,80}', run_id) or artifact not in RESULT_ARTIFACTS:
+        raise HTTPException(404, 'Unknown result artifact')
+    folder = reg.ROOT / 'experiments' / run_id
+    path = folder / artifact
+    if (folder.is_symlink() or not (folder / 'experiment.json').is_file() or not path.is_file()
+            or path.is_symlink() or not path.resolve().is_relative_to(folder.resolve())):
+        raise HTTPException(404, 'Result artifact unavailable')
+    media = 'image/png' if artifact.endswith('.png') else 'application/json' if artifact.endswith('.json') else 'text/csv'
+    return FileResponse(path, media_type=media, filename=artifact)
+
+
+@router.get('/diagnostics')
+def diagnostics_list():
+    folder=reg.ROOT/'diagnostics'
+    return {'diagnostics':sorted(p.name for p in folder.iterdir()
+        if p.is_dir() and not p.is_symlink() and (p/'operational-summary.json').is_file()) if folder.exists() else []}
+
+
+@router.get('/diagnostics/{diagnostic_id}')
+def diagnostic_summary(diagnostic_id: str):
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,100}',diagnostic_id):
+        raise HTTPException(404,'Unknown diagnostic')
+    folder=reg.ROOT/'diagnostics'/diagnostic_id
+    path=folder/'operational-summary.json'
+    if folder.is_symlink() or path.is_symlink() or not path.is_file():
+        raise HTTPException(404,'Unknown diagnostic')
+    saved=json.loads(path.read_text())
+    # Return only the normal sanitized operational summary, never bindings/receipts.
+    allowed={'outcome','attempts','diagnostics','remaining','expires_at','parent_stop_preserved',
+             'historical_accounting_unchanged','parent_receipt_unchanged',
+             'original_evaluation_artifacts_unchanged','live_disabled'}
+    return {'label':'Separate provider diagnostic; not an evaluation grade',
+            'summary':{k:v for k,v in saved.items() if k in allowed}}

@@ -1,0 +1,50 @@
+"""Scoped development permission; synthetic transports/isolated ledgers only."""
+from datetime import timedelta
+import os
+import unittest
+from unittest.mock import patch
+from pydantic import ValidationError
+from backend.tests.llm import test_paid_azure_test as paid_fixtures
+from backend.tests.llm import test_azure_openai as fixtures
+from app.llm import client as live
+
+class DevelopmentScopeTests(unittest.TestCase):
+    def receipt(self,a):
+        return paid_fixtures.PaidAzureTests().paid(a)|{'max_calls':48,'max_reserved_tokens':1536000,
+            'expires_at':a.activated_at+timedelta(hours=2),
+            'development_scope':{'run_id':'SYNTHETIC-development','case_ids':[f'development-{n:02d}' for n in range(1,13)],
+                'execution_identity_sha256':'a'*64,'preparation_binding_sha256':'b'*64}}
+
+    def test_scope_window_limits_and_legacy_serialization(self):
+        with fixtures.AzureTests().session() as (_,a,_):
+            values=self.receipt(a);self.assertIsNotNone(live.Approval(**values).development_scope)
+            self.assertNotIn('development_scope',a.model_dump())
+            for change in ({'max_calls':49},{'max_reserved_tokens':1536001},{'expires_at':a.expires_at},
+                           {'paid_azure_test_authorized':False},
+                           {'development_scope':values['development_scope']|{'case_ids':['final-01']}},
+                           {'development_scope':None}):
+                with self.subTest(change=change),self.assertRaises(ValidationError):live.Approval(**(values|change))
+
+    def test_scope_blocks_ask_final_wrong_mode_and_duplicate_reservation(self):
+        with fixtures.AzureTests().session() as (requests,a,path),patch.dict(os.environ,{'FREE_ONLY':'false'}):
+            path.write_text(live.Approval(**self.receipt(a)).model_dump_json())
+            context={'experiment_id':'SYNTHETIC-development','case_id':'development-01','mode':'A','repetition':0}
+            for metadata in ({},context|{'case_id':'final-01'},context|{'experiment_id':'other'},context|{'repetition':1}):
+                with self.assertRaises(live.LiveBlocked):live.reserve(1,32000,metadata)
+            live.reserve(1,32000,context)
+            with self.assertRaises(live.LiveBlocked):live.reserve(1,32000,context)
+            self.assertEqual(live.readiness()['remaining_calls'],47)
+            self.assertEqual(requests,[])
+
+    def test_evaluator_rejects_wrong_scope_or_execution_identity_before_loading(self):
+        from app.evaluation import experiment as exp
+        with fixtures.AzureTests().session() as (_,a,_):
+            receipt=live.Approval(**self.receipt(a))
+            estimate={'selected_case_ids':receipt.development_scope.case_ids,
+                      'maximum_api_calls_without_retries':48,'conservative_reserved_tokens':1536000}
+            with patch.object(exp,'approval',return_value=receipt),patch.object(exp,'plan',return_value=estimate), \
+                 patch.object(exp,'execution_identity',return_value={}),patch.object(exp,'load',side_effect=AssertionError('Must block before loading')):
+                for run,split,seed in [('wrong','development',5),('SYNTHETIC-development','final',5),
+                                       ('SYNTHETIC-development','development',42),('SYNTHETIC-development','development',5)]:
+                    with self.subTest(run=run,split=split,seed=seed),self.assertRaises(live.LiveBlocked):
+                        exp.run(run,split,'paired',1,seed,True)

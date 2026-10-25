@@ -1,0 +1,1 @@
+"""Storage responsibility tests."""

@@ -1,0 +1,154 @@
+## Current website implementation and handover
+
+See [current17-phase status, seven deliverables and verified website](END_TO_END_HANDOVER_20261023.md).
+Actual saved-result downloads/charts and operational explanations implemented;
+no provider calls or accounting changes. Local website verified, Ask disabled
+by stopped development authorization. Representative attack evaluation and
+human review remain incomplete. Earlier dated statuses below are historical.
+
+# Active A/B/C implementation and completion · 23 October 2026
+
+A/B/C have working code in the current application. They are not implemented by
+filling the empty legacy screening module, and no duplicate defense was added.
+Their structure,wire construction and failure routing are offline verified;
+current Azure model behavior and defense effectiveness remain unmeasured.
+
+## Actual execution path
+
+`frontend/streamlit_app.py` mode selectbox/form → `api()` POST `/chat` →
+`backend/app/api/runtime.py:Query/chat` → `backend/app/rag/assistant.py:respond` →
+`backend/app/ingestion/lifecycle.py:search` (or saved paired initial retrieval) →
+`assistant.messages` / screening prompt → `backend/app/llm/client.py:reserve/call`
+→ `backend/app/llm/azure_openai.py:generate` → local schema/reference validation →
+plain-text answer/source display in the frontend.
+
+| Required behavior | Actual file/function | Implementation and verification |
+|---|---|---|
+| Mode selection and validated backend input | frontend/streamlit_app.py selectbox/form/api;api/runtime.py Query/chat | A/B/C explicit;Literal validation;idempotent request records prevent duplicate submissions;readiness disables unfunded modes |
+| Actual retrieval | ingestion/lifecycle.py search/snapshot;rag/retriever.py DocumentRetriever | Active immutable versions,real pinned CPU/Chroma,scope/top-k/byte bounds;reuse11-checkpoint actual local workflow and exposure audit |
+| A baseline | rag/assistant.py GROUND,messages,respond(mode='A') | Standard grounding,abstention,conflicts,citations and application policy;no dedicated SEPARATION or SCREEN invocation. A is not deliberately stripped of all application rules |
+| B separation | rag/assistant.py SEPARATION,messages,respond(mode='B') | Fixed trusted application policy;question and full original sources JSON-encoded into user content;document instructions/metadata are evidence,not authority |
+| Actual privileged Azure messages | llm/client.py call;llm/azure_openai.py generate | Combines only application system/developer messages into privileged system content;question/sources remain user. Role-like text,filenames,delimiters and metadata cannot create message roles |
+| C privileged screen | rag/assistant.py SCREEN,respond(mode='C') | Fixed screening instructions plus untrusted question/source JSON;strict schema and one separately reserved screening call |
+| C schema/decision validation | rag/assistant.py Screening,unique_decision_entries;llm/client.py _unique_screening_object | Missing/wrong/extra fields,unknown categories/IDs,duplicate JSON keys/IDs/reasons and malformed decisions fail closed;no invented replacement sources permitted |
+| C retained evidence | rag/assistant.py respond | Ordered filtering of original hit objects by validated IDs;candidate_evidence and actual supplied_evidence/snapshot/omissions remain separate and unchanged |
+| C then B | rag/assistant.py respond → messages('C') | Same GROUND+SEPARATION as B on retained original evidence. Question block/all evidence removed skip generation;errors never invoke unscreened fallback |
+| Final response/source checks | rag/assistant.py Answer,usable_answer_text,respond | Nonblank answer content,strict status/field types,known retained source IDs and required citations for answered/conflict;semantic support remains human review |
+| Accounting/error boundary | llm/client.py approval,reserve,call,allowance_capacity | Azure-only gate,exact deployment/endpoint/eligibility/window/capabilities,previous receipt stop flags,cumulative reservations,no retries/refunds/fallback |
+| Safe display/diagnostics | frontend/streamlit_app.py;llm/diagnostics.py | Plain text/JSON only;reason categories never execute policy;errors redact credentials and reject unexpected destinations |
+| Gold isolation | evaluation/experiment.py prepare/run;dataset sidecars | Runtime evidence excludes gold/attack labels/scoring annotations;Phase7/8 sentinel tests inspect real in-memory Azure wire payloads |
+
+B does not detect attacks deterministically or guarantee model obedience. C's
+categorical reasons are untrusted model output,not calibrated probabilities or
+instructions. The approved screening contract is a sparse exclusion list:an
+omitted ID means retain. No new reason/flag semantic classifier rule was invented
+(such as treating a reason category alone as an extra exclusion). All strict
+schema/reference consistency requirements remain enforced.
+
+## Why the files open in the IDE differ
+
+`app/defenses/instruction_separation.py` and its runner are historical fixed-context
+implementations retained for legacy regression/E037. They are not called by the
+current UI/API. `app/defenses/screening.py` was an unused placeholder and now
+explicitly points to the real implementation. No output-screening fourth defense
+was added. Historical NVIDIA transport source remains retained,not routed;tests
+still bind all application source to future execution identity. Old provider
+approval formats remain readable solely to preserve fingerprints/history.
+
+## Demonstrated defects fixed in this task
+
+1. A structurally valid JSON answer could contain empty/whitespace-only text and
+   be marked answered. `Answer.usable_answer_text` now rejects it locally without
+   altering the Azure wire schema,normalizing evidence or inventing a response.
+   Usage and32k/64k reservations remain recorded;the route is operational_error.
+2. smoke_preflight reported Groq/required its SDK and could accept historical
+   approval terms for an Azure workload. It now checks httpx and Azure provider,
+   endpoint,model/version,eligibility,activation/expiry and entitlement terms.
+3. Preflight checked only the current receipt stop flag. It now checks old receipt
+   fingerprints linked by the unchanged allowance ID,matching live accounting.
+   SQLite is opened mode=ro;no allowance or ledger mutation occurs.
+4. Active diagnostic fallback could label a retired Groq destination acceptable
+   even when Azure was expected. It now requires the configured destination;
+   unexpected destinations retain only safe empty metadata.
+5. Contradictory reason metadata (`none` combined with a concrete reason) is
+   rejected before generation. This is internal decision consistency,not a
+   reason-to-flag classification rule;no source or question is newly classified.
+6. Retired credential bookkeeping is no longer consulted by active provenance.
+   Legacy .env values remain untouched. The two unused Groq SDK pins moved to
+   backend/historical_tests/requirements.txt;no installed packages were removed.
+7. Preflight no longer assigns a hardcoded old provider run name. Without an
+   explicitly proposed --run-id it leaves that field unset and binds no identity.
+
+Original changed helper/test/dependency/environment/diagnostic bytes are archived
+under docs/history/runtime_completion_20261023/. Existing unrelated work and
+historical reports/results/grades remain intact.
+
+## Exact offline verification
+
+Pre-change new regressions:4 test methods,12 failing subtests (empty A/B/C answers,
+stale provider/terms and earlier-receipt stop behavior). Preserved log:
+`evidence/runtime-completion-before-v1.log`. No failures were hidden or skipped. A separate pre-change contradictory-reason
+check failed2 subtests (runtime-completion-inconsistent-before-v1.log);the fix
+and11 C regressions passed afterward.
+The active cumulative-budget fixture was migrated from Groq to fully explicit
+synthetic Azure terms;historical-provider rejection is separately covered.
+
+| Focused run | Result |
+|---|---|
+| Runtime regressions + smoke planning + Azure wire/gate + Phase7 B + Phase8 C |43 tests passed in8.624s |
+| Environment/provenance + retired-credential isolation |13 tests passed in1.032s |
+| Destination redaction/routing follow-up |7 tests passed in0.636s |
+| Preflight CLI no assigned identity |1 test passed in0.004s |
+| Contradictory reason metadata + C routing follow-up |12 tests passed in3.498s |
+| Launcher |run_app.py --check exit0;no services started |
+| Dependencies |21/21 active pins match;two historical pins separately preserved |
+
+All provider responses are labeled fictional transport fixtures with sockets
+blocked and disposable SQLite/approval state. These are control-flow checks,
+not model-resistance or screening-accuracy evidence. Logs are under docs/evidence/. The five passing runs total76 test executions
+(59 unique methods;affected diagnostics/C checks intentionally overlap).
+No full regression,ingestion/retrieval rerun,download,service restart,credential
+edit,activation or real provider request occurred.
+
+Reuse the completed11-checkpoint workflow,19 inventory checks,six P12 approvals,
+legacy-e037-task-v2,metric arithmetic and22 unique reporting/review checks from
+the previous handoff. CSV/JSON/seven charts/technical report/demo/setup are already
+implemented;their synthetic verification remains outside genuine experiments.
+
+## Remaining live/human gates
+
+The17-phase statuses remain6 Complete,8 Partial,1 Blocked,2 Not started,0 Unknown.
+No live-dependent phase becomes complete from these tests. See current
+ASSIGNMENT_HANDOFF_20261023.md and the DRAFT controlled plan. Actual Azure facts,
+account approval,bounded baseline/paired integration,real evaluation,human review
+and empirical result/demo completion remain deferred. No Azure input is requested
+in this task and no execution identity is bound.
+
+The draft's final3-repetition workload (11,520,000 units) also exceeds the existing
+single-approval schema ceiling of10,000,000 units. The draft already requires a
+viable authorized capacity/window strategy;this confirms that it cannot be used
+as one allowance/job as written. A single final pass is120 maximum calls and
+3,840,000 units. Do not automatically increase limits,split final subsets,renew
+windows or pool runs to evade that guard. Resolve the authorized execution strategy
+when binding the full evaluation. The five-call integration is unaffected.
+
+## Exact commands retained
+
+```bash
+PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ANONYMIZED_TELEMETRY=false .venv/bin/python -B -m unittest backend.tests.test_runtime_completion.RuntimeCompletionTests backend.tests.test_smoke_preflight.SmokePlanningTests backend.tests.test_azure_openai.AzureTests backend.tests.test_phase7_separation backend.tests.test_phase8_screening -v
+PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ANONYMIZED_TELEMETRY=false .venv/bin/python -B -m unittest backend.tests.test_environment backend.tests.test_provider_diagnostics backend.tests.test_runtime_completion.RuntimeCompletionTests.test_retired_credentials_are_not_consulted_for_active_diagnostics -v
+PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python -B -m unittest backend.tests.test_provider_diagnostics backend.tests.test_runtime_completion.RuntimeCompletionTests.test_retired_destination_cannot_pass_azure_diagnostics -v
+PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python -B -m unittest backend.tests.test_runtime_completion.RuntimeCompletionTests.test_preflight_cli_does_not_assign_historical_run_identity -v
+PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python -B -m unittest backend.tests.test_runtime_completion.RuntimeCompletionTests.test_contradictory_reason_metadata_fails_closed backend.tests.test_phase8_screening -v
+.venv/bin/python run_app.py --check
+```
+
+These lines identify focused suites;the first recorded43-test run preceded the
+three later regression methods. Running it now would also include those methods;
+use the timestamped logs for the exact historical counts. No full suite is needed.
+
+Preservation and source identities: `evidence/runtime-completion-preservation-v1.json`
+records467 existing protected files unchanged,10 source syntax checks,76 passing
+test executions/59 unique methods,21 matching active dependency pins,and no
+provider,accounting,credential,service or live changes. These source hashes are
+verification provenance,not a bound Azure execution identity.

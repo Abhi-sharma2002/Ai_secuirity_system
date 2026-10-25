@@ -1,0 +1,10 @@
+{
+  "specification": {
+    "experiment_id": "SYNTHETIC-PRESENTATION-FIXTURE",
+    "protocol": "paired",
+    "output_origin": "synthetic_fixture",
+    "workload": {
+      "case_attempts": 3
+    }
+  }
+}

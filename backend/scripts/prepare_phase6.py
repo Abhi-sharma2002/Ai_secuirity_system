@@ -12,7 +12,8 @@ from unittest.mock import patch
 from app.core.config import LiveSettings, settings
 from app.evaluation import experiment as exp
 from app.evaluation.dataset import Manifest, Annotations
-from app.ingestion import indexer, parsers
+from app.rag import indexer
+from app.ingestion import parsers
 from app.llm import client as live
 from app.rag import assistant
 from scripts.smoke_preflight import local_status

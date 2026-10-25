@@ -1,0 +1,9 @@
+{
+  "authorization_basis": "Current user explicitly approves proposed development-02 judgments for A/B/C. Prior development-01 approvals remain unchanged; no other case was graded in this batch. C false positive No and citation support Pass recorded in notes because the importer has no separate fields for them.",
+  "reviewed_records": 3,
+  "response_and_evidence_preserved": true,
+  "other_case_records_unchanged": true,
+  "accounting_unchanged": true,
+  "development07_ungraded": true,
+  "original_case_backups": "docs/reviews/development-02-human-approval-v1"
+}

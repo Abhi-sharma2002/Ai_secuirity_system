@@ -3,7 +3,7 @@ from langchain_core.runnables import RunnableLambda, RunnableSequence
 
 from app.core.config import settings
 from app.ingestion.chunker import split_documents
-from app.ingestion.indexer import index_documents
+from app.rag.indexer import index_documents
 
 
 def build_ingestion_pipeline(

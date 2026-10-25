@@ -1,5 +1,19 @@
 # Decisions and compatibility · 16 October 2026
 
+## Current decision · Azure only
+
+The active shared client routes only to `app/llm/azure_openai.py`: Azure v1 Chat
+Completions, actual deployment name, API-key header, strict JSON schema,
+max_completion_tokens700, temperature1, timeout30s and zero retries/redirects or
+provider fallback. Azure has a separate approval bound to endpoint and deployment.
+The root private environment is preserved and live remains disabled. See
+[AZURE_OPENAI.md](AZURE_OPENAI.md) and [ROADMAP_STATUS.md](ROADMAP_STATUS.md).
+
+## Historical decision chronology (superseded provider choices)
+
+The entries below retain the original engineering history. Statements such as
+“now” and “current” in those dated entries refer to their date, not active routing.
+
 - Preserve existing SentenceTransformer all-MiniLM-L6-v2 revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41`, CPU, 384 dimensions, unit normalization, Chroma cosine distance. Model card identifies Apache-2.0 and English; ordinary Unicode filenames do not imply multilingual retrieval. Long inputs are truncated by the embedding tokenizer; chunk preservation does not guarantee full semantic exposure. [Model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
 - Retain custom LangChain Embeddings and existing verified Chroma writer rather than introduce another store. Each immutable upload version has a content/configuration-named Chroma collection; SQLite provides the logical playground scope and active pointers. Registry activation is separate from vector writes; orphan indices remain invisible and explicit maintenance removes them. No cross-store transaction claim.
 - Actual pypdf 6.20.1 and python-docx 1.2.0 APIs were inspected through their official documentation. PDF text is not OCR; empty pages cause conservative review when other pages contain text. DOCX order uses iter_inner_content; paragraphs/tables/headers/footers are supported, not complete layout/field/revision fidelity. External relationships are not fetched. [pypdf extraction](https://pypdf.readthedocs.io/en/stable/user/extract-text.html), [DOCX API](https://python-docx.readthedocs.io/en/latest/api/document.html).
