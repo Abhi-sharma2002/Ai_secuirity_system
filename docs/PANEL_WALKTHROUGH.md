@@ -107,4 +107,4 @@ check actual remaining capacity/expiry before demonstration. No automatic demo
 request is made. Do not resend any prohibited payload or benchmark from Ask.
 
 
-Organization update (24 October 2026): see [current runtime map](architecture/RUNTIME_MAP.md) and [refactor verification](architecture/REFACTOR_20261024.md). Source paths/identities changed; prompts, schemas, saved results and accounting were preserved. No new live or security evaluation result is implied.
+Organization update (24 October 2026): see [current runtime map](architecture/RUNTIME_MAP.md) and [refactor verification](../archive/docs/architecture/REFACTOR_20261024.md). Source paths/identities changed; prompts, schemas, saved results and accounting were preserved. No new live or security evaluation result is implied.

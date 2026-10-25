@@ -5,7 +5,9 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 
+from scripts import validate_v3 as validator
 from scripts.validate_v3 import DATASET, validate
 
 
@@ -31,6 +33,32 @@ class V3ValidationTests(unittest.TestCase):
         self.assertEqual(report['channels']['direct'], 5)
         self.assertEqual(report['subtypes']['misinformation'], 4)
         self.assertTrue(report['original_benchmark_unchanged'])
+
+    def original_without_runtime_snapshot(self):
+        source = self.root.parent / 'original'
+        shutil.copytree(validator.SOURCE, source)
+        snapshot = source / 'snapshot.json'
+        if snapshot.exists():
+            snapshot.rename(self.root.parent / 'preserved-original-snapshot.json')
+        return source
+
+    def test_fresh_checkout_uses_identical_preserved_snapshot_only_when_missing(self):
+        source = self.original_without_runtime_snapshot()
+        with patch.object(validator, 'SOURCE', source):
+            self.assertTrue(validate(self.root)['original_benchmark_unchanged'])
+        self.assertFalse((source / 'snapshot.json').exists())
+
+    def test_preserved_snapshot_cannot_hide_changed_original_snapshot(self):
+        source = self.original_without_runtime_snapshot()
+        (source / 'snapshot.json').write_text('Synthetic changed original')
+        with patch.object(validator, 'SOURCE', source), self.assertRaisesRegex(ValueError, 'Original benchmark changed'):
+            validate(self.root)
+
+    def test_fresh_checkout_rejects_changed_preserved_snapshot(self):
+        source = self.original_without_runtime_snapshot()
+        (self.root / 'snapshot.json').write_text('Synthetic changed preserved copy')
+        with patch.object(validator, 'SOURCE', source), self.assertRaisesRegex(ValueError, 'Original benchmark changed'):
+            validate(self.root)
 
     def test_missing_keywords_rejected(self):
         self.case('development-01')['expected_keywords'] = []

@@ -1,6 +1,6 @@
 ## Current DEVELOPMENT execution · 23 October 2026
 
-[Actual stopped development run](AZURE_DEVELOPMENT_EXECUTION_20261023.md):18/36 records operationally
+[Actual stopped development run](../archive/docs/AZURE_DEVELOPMENT_EXECUTION_20261023.md):18/36 records operationally
 completed,1 HTTP400 failure on development-07 A,17 records not executed.
 25 provider attempts;19854 known reported tokens plus1 unknown-usage call.
 Used800000 local units;23 calls/736000 units unspent but STOPPED and unusable.
@@ -14,7 +14,7 @@ Earlier dated states below remain history.
 
 ## Current paired Azure integration · 23 October 2026
 
-[Actual paired A/B/C result](AZURE_PAIRED_INTEGRATION_RESULT_20261023.md): development-02 completed with4 real
+[Actual paired A/B/C result](../archive/docs/AZURE_PAIRED_INTEGRATION_RESULT_20261023.md): development-02 completed with4 real
 HTTP200 attempts, source-supported Friday answers in A/B/C, valid clear C
 screening and identical original/retained evidence. No operational defect or
 retry. Original integration allowance exhausted:0 calls/0 units; unchanged expiry
@@ -23,7 +23,7 @@ Roadmap Phase11 and checklist Phase9 local workflow/live integration are complet
 for this benign integration case; representative attack evaluation and human
 review remain pending. No defense-effectiveness claim is made.
 
-See [separate development approval package](DEVELOPMENT_EVALUATION_APPROVAL_20261023.md).
+See [separate development approval package](../archive/docs/DEVELOPMENT_EVALUATION_APPROVAL_20261023.md).
 12 cases/36 mode records need at most48 attempts/1536000 units under a new,
 separately scoped approval/policy. Actual model/code/evidence identities bound in
 preparation only; no benchmark executed or execution freeze invented. Seven
@@ -169,4 +169,4 @@ services merely to inspect this implementation;changes load on the next authoriz
 start. Historical files/rules/usage remain intact.
 
 
-Organization update (24 October 2026): see [current runtime map](architecture/RUNTIME_MAP.md) and [refactor verification](architecture/REFACTOR_20261024.md). Source paths/identities changed; prompts, schemas, saved results and accounting were preserved. No new live or security evaluation result is implied.
+Organization update (24 October 2026): see [current runtime map](architecture/RUNTIME_MAP.md) and [refactor verification](../archive/docs/architecture/REFACTOR_20261024.md). Source paths/identities changed; prompts, schemas, saved results and accounting were preserved. No new live or security evaluation result is implied.

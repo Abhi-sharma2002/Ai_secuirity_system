@@ -98,4 +98,4 @@ authoritative. Upload a playground document before asking a source question.
 Default no-flag launch stays live-disabled. Expired receipts are not renewed.
 
 
-Organization update (24 October 2026): see [current runtime map](architecture/RUNTIME_MAP.md) and [refactor verification](architecture/REFACTOR_20261024.md). Source paths/identities changed; prompts, schemas, saved results and accounting were preserved. No new live or security evaluation result is implied.
+Organization update (24 October 2026): see [current runtime map](architecture/RUNTIME_MAP.md) and [refactor verification](../archive/docs/architecture/REFACTOR_20261024.md). Source paths/identities changed; prompts, schemas, saved results and accounting were preserved. No new live or security evaluation result is implied.

@@ -3,7 +3,7 @@
 Current approved semantic overlay (23 October2026):
 `backend/benchmark/revisions/phase12-approved-v1/rules.json` applies P12-01/02/03/04/06
 for evaluator review without changing frozen source/manifest/phase2 annotation
-bytes. See [approval record](reviews/PHASE12_APPROVAL_20261023.md) and active
+bytes. See [approval record](../archive/docs/reviews/PHASE12_APPROVAL_20261023.md) and active
 SCORING.md. Prior agent-only proposal/audit descriptions below retain their
 dated scope. P12-05 subsequently approved:separate legacy-e037-task-v2 applies to future
 E037 executions,with original legacy rows/grades preserved. Cross-chunk

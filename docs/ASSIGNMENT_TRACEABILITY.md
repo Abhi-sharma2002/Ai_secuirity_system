@@ -1,17 +1,17 @@
 ## Original PDF located and verified · 24 October 2026
 
-See [61-row original-PDF traceability](ASSIGNMENT_PDF_TRACEABILITY_20261024.md) and the byte-identical [assignment copy](assignment/AI_SECURITY_ASSIGNMENT.pdf). Earlier PDF-unavailable statements below are historical and superseded. No empirical security gap is marked complete by this mapping.
+See [61-row original-PDF traceability](../archive/docs/ASSIGNMENT_PDF_TRACEABILITY_20261024.md) and the byte-identical [assignment copy](assignment/AI_SECURITY_ASSIGNMENT.pdf). Earlier PDF-unavailable statements below are historical and superseded. No empirical security gap is marked complete by this mapping.
 
 ## Current independent continuation preparation
 
-[Actual state and verification](CONTINUATION_PREPARATION_STATUS_20261023.md) · [one staged execution proposal](CONSOLIDATED_EXECUTION_APPROVAL_20261023.md).
+[Actual state and verification](../archive/docs/CONTINUATION_PREPARATION_STATUS_20261023.md) · [one staged execution proposal](../archive/docs/CONSOLIDATED_EXECUTION_APPROVAL_20261023.md).
 Provider-blocked diagnostics remain separate from application outcomes.
 No further calls/activation; Ask remains disabled without valid interactive
 capacity. Reviewed benign records preserved; attack/final completion not claimed.
 
 ## Current reviewed report and panel artifacts
 
-[Completed report/panel preparation and phase updates](REVIEWED_PANEL_COMPLETION_20261023.md)
+[Completed report/panel preparation and phase updates](../archive/docs/REVIEWED_PANEL_COMPLETION_20261023.md)
 use18 explicitly approved benign A/B/C records. [Technical report](REPORT.md),
 [seven labeled figures and tables](panel/partial-benign-six-cases-v1/INDEX.md),
 and [panel walkthrough](PANEL_WALKTHROUGH.md) are ready from actual saved evidence.
@@ -21,7 +21,7 @@ as history; current phase12/13/15/16/17 Partial,14 Not started.
 
 ## Current website implementation and handover
 
-See [current17-phase status, seven deliverables and verified website](END_TO_END_HANDOVER_20261023.md).
+See [current17-phase status, seven deliverables and verified website](../archive/docs/END_TO_END_HANDOVER_20261023.md).
 Actual saved-result downloads/charts and operational explanations implemented;
 no provider calls or accounting changes. Local website verified, Ask disabled
 by stopped development authorization. Representative attack evaluation and

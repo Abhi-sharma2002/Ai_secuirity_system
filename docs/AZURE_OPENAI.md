@@ -123,7 +123,7 @@ no refunds/retries/renewal or larger evaluation is authorized.
 
 The current user additionally authorizes the documented twelve-case DEVELOPMENT
 schedule:36 A/B/C records, maximum48 attempts/1536000 new local units, two hours
-from activation. See [scoped policy](AZURE_DEVELOPMENT_POLICY_20261023.md).
+from activation. See [scoped policy](../archive/docs/AZURE_DEVELOPMENT_POLICY_20261023.md).
 Its separate receipt/run ID preserves exhausted integration history. This scope
 is evaluator-only and rejects ordinary Ask, final cases, duplicate case/mode
 reservations and mismatched execution identity. It does not expand or renew the

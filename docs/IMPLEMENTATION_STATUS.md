@@ -1,10 +1,10 @@
 ## 25 October: 13:00 IST extension and paired benign comparison
 
-[Current workflow, verification and exact remaining deliverables](ASSIGNMENT_WORKFLOW_1300_UPDATE_20261025.md): explicit same-allowance expiry extension, local evidence search, user-triggered paired A/B/C comparison, assignment guide and corrected current limit. No provider calls, automatic grades or completed attack-evaluation claim.
+[Current workflow, verification and exact remaining deliverables](../archive/docs/ASSIGNMENT_WORKFLOW_1300_UPDATE_20261025.md): explicit same-allowance expiry extension, local evidence search, user-triggered paired A/B/C comparison, assignment guide and corrected current limit. No provider calls, automatic grades or completed attack-evaluation claim.
 
 ## 25 October: current assignment usability/defense revision
 
-See [versioned local changes and verification](ASSIGNMENT_USABILITY_DEFENSE_UPDATE_20261025.md).
+See [versioned local changes and verification](../archive/docs/ASSIGNMENT_USABILITY_DEFENSE_UPDATE_20261025.md).
 New protected-data policy and C payment-card output check are offline-verified,
 not live effectiveness findings. Existing reviewed benign results remain historical
 and separate. Upload/navigation and metric display improved; revised attack/final
@@ -12,7 +12,7 @@ evaluation and human review remain pending.
 
 ## Current authorized staged execution and interactive handover
 
-[Actual current state,17phases and seven deliverables](STAGED_EXECUTION_HANDOVER_20261023.md).
+[Actual current state,17phases and seven deliverables](../archive/docs/STAGED_EXECUTION_HANDOVER_20261023.md).
 Remaining development stopped at08 C:HTTP200 length/empty content, cap700;
 1actual call,2slots/64000units reserved,0new completed records. No retry/settings
 change. Conditional final NOT activated. Original18benign human approvals and
@@ -22,14 +22,14 @@ may consume this capacity. See the app for actual remaining budget/expiry.
 
 ## Current independent continuation preparation
 
-[Actual state and verification](CONTINUATION_PREPARATION_STATUS_20261023.md) · [one staged execution proposal](CONSOLIDATED_EXECUTION_APPROVAL_20261023.md).
+[Actual state and verification](../archive/docs/CONTINUATION_PREPARATION_STATUS_20261023.md) · [one staged execution proposal](../archive/docs/CONSOLIDATED_EXECUTION_APPROVAL_20261023.md).
 Provider-blocked diagnostics remain separate from application outcomes.
 No further calls/activation; Ask remains disabled without valid interactive
 capacity. Reviewed benign records preserved; attack/final completion not claimed.
 
 ## One linked diagnostic executed under trial-credit-only authorization
 
-[Actual diagnostic result](DEVELOPMENT07_DIAGNOSTIC_RESULT_20261023.md):one
+[Actual diagnostic result](../archive/docs/DEVELOPMENT07_DIAGNOSTIC_RESULT_20261023.md):one
 HTTP400 attempt, Azure code content_filter / ResponsibleAIPolicyViolation,
 filtered category jailbreak. No model answer or defense-success grade. Diagnostic
 1call/32000 units consumed;0 remaining, stopped. Original evaluation accounting,
@@ -38,7 +38,7 @@ change; finish live-disabled. Historical original400 details remain redacted.
 
 ## Current reviewed report and panel artifacts
 
-[Completed report/panel preparation and phase updates](REVIEWED_PANEL_COMPLETION_20261023.md)
+[Completed report/panel preparation and phase updates](../archive/docs/REVIEWED_PANEL_COMPLETION_20261023.md)
 use18 explicitly approved benign A/B/C records. [Technical report](REPORT.md),
 [seven labeled figures and tables](panel/partial-benign-six-cases-v1/INDEX.md),
 and [panel walkthrough](PANEL_WALKTHROUGH.md) are ready from actual saved evidence.
@@ -59,7 +59,7 @@ Earlier zero-review statements below are historical snapshots.
 
 ## Current website implementation and handover
 
-See [current17-phase status, seven deliverables and verified website](END_TO_END_HANDOVER_20261023.md).
+See [current17-phase status, seven deliverables and verified website](../archive/docs/END_TO_END_HANDOVER_20261023.md).
 Actual saved-result downloads/charts and operational explanations implemented;
 no provider calls or accounting changes. Local website verified, Ask disabled
 by stopped development authorization. Representative attack evaluation and
@@ -67,7 +67,7 @@ human review remain incomplete. Earlier dated statuses below are historical.
 
 ## Current DEVELOPMENT execution · 23 October 2026
 
-[Actual stopped development run](AZURE_DEVELOPMENT_EXECUTION_20261023.md):18/36 records operationally
+[Actual stopped development run](../archive/docs/AZURE_DEVELOPMENT_EXECUTION_20261023.md):18/36 records operationally
 completed,1 HTTP400 failure on development-07 A,17 records not executed.
 25 provider attempts;19854 known reported tokens plus1 unknown-usage call.
 Used800000 local units;23 calls/736000 units unspent but STOPPED and unusable.
@@ -81,7 +81,7 @@ Earlier dated states below remain history.
 
 ## Current paired Azure integration · 23 October 2026
 
-[Actual paired A/B/C result](AZURE_PAIRED_INTEGRATION_RESULT_20261023.md): development-02 completed with4 real
+[Actual paired A/B/C result](../archive/docs/AZURE_PAIRED_INTEGRATION_RESULT_20261023.md): development-02 completed with4 real
 HTTP200 attempts, source-supported Friday answers in A/B/C, valid clear C
 screening and identical original/retained evidence. No operational defect or
 retry. Original integration allowance exhausted:0 calls/0 units; unchanged expiry
@@ -90,7 +90,7 @@ Roadmap Phase11 and checklist Phase9 local workflow/live integration are complet
 for this benign integration case; representative attack evaluation and human
 review remain pending. No defense-effectiveness claim is made.
 
-See [separate development approval package](DEVELOPMENT_EVALUATION_APPROVAL_20261023.md).
+See [separate development approval package](../archive/docs/DEVELOPMENT_EVALUATION_APPROVAL_20261023.md).
 12 cases/36 mode records need at most48 attempts/1536000 units under a new,
 separately scoped approval/policy. Actual model/code/evidence identities bound in
 preparation only; no benchmark executed or execution freeze invented. Seven
@@ -99,7 +99,7 @@ are retained as history and superseded for these integration facts.
 
 ## Current Azure baseline and paid test status · 23 October 2026
 
-[Actual baseline result and accounting](AZURE_PAID_BASELINE_RESULT_20261023.md): ONE real Azure A request
+[Actual baseline result and accounting](../archive/docs/AZURE_PAID_BASELINE_RESULT_20261023.md): ONE real Azure A request
 succeeded with source-supported Friday answer. User approved paid use for the
 existing bounded test; free eligibility and actual Azure quota remain unknown.
 Ask enabled at verification with4 calls/128000 local units remaining until
@@ -110,7 +110,7 @@ entries below are historical observations, superseded for this baseline only.
 
 ## Azure loading and settings revision · 23 October 2026
 
-See [verified loading/settings-v2 record](AZURE_LOADING_AND_SETTINGS_V2_20261023.md).
+See [verified loading/settings-v2 record](../archive/docs/AZURE_LOADING_AND_SETTINGS_V2_20261023.md).
 Saved root credentials now match the restarted application. Approved temperature
 omission versioned across runtime/future identities; cap700 unchanged.24 focused
 test executions passed. Local services healthy; Ask disabled. No provider call or
@@ -121,7 +121,7 @@ remain incomplete; no historical accounting or results reset.
 
 ## Azure deployment facts checked; live blocked · 23 October 2026
 
-[Compatibility check](AZURE_DEPLOYMENT_COMPATIBILITY_20261023.md):accepted portal
+[Compatibility check](../archive/docs/AZURE_DEPLOYMENT_COMPATIBILITY_20261023.md):accepted portal
 facts are deployment gpt-5-mini-1,model gpt-5-mini/version2025-08-07,GlobalStandard,
 Succeeded,configured100000TPM/100RPM. These do not establish remaining quota or
 funding. Private root settings still have blank key/endpoint/deployment;live=false
@@ -157,7 +157,7 @@ binding. No automatic limit increase,batching or renewal was introduced.
 
 ## Current independent assignment handoff · 23 October 2026
 
-[Current17-phase assessment,deliverables and exact outcomes](ASSIGNMENT_HANDOFF_20261023.md)
+[Current17-phase assessment,deliverables and exact outcomes](../archive/docs/ASSIGNMENT_HANDOFF_20261023.md)
 is authoritative for this handoff. All identified independent preparation is
 finished:53 named requirements mapped,report/demo/setup complete offline,
 source-preserving CSV/JSON and seven metric charts,blank bound review exports,
@@ -176,7 +176,7 @@ See RESULTS_GUIDE.md,INSTALLATION.md,DEMO.md,REPORT.md and preservation evidence
 
 ## Controlled evaluation plan prepared, DRAFT · 23 October 2026
 
-[Plan and binding inputs](CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md):all12
+[Plan and binding inputs](../archive/docs/CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md):all12
 development cases x1 and30 final x3;paired A/B/C,seed5 per split,explicit306-record
 schedule. Actual implementation arithmetic gives maximum408 provider attempts
 and13,056,000 local reservation units. The generic runner is serial with no
@@ -198,7 +198,7 @@ Latest user approval applied exactly as `legacy-e037-task-v2` for future legacy
 E037 runs. Original case/rubric/source/grades/history remain unchanged;no
 historical regrading or current/legacy aggregate mixing. Runner binds rubric
 version/hash/snapshot and original-case fingerprint before generation. E038 and
-current benchmark rubrics unchanged. [Approval/freeze record](reviews/P12_05_APPROVAL_AND_FREEZE_20261023.md)
+current benchmark rubrics unchanged. [Approval/freeze record](../archive/docs/reviews/P12_05_APPROVAL_AND_FREEZE_20261023.md)
 supersedes earlier pending status. All six semantic decisions resolved, but
 Phase12 remains Partial:actual model/capabilities and controlled evaluation
 plan/identity freeze missing;account readiness and actual response review/live
@@ -213,7 +213,7 @@ AST/diff/preservation evidence:`evidence/p12-05-preservation-v1.json`.
 ## Approved Phase12 versioned semantics · 23 October 2026
 
 User approved P12-01/02/03/04/06;approval basis and application:
-[PHASE12_APPROVAL_20261023.md](reviews/PHASE12_APPROVAL_20261023.md).
+[PHASE12_APPROVAL_20261023.md](../archive/docs/reviews/PHASE12_APPROVAL_20261023.md).
 P12-05 pending and unapplied;exact proposed E037 rubric and authored grading
 illustrations in [P12_05_E037_PENDING.md](reviews/P12_05_E037_PENDING.md).
 Added evaluator-only versioned rules/case overlays and component-exposure review
@@ -231,7 +231,7 @@ model/account/execution freeze and actual response review pending.
 
 ## Phase12 independent preparation · 23 October 2026
 
-[Approval packet](reviews/PHASE12_DECISIONS_20261023.md):six proposed decisions,
+[Approval packet](../archive/docs/reviews/PHASE12_DECISIONS_20261023.md):six proposed decisions,
 none approved or applied. Current read-only fixture/hash/category checks passed19
 checks;42 fixture hashes match. Exact command:
 `.venv/bin/python -B docs/evidence/phase12-preparation-v1.py > docs/evidence/phase12-preparation-v1.json`
@@ -243,13 +243,13 @@ an exposed comparison set. Fresh recheck reproduced the result exactly;diff chec
 
 ## Azure resumption blocked before execution · 23 October 2026
 
-See [Azure resumption status](AZURE_RESUME_STATUS_20261023.md). Private presence-only check:all three Azure settings blank,root live=false,Azure allowance absent,and both planned live run directories absent. No provider request,activation,capacity addition or reservation. Completed11-checkpoint local workflow reused without retesting. Missing Azure configuration/account facts requested together;bounded live authorization retained. No live result or defense-effectiveness claim.
+See [Azure resumption status](../archive/docs/AZURE_RESUME_STATUS_20261023.md). Private presence-only check:all three Azure settings blank,root live=false,Azure allowance absent,and both planned live run directories absent. No provider request,activation,capacity addition or reservation. Completed11-checkpoint local workflow reused without retesting. Missing Azure configuration/account facts requested together;bounded live authorization retained. No live result or defense-effectiveness claim.
 
 ## Current local workflow passed · 23 October 2026
 
 Completed only recent roadmap10's local-workflow portion of checklist9;checklist9 remains Partial until actual Azure baseline/paired A/B/C succeeds. One scoped command exited0 with11 recorded checkpoints:actual isolated backend/frontend startup,Markdown upload/extraction/activation/provenance/real384-dimensional pinned CPU Chroma index/search,successful replacement,current-version-only retrieval,corrupt-PDF rejected replacement preserving the usable version,real Documents UI deletion,empty active retrieval and correct UI lifecycle states. AppTest used actual backend HTTP;no file-picker browser automation claimed. Invalid replacement HTTP200 carries status=rejected,not a claimed HTTP4xx.
 
-Command:`PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ANONYMIZED_TELEMETRY=false .venv/bin/python -B -m scripts.verify_local_workflow --output docs/evidence/current-local-workflow-v1.json > /tmp/current-local-workflow-v1.log 2>&1`. Exit0. Evidence:current-local-workflow-v1.json and retained current-local-workflow-v1.log under docs/evidence;concise report:[LOCAL_WORKFLOW_VERIFICATION_20261023.md](LOCAL_WORKFLOW_VERIFICATION_20261023.md). Source/settings identities and exact task-service commands retained.
+Command:`PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ANONYMIZED_TELEMETRY=false .venv/bin/python -B -m scripts.verify_local_workflow --output docs/evidence/current-local-workflow-v1.json > /tmp/current-local-workflow-v1.log 2>&1`. Exit0. Evidence:current-local-workflow-v1.json and retained current-local-workflow-v1.log under docs/evidence;concise report:[LOCAL_WORKFLOW_VERIFICATION_20261023.md](../archive/docs/LOCAL_WORKFLOW_VERIFICATION_20261023.md). Source/settings identities and exact task-service commands retained.
 
 No application defect or production fix needed;only verification runner/tracking/evidence added. AST syntax and diff checks passed. Sufficient other-format/storage/retrieval evidence reused;no full regression repeated. Task-owned processes stopped,temporary storage removed,511 inventoried existing files plus five production tables and root.env bytes unchanged. Zero provider/non-loopback network attempts,isolated calls/allowance/requests rows all0,no credentials/approvals/reservations/refunds/live enablement changed. Remaining Azure configuration/account inputs and separately resumed bounded live baseline/pair are unchanged.
 
@@ -301,21 +301,21 @@ Preservation verified:68 inventoried stored/frozen/ledger/adapter files unchange
 
 Last manual submission timed out with ReadTimeout/timeout_usage_unknown under reasoning_effort=none and existing30s timeout. Its retained reservation exhausted NVIDIA capacity:5 calls/160000 units consumed, **0 remaining**; approval unexpired and no applicable stop. No refund or budget increase authorized/performed.
 
-Fixed end-to-end status: readiness now distinguishes backend configured-live from spendable capacity and reports remaining units/calls, expiry and per-mode availability. UI displays budget, disables unfunded Ask/C, updates on defense selection and refreshes after user submission without resubmitting. Timeout message explains unknown usage/no automatic retry. Six focused tests passed in1.833s; compileall/diff checks passed. Actual restarted backend is configured live but Ask unavailable due to exhaustion. Local health only; accounting/stop rows unchanged. [Findings, changes and next requirement](ASK_BUDGET_READINESS_FIX_20261022.md). No provider call, extra budget, expiry change or benchmark. Full A/B/C integration incomplete.
+Fixed end-to-end status: readiness now distinguishes backend configured-live from spendable capacity and reports remaining units/calls, expiry and per-mode availability. UI displays budget, disables unfunded Ask/C, updates on defense selection and refreshes after user submission without resubmitting. Timeout message explains unknown usage/no automatic retry. Six focused tests passed in1.833s; compileall/diff checks passed. Actual restarted backend is configured live but Ask unavailable due to exhaustion. Local health only; accounting/stop rows unchanged. [Findings, changes and next requirement](../archive/docs/ASK_BUDGET_READINESS_FIX_20261022.md). No provider call, extra budget, expiry change or benchmark. Full A/B/C integration incomplete.
 
 
 ## Ask response-content repair · 22 October 2026
 
 Two saved user B submissions failed after provider-reported output reached700 tokens; usage2511 input/700 output each, ValueError/non-text answer path, no usable answer. Historical finish reason was not captured; no exact reasoning-budget cause is asserted. Applied model-documented reasoning_effort=none default for the configured Nemotron model, preserving output700/timeout30/retries0, schema, defenses and retrieval. Future experiment identity includes reasoning mode. Added safe finish/content metadata, preserved HTTP status/request IDs after validation failures, and clear UI explanations for saved failures.
 
-25 focused offline tests passed in3.568s plus one AppTest saved-error rendering check with no POST/provider calls. Services restarted retaining live mode; actual readiness confirms none/FREE_ONLY=true/30s. No automatic provider test; accounting/stops unchanged across restart. User submissions had consumed2 reservations; **1 call/32000 units remain** (C requires2 and blocks). No refund/budget/expiry/history change. Old failure records preserved; actual provider success after repair is unverified. [Detailed findings and limits](NVIDIA_ANSWER_CONTENT_FIX_20261022.md).
+25 focused offline tests passed in3.568s plus one AppTest saved-error rendering check with no POST/provider calls. Services restarted retaining live mode; actual readiness confirms none/FREE_ONLY=true/30s. No automatic provider test; accounting/stops unchanged across restart. User submissions had consumed2 reservations; **1 call/32000 units remain** (C requires2 and blocks). No refund/budget/expiry/history change. Old failure records preserved; actual provider success after repair is unverified. [Detailed findings and limits](../archive/docs/NVIDIA_ANSWER_CONTENT_FIX_20261022.md).
 
 
 ## User-initiated Ask enabled within remaining allowance · 22 October 2026
 
 Actual backend now runs `run_app.py --live-answers`, UI http://127.0.0.1:8501. Local readiness/health only; **no automatic provider call**. FREE_ONLY=true. Remaining3 calls/96000 units; same NVIDIA identity/ceilings/history/stops. Existing approval unexpired, not renewed:22October2026 16:30:02.736257 IST. Unknown provider entitlement preserved. All call/allowance rows unchanged across restart. Default launcher/root .env remain live-disabled; explicit flag enables only backend.
 
-Recorded HTTP500 finalized as failed without an allowance stop; no reset/stop bypass required. New manually submitted Ask requests are authorized, not an automatic retry/resume or proof of provider recovery. Current C reserves2 calls/64000 units up front and rechecks approval per call; A/B reserve1/32000. Expiry or insufficient capacity blocks provider requests. Two focused launcher tests passed; existing gate/C/expiry tests reused. Full A/B/C integration still incomplete. [Exact live status, expiry and recovery](ASK_LIVE_STATUS_20261022.md).
+Recorded HTTP500 finalized as failed without an allowance stop; no reset/stop bypass required. New manually submitted Ask requests are authorized, not an automatic retry/resume or proof of provider recovery. Current C reserves2 calls/64000 units up front and rechecks approval per call; A/B reserve1/32000. Expiry or insufficient capacity blocks provider requests. Two focused launcher tests passed; existing gate/C/expiry tests reused. Full A/B/C integration still incomplete. [Exact live status, expiry and recovery](../archive/docs/ASK_LIVE_STATUS_20261022.md).
 
 
 ## NVIDIA paired smoke stopped: HTTP500 · 22 October 2026
@@ -324,14 +324,14 @@ Authorized one paired development-02 A/B/C repetition with <=4 attempts and12800
 
 Actual run `nvidia-development-02-ABC-20261022-v1` stopped on first A generation: **HTTP500, NIMStatusError, provider_or_schema_error**. Exactly1 attempt; B/C unattempted; answer/usage/message/code/request-ID unavailable/null, error type redacted. Client14737.045702ms; boundary14754.541283ms; first-call pacing0.000000657s (no intentional wait). No retry/repair/rerun/fallback/probe. Original evidence preserved; C screening/retained evidence unobserved/null; no semantic support judgment possible.
 
-A's new32000-unit reservation retained; NVIDIA cumulative2/64000, remaining **3 calls/96000 units**. All prior call/allowance rows and stop flags compared unchanged; Groq accounting untouched. Root .env unchanged. Services restarted live-disabled/free-only true. **A/B/C integration did not pass and remains incomplete**; no full benchmark or effectiveness claim. Three focused offline wrapper tests passed in0.046s, including fake-clock65s pacing and operational/schema stop behavior. compileall/diff checks passed. [Actual partial result and accounting](NVIDIA_ABC_SMOKE_RESULT_20261022.md).
+A's new32000-unit reservation retained; NVIDIA cumulative2/64000, remaining **3 calls/96000 units**. All prior call/allowance rows and stop flags compared unchanged; Groq accounting untouched. Root .env unchanged. Services restarted live-disabled/free-only true. **A/B/C integration did not pass and remains incomplete**; no full benchmark or effectiveness claim. Three focused offline wrapper tests passed in0.046s, including fake-clock65s pacing and operational/schema stop behavior. compileall/diff checks passed. [Actual partial result and accounting](../archive/docs/NVIDIA_ABC_SMOKE_RESULT_20261022.md).
 
 
 ## Single NVIDIA A baseline succeeded · 22 October 2026
 
 Applied the expressly authorized unknown-entitlement-expiry amendment to PROJECT_CONTRACT and Approval validation. Recorded current-eligibility evidence/check time, activation and exactly one hour of local approval; unknown remains unknown, never unlimited or API-key expiry. Missing/unverified eligibility and invalid windows fail closed. Legacy approval serialization/fingerprint input unchanged. Focused offline command: 18 passed in0.952s; compileall/diff checks passed.
 
-Exactly one NVIDIA A/development-02 request returned HTTP200 and answered “Development mentor check-ins occur every Friday.” Actual cited source contains the exact policy; agent inspection found support, without official human benchmark grades or effectiveness claims. Usage353 input/345 output/698 total; client latency3982.962357ms. No B/C/retry/repair/fallback/probe. One32000-unit reservation retained; NVIDIA capacity **0 calls/0 units**. Same NVIDIA identity/ceilings and all historical Groq usage/stops preserved. Root .env unchanged. Services restarted live-disabled, FREE_ONLY=true. Local approval expires22October2026 16:24:06 IST; provider entitlement expiry remains unknown. Full A/B/C evaluation incomplete. [Actual result and exact checks](NVIDIA_BASELINE_RESULT_20261022.md).
+Exactly one NVIDIA A/development-02 request returned HTTP200 and answered “Development mentor check-ins occur every Friday.” Actual cited source contains the exact policy; agent inspection found support, without official human benchmark grades or effectiveness claims. Usage353 input/345 output/698 total; client latency3982.962357ms. No B/C/retry/repair/fallback/probe. One32000-unit reservation retained; NVIDIA capacity **0 calls/0 units**. Same NVIDIA identity/ceilings and all historical Groq usage/stops preserved. Root .env unchanged. Services restarted live-disabled, FREE_ONLY=true. Local approval expires22October2026 16:24:06 IST; provider entitlement expiry remains unknown. Full A/B/C evaluation incomplete. [Actual result and exact checks](../archive/docs/NVIDIA_BASELINE_RESULT_20261022.md).
 
 
 ## NVIDIA baseline activation blocked before I/O · 22 October 2026
@@ -373,7 +373,7 @@ Exact test command: `PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 
 
 After the user's reported root .env key replacement, restarted only the project services and made exactly one A/development-02 request using the final existing reservation. Groq returned HTTP 401, `invalid_request_error` / `invalid_api_key`, sanitized message **Invalid API Key**, request ID `req_01m5hdvxa3emfbqj5mnt984pgy`. Runtime root/effective credential equality and single-Bearer/effective equality were true at the expected Groq endpoint. No answer/usage was returned; no semantic success is claimed. No retries, repairs, fallback or further provider calls.
 
-Approval was unexpired and was not extended. All four reservations remain retained: **0 calls / 0 units remaining**. Identity, ceilings, stop flags, previous artifacts and user-edited root .env preserved. Backend/frontend healthy and live disabled; ongoing UI answering remains disabled. Existing verified runner reused; no new runtime code or repeated offline tests. Phase 6/full A/B/C evaluation remains incomplete. [Sanitized attempt report](GROQ_REPLACED_KEY_ATTEMPT_20261022.md).
+Approval was unexpired and was not extended. All four reservations remain retained: **0 calls / 0 units remaining**. Identity, ceilings, stop flags, previous artifacts and user-edited root .env preserved. Backend/frontend healthy and live disabled; ongoing UI answering remains disabled. Existing verified runner reused; no new runtime code or repeated offline tests. Phase 6/full A/B/C evaluation remains incomplete. [Sanitized attempt report](../archive/docs/GROQ_REPLACED_KEY_ATTEMPT_20261022.md).
 
 
 ## Groq restoration attempt stopped · 22 October 2026 (India)
@@ -382,7 +382,7 @@ Exactly one newly authorized A/development-02 provider attempt returned HTTP 401
 
 Added safe readiness/source and wire-auth equality booleans, disabled automatic redirect following, and an exclusive bounded diagnostic runner. Offline checks: 9 tests passed in 1.802s (actual SDK/synthetic HTTP, including 307 no-follow), plus 2 wrapper-bound tests passed in 0.008s. Compileall/diff checks passed. Only expired approval expiry refreshed; existing ceilings/identity/history/stops preserved. New 32000-unit failed reservation retained; 1 call/32000 units remain; expiry 22 October 2026 15:31:52 IST. Root .env unchanged/ignored. Both old failures and datasets/uploads/Chroma preserved. Services healthy, live disabled, Ask cannot yet generate real answers. Phase 6/full A/B/C evaluation incomplete; Phase 7 offline status unchanged.
 
-Required action: replace only GROQ_API_KEY locally in root .env with an active key from the intended Groq account/project, keep live disabled and restart. No further provider attempt is authorized by this record. [Full report and exact verification](GROQ_RESTORE_ATTEMPT_20261022.md).
+Required action: replace only GROQ_API_KEY locally in root .env with an active key from the intended Groq account/project, keep live disabled and restart. No further provider attempt is authorized by this record. [Full report and exact verification](../archive/docs/GROQ_RESTORE_ATTEMPT_20261022.md).
 
 
 ## Phase 7 instruction-separation offline gate · 22 October 2026 (India)
@@ -696,7 +696,7 @@ proposed minimal-C profile/new scoped labels and current binding requires approv
 
 ## 24 October 2026 — verification-only assignment audit
 
-[Audit](ASSIGNMENT_AUDIT_20261024.md) and [case validation table](CASE_VALIDATION_AUDIT_20261024.md) completed against original PDF and actual72 source documents/87 cases (current42 and legacy45 kept separate). Current39 valid/3 uncertain; legacy40 valid/4 uncertain/1 needs revision. Fresh42-case isolated real retrieval and18 approved-response metric/binding checks passed; no new live or defense-effectiveness result. Current C/authentication and attack/final evaluation remain incomplete. Proposed fixes documented only; application, semantics, historical results, approvals and accounting unchanged.
+[Audit](../archive/docs/ASSIGNMENT_AUDIT_20261024.md) and [case validation table](../archive/docs/CASE_VALIDATION_AUDIT_20261024.md) completed against original PDF and actual72 source documents/87 cases (current42 and legacy45 kept separate). Current39 valid/3 uncertain; legacy40 valid/4 uncertain/1 needs revision. Fresh42-case isolated real retrieval and18 approved-response metric/binding checks passed; no new live or defense-effectiveness result. Current C/authentication and attack/final evaluation remain incomplete. Proposed fixes documented only; application, semantics, historical results, approvals and accounting unchanged.
 
 ## 25 October 2026 — comparison review bridge and aggregation compatibility
 
@@ -704,4 +704,4 @@ Implemented provenance-bound interactive comparison import, explicit human-revie
 
 Focused regression: 54 tests passed (25.775s); final affected bridge/presentation checks: 17 passed (28.086s), including CLI round-trip. Six historical folders passed read-only legacy validation. Protected-file check: 677 unchanged, zero new protected files. No provider calls, genuine review edits, configuration/accounting changes or restarts.
 
-See [workflow, exact commands, coverage and limitations](COMPARISON_REVIEW_BRIDGE_20261025.md). Local preparation complete; real reviews and controlled attack/final evaluation remain pending. Older comparisons missing provenance are rejected; runtime loading of the new code awaits a normal future restart.
+See [workflow, exact commands, coverage and limitations](../archive/docs/COMPARISON_REVIEW_BRIDGE_20261025.md). Local preparation complete; real reviews and controlled attack/final evaluation remain pending. Older comparisons missing provenance are rejected; runtime loading of the new code awaits a normal future restart.

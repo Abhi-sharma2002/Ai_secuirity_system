@@ -37,6 +37,13 @@ def validate(root=DATASET):
     provenance = json.loads((root / 'source_provenance.json').read_text())
     actual = {str(p.relative_to(SOURCE)): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in SOURCE.rglob('*') if p.is_file()}
+    # The original runtime snapshot is git-ignored. Its exact historical bytes
+    # were preserved in the frozen v3 copy; use that copy only when the original
+    # file is absent in a fresh checkout, never to mask a changed source file.
+    if 'snapshot.json' not in actual and 'snapshot.json' in provenance:
+        preserved = root / 'snapshot.json'
+        require(preserved.is_file(), 'Missing preserved historical snapshot')
+        actual['snapshot.json'] = hashlib.sha256(preserved.read_bytes()).hexdigest()
     require(actual == provenance, 'Original benchmark changed since v3 was prepared')
     archive = ROOT / 'archive/benchmark_v3_source'
     for name in ('manifest.json', 'manifest.sha256', 'annotations.json'):

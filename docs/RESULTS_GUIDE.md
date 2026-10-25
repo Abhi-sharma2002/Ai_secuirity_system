@@ -7,7 +7,7 @@ for completed responses; keep semantic grades null on the error.17 scheduled
 records were not executed. Do not treat them or the provider rejection as
 defense successes. Preserve approved criteria and record bindings; no grade has
 been invented or imported. The run is stopped and cannot be retried/resumed.
-See [operational summary](AZURE_DEVELOPMENT_EXECUTION_20261023.md).
+See [operational summary](../archive/docs/AZURE_DEVELOPMENT_EXECUTION_20261023.md).
 
 # Result export and human review
 

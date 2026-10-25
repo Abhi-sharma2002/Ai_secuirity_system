@@ -156,7 +156,7 @@ if page == 'Assignment guide':
     st.write('5. Review actual responses against expected answers and attack objectives. Provider errors and retrieval misses are not successful defenses.')
     st.write('6. Open Saved experiments for grouped A/B/C responses, metric denominators, charts and review-template downloads.')
     st.write('7. Demonstrate a supported benign answer, the same attack against A/B/C, benign task preservation, and actual measured trade-offs.')
-    st.info('The prepared dataset has 42 documents and 42 cases. The final set is exposed. Historical reviewed benign Azure records do not verify current Nemotron defense effectiveness.')
+    st.info('The historical app dataset has 42 documents and 42 cases. The separate v3 comparison uses backend/benchmark_v3 and the local scripts documented in README.md. Its live checks are deferred. The final set is exposed; historical reviewed benign Azure records do not verify current Nemotron defense effectiveness.')
     st.caption('Metrics: ASR = reviewed successful attacks / eligible reviewed attacks; benign success = correct reviewed benign tasks / eligible reviewed benign tasks; false positives = benign cases flagged or blocked / eligible benign cases. Quality uses the approved 0–4 rubric. Latency and reported token usage remain separate from local reservation units.')
 if page == 'Ask / compare':
     st.caption('Interactive capacity is for benign questions; benchmark attacks belong to separately authorized evaluation. Never resend a prohibited provider-blocked payload.')

@@ -1,100 +1,99 @@
 # AI Security Document Lab
 
-A local document assistant for studying prompt injection with three configurations:
-**A: grounded baseline**, **B: instruction separation**, and **C: screening followed
-by instruction separation**. FastAPI serves the backend; Streamlit provides the UI.
-The temporary active answering provider is OpenRouter's fixed Nemotron free route;
-Azure transport and configuration remain available. Embeddings run locally on CPU.
+A local RAG assistant that compares **A: grounded baseline**, **B: instruction
+separation**, and **C: screening plus output checks** against prompt injection.
+FastAPI and Streamlit serve the app; parsing, CPU embeddings, retrieval, Chroma,
+SQLite, evaluation and charts run locally. Current v3 live evaluation is deferred.
 
-## Standing project scope
+## Setup
 
-[Current temporary provider policy](docs/PROJECT_SCOPE.md): answer/screen calls use
-only the fixed OpenRouter Nemotron `:free` route, with Azure retained but inactive.
-Embeddings, retrieval, storage, evaluation, charts and UI stay local. No paid model,
-provider fallback or Azure resource/account change is part of this switch. Provider
-calls require explicit bounded authorization;
-`--paid-azure-test` is retired and rejected. See [AGENTS.md](AGENTS.md).
-
-## Start the application
-
-For a new local environment, install the application and test dependencies:
+Use Python with the pinned dependencies and preserve an existing private `.env`:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r backend/requirements-dev.txt
+test -f .env || cp .env.example .env
 ```
 
-Create `.env` from `.env.example` only if `.env` does not already exist. Keep
-existing private settings. Activate the environment before running the tests:
+Keep API keys out of source control. Model weights must already be cached for
+offline indexing. On a new machine, download the pinned local embedding weights
+once before using offline mode:
 
 ```bash
-source .venv/bin/activate
-cd backend
-python -m pytest tests -q
+PYTHONPATH=backend .venv/bin/python -c "from app.rag.embeddings import get_embedding_model; get_embedding_model()"
 ```
 
-From the repository root, using the existing environment:
+This downloads CPU model weights; it makes no answering/screening request.
+See [the project scope](AGENTS.md) and [provider setup](docs/OPENROUTER.md).
+
+## Run the app
 
 ```bash
 .venv/bin/python run_app.py --check
 .venv/bin/python run_app.py
 ```
 
-Open **http://127.0.0.1:8501**. This command starts both services with live
-answering disabled. Document tools and genuine saved results remain available.
-Ask requires a valid, separately scoped provider allowance with remaining capacity;
-the launcher never grants capacity or clears stop flags. Do not reuse expired or
-stopped evaluation receipts for interactive answering.
+Open **http://127.0.0.1:8501**. Upload a fictional TXT/MD, text PDF or DOCX, then
+use **Ask / compare → Local-only** to search evidence. Live answering starts
+disabled. Existing expired/stopped authorizations do not become valid on restart.
+The only temporary provider route is the fixed NVIDIA Nemotron free alias;
+Azure code/configuration are retained but inactive.
 
-Use the single root [.env.example](.env.example) as the configuration reference.
-Keep real credentials only in the private root `.env`. Existing settings, uploads,
-SQLite, Chroma, frozen datasets, reviews and accounting are preserved.
-
-See [OpenRouter temporary setup](docs/OPENROUTER.md) for the fixed free route,
-private key setup, one-hour local allowance and provider limitations.
-
-## Local v3 evaluation preparation
-
-Read the case/request plan and build an isolated index with cached CPU embeddings:
+## Run the evaluation
 
 ```bash
+.venv/bin/python backend/scripts/validate_v3.py
 .venv/bin/python backend/scripts/run_eval.py --plan --limit 3
 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python backend/scripts/run_eval.py --prepare-only
+.venv/bin/python backend/scripts/make_report.py
+.venv/bin/python backend/scripts/review_eval.py --prepare
+.venv/bin/python backend/scripts/write_report.py
+.venv/bin/python backend/scripts/write_report.py --check
 ```
 
-Provider evaluation remains disabled under the current scope. The live
-`--limit 3`, `--all` and `--resume` execution commands refuse execution and
-write no evaluation records. The CSV/resume implementation is tested only with
-synthetic responses in disposable test directories. See
-[Step 6 evidence and pending live checks](docs/STEP_6_RUNNER.md).
+These commands work locally without provider calls. The runner prepares an
+isolated index; reporting represents missing observations as **N/A**. The
+original benchmark is preserved; active v3 fixtures are in `backend/benchmark_v3/`.
+The CSV core supports immediate saves and resume with frozen evidence. The live
+`--limit 3`, `--all` and `--resume` execution commands currently refuse execution:
+provider evaluation remains disabled by the explicit local-only scope. The
+provider boundary must be deliberately revised under a later explicit benchmark
+authorization; setting an environment variable alone does not authorize a run.
+No delayed run or automatic authorization renewal is scheduled.
 
-## Understand the implementation
+After authorized real evaluation, follow [human review](docs/HUMAN_REVIEW.md) to
+decide ambiguous responses and fill the seeded quality sample, then regenerate
+the metrics and written report. A future live run must verify current limits
+and fit its explicitly authorized request scope. Errors and provider filters
+remain errors, never blocked attacks.
 
-- [Folder map and complete runtime flow](docs/architecture/RUNTIME_MAP.md)
-- [Installation, commands and panel explanation](docs/guides/LOCAL_APPLICATION.md)
-- [Refactor verification and exact path mapping](docs/architecture/REFACTOR_20261024.md)
-- [Existing installation details](docs/INSTALLATION.md)
-- [Technical report](docs/REPORT.md)
-- [Reviewed partial benign results: six cases](docs/panel/partial-benign-six-cases-v1/INDEX.md)
-- [Panel walkthrough](docs/PANEL_WALKTHROUGH.md)
-- [Tests by responsibility](backend/tests/README.md)
+Offline checks:
 
-Active defenses are under `backend/app/defenses/`; `rag/assistant.py` coordinates
-them. Historical fixed-context defenses and the retired NVIDIA adapter are under
-`backend/app/legacy/`. Historical provider commands are under
-`backend/scripts/history/`. They are separate from the active website runtime.
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 LIVE_LLM_ENABLED=false .venv/bin/python -m pytest backend/tests/evaluation/test_simple_*.py backend/tests/evaluation/test_run_eval.py -q
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 LIVE_LLM_ENABLED=false .venv/bin/python backend/scripts/verify_v3_local.py --output /tmp/v3-local-check.json
+```
 
-## Evidence and current limits
+The integration check starts isolated loopback services, uses the cached CPU
+model and actual UI, and stops its own processes. Choose a new output filename
+for each run. Synthetic unit fixtures stay in temporary directories.
 
-Successful Azure baseline/integration evidence and 18 approved benign records
-are retained. Attack effectiveness and final evaluation remain incomplete.
-The latest separate development-08 screening probe returned complete JSON but
-failed source-ID validation; see its [actual result](docs/DEVELOPMENT08_SCREENING_PROBE_RESULT_20261023.md).
-Provider rejection and operational errors are not application-defense successes.
-The final dataset is exposed, not an untouched holdout.
+## Results and report
 
-This organization refactor made no Azure requests, activated no allowance and
-restarted no services. It changes implementation fingerprints; future evaluation
-must bind the new identity, while historical run identities remain unchanged.
-The pre-refactor README and source snapshot are retained under
-`docs/history/refactor_20261024/`. Dated records describe their own execution time.
+<!-- v3-summary:start -->
+| Configuration | Recorded | ASR | Benign success | Quality |
+| --- | --- | --- | --- | --- |
+| A | 0 | N/A | N/A | N/A |
+| B | 0 | N/A | N/A | N/A |
+| C | 0 | N/A | N/A | N/A |
+<!-- v3-summary:end -->
+
+The results table is generated by `backend/scripts/update_readme_results.py`
+from `results/summary.csv`. N/A means unavailable, not a defense win.
+See [the current report](docs/REPORT.md), [metric formulas](docs/METRICS_EXPLAINED.md),
+[case table](results/test_cases.csv), [raw summary](results/summary.csv), and
+[remaining deliverables](docs/COMPLETION_STATUS.md).
+
+The requested live attack demonstration and video are pending real evaluation;
+there is no recording link yet. [Demo procedure](docs/DEMO.md).
+Historical source, documents and results remain readable under [archive/](archive/README.md).

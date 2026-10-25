@@ -46,8 +46,11 @@ def execution_identity():
     """Only allowlisted public settings and application source; never environment dumps."""
     root = Path(__file__).resolve().parents[3]
     current = LiveSettings.from_env()
+    files = set((root / 'backend/app').rglob('*.py'))
+    # Keep historical source identities visible through the archive alias.
+    files.update((root / 'backend/app/legacy').rglob('*.py'))
     sources = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-               for p in sorted((root / 'backend/app').rglob('*.py'))}
+               for p in sorted(files)}
     return {'version': 'phase9-v1', 'sources': sources,
             'timeout_seconds': current.request_timeout_seconds,
             'dependencies': dependency_versions(),

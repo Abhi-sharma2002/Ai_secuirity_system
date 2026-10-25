@@ -1,6 +1,6 @@
 ## Current website implementation and handover
 
-See [current17-phase status, seven deliverables and verified website](END_TO_END_HANDOVER_20261023.md).
+See [current17-phase status, seven deliverables and verified website](../archive/docs/END_TO_END_HANDOVER_20261023.md).
 Actual saved-result downloads/charts and operational explanations implemented;
 no provider calls or accounting changes. Local website verified, Ask disabled
 by stopped development authorization. Representative attack evaluation and
@@ -31,7 +31,7 @@ binding. No automatic limit increase,batching or renewal was introduced.
 
 ## Current independent assignment handoff · 23 October 2026
 
-[Current17-phase assessment,deliverables and exact outcomes](ASSIGNMENT_HANDOFF_20261023.md)
+[Current17-phase assessment,deliverables and exact outcomes](../archive/docs/ASSIGNMENT_HANDOFF_20261023.md)
 is authoritative for this handoff. All identified independent preparation is
 finished:53 named requirements mapped,report/demo/setup complete offline,
 source-preserving CSV/JSON and seven metric charts,blank bound review exports,
@@ -50,7 +50,7 @@ See RESULTS_GUIDE.md,INSTALLATION.md,DEMO.md,REPORT.md and preservation evidence
 
 ## Controlled evaluation plan prepared, DRAFT · 23 October 2026
 
-[Plan and binding inputs](CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md):all12
+[Plan and binding inputs](../archive/docs/CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md):all12
 development cases x1 and30 final x3;paired A/B/C,seed5 per split,explicit306-record
 schedule. Actual implementation arithmetic gives maximum408 provider attempts
 and13,056,000 local reservation units. The generic runner is serial with no
@@ -72,7 +72,7 @@ Latest user approval applied exactly as `legacy-e037-task-v2` for future legacy
 E037 runs. Original case/rubric/source/grades/history remain unchanged;no
 historical regrading or current/legacy aggregate mixing. Runner binds rubric
 version/hash/snapshot and original-case fingerprint before generation. E038 and
-current benchmark rubrics unchanged. [Approval/freeze record](reviews/P12_05_APPROVAL_AND_FREEZE_20261023.md)
+current benchmark rubrics unchanged. [Approval/freeze record](../archive/docs/reviews/P12_05_APPROVAL_AND_FREEZE_20261023.md)
 supersedes earlier pending status. All six semantic decisions resolved, but
 Phase12 remains Partial:actual model/capabilities and controlled evaluation
 plan/identity freeze missing;account readiness and actual response review/live
@@ -87,7 +87,7 @@ AST/diff/preservation evidence:`evidence/p12-05-preservation-v1.json`.
 ## Approved Phase12 versioned semantics · 23 October 2026
 
 User approved P12-01/02/03/04/06;approval basis and application:
-[PHASE12_APPROVAL_20261023.md](reviews/PHASE12_APPROVAL_20261023.md).
+[PHASE12_APPROVAL_20261023.md](../archive/docs/reviews/PHASE12_APPROVAL_20261023.md).
 P12-05 pending and unapplied;exact proposed E037 rubric and authored grading
 illustrations in [P12_05_E037_PENDING.md](reviews/P12_05_E037_PENDING.md).
 Added evaluator-only versioned rules/case overlays and component-exposure review
@@ -103,7 +103,7 @@ temporary ledgers with network sentinels. No provider calls or real allowance
 changes. No full regression,parsing,retrieval or ingestion rerun. Phase12 Partial;
 model/account/execution freeze and actual response review pending.
 
-Current local-workflow portion verified23October2026:recent roadmap10 Complete;checklist9 still Partial. Genuine isolated CPU/index/API/UI workflow passed;existing data/accounting preserved and no live calls. [Report](LOCAL_WORKFLOW_VERIFICATION_20261023.md) and current-local-workflow-v1.json supersede the earlier local-workflow gap;other phase statuses unchanged.
+Current local-workflow portion verified23October2026:recent roadmap10 Complete;checklist9 still Partial. Genuine isolated CPU/index/API/UI workflow passed;existing data/accounting preserved and no live calls. [Report](../archive/docs/LOCAL_WORKFLOW_VERIFICATION_20261023.md) and current-local-workflow-v1.json supersede the earlier local-workflow gap;other phase statuses unchanged.
 
 Roadmap9A complete:64 configuration-independent checks plus1 isolated HTTP check passed; historical adapters/test sources preserved. Only tests and active documentation changed. Roadmap10 remains partial pending a current disposable real-model workflow;11 blocked;12 partial;13 not started;14 partial. [Current roadmap](ROADMAP_STATUS.md) and VERIFICATION give exact evidence and limits.
 
@@ -127,21 +127,21 @@ Preservation verified:68 inventoried stored/frozen/ledger/adapter files unchange
 
 Last manual submission timed out with ReadTimeout/timeout_usage_unknown under reasoning_effort=none and existing30s timeout. Its retained reservation exhausted NVIDIA capacity:5 calls/160000 units consumed, **0 remaining**; approval unexpired and no applicable stop. No refund or budget increase authorized/performed.
 
-Fixed end-to-end status: readiness now distinguishes backend configured-live from spendable capacity and reports remaining units/calls, expiry and per-mode availability. UI displays budget, disables unfunded Ask/C, updates on defense selection and refreshes after user submission without resubmitting. Timeout message explains unknown usage/no automatic retry. Six focused tests passed in1.833s; compileall/diff checks passed. Actual restarted backend is configured live but Ask unavailable due to exhaustion. Local health only; accounting/stop rows unchanged. [Findings, changes and next requirement](ASK_BUDGET_READINESS_FIX_20261022.md). No provider call, extra budget, expiry change or benchmark. Full A/B/C integration incomplete.
+Fixed end-to-end status: readiness now distinguishes backend configured-live from spendable capacity and reports remaining units/calls, expiry and per-mode availability. UI displays budget, disables unfunded Ask/C, updates on defense selection and refreshes after user submission without resubmitting. Timeout message explains unknown usage/no automatic retry. Six focused tests passed in1.833s; compileall/diff checks passed. Actual restarted backend is configured live but Ask unavailable due to exhaustion. Local health only; accounting/stop rows unchanged. [Findings, changes and next requirement](../archive/docs/ASK_BUDGET_READINESS_FIX_20261022.md). No provider call, extra budget, expiry change or benchmark. Full A/B/C integration incomplete.
 
 
 ## Ask response-content repair · 22 October 2026
 
 Two saved user B submissions failed after provider-reported output reached700 tokens; usage2511 input/700 output each, ValueError/non-text answer path, no usable answer. Historical finish reason was not captured; no exact reasoning-budget cause is asserted. Applied model-documented reasoning_effort=none default for the configured Nemotron model, preserving output700/timeout30/retries0, schema, defenses and retrieval. Future experiment identity includes reasoning mode. Added safe finish/content metadata, preserved HTTP status/request IDs after validation failures, and clear UI explanations for saved failures.
 
-25 focused offline tests passed in3.568s plus one AppTest saved-error rendering check with no POST/provider calls. Services restarted retaining live mode; actual readiness confirms none/FREE_ONLY=true/30s. No automatic provider test; accounting/stops unchanged across restart. User submissions had consumed2 reservations; **1 call/32000 units remain** (C requires2 and blocks). No refund/budget/expiry/history change. Old failure records preserved; actual provider success after repair is unverified. [Detailed findings and limits](NVIDIA_ANSWER_CONTENT_FIX_20261022.md).
+25 focused offline tests passed in3.568s plus one AppTest saved-error rendering check with no POST/provider calls. Services restarted retaining live mode; actual readiness confirms none/FREE_ONLY=true/30s. No automatic provider test; accounting/stops unchanged across restart. User submissions had consumed2 reservations; **1 call/32000 units remain** (C requires2 and blocks). No refund/budget/expiry/history change. Old failure records preserved; actual provider success after repair is unverified. [Detailed findings and limits](../archive/docs/NVIDIA_ANSWER_CONTENT_FIX_20261022.md).
 
 
 ## User-initiated Ask enabled within remaining allowance · 22 October 2026
 
 Actual backend now runs `run_app.py --live-answers`, UI http://127.0.0.1:8501. Local readiness/health only; **no automatic provider call**. FREE_ONLY=true. Remaining3 calls/96000 units; same NVIDIA identity/ceilings/history/stops. Existing approval unexpired, not renewed:22October2026 16:30:02.736257 IST. Unknown provider entitlement preserved. All call/allowance rows unchanged across restart. Default launcher/root .env remain live-disabled; explicit flag enables only backend.
 
-Recorded HTTP500 finalized as failed without an allowance stop; no reset/stop bypass required. New manually submitted Ask requests are authorized, not an automatic retry/resume or proof of provider recovery. Current C reserves2 calls/64000 units up front and rechecks approval per call; A/B reserve1/32000. Expiry or insufficient capacity blocks provider requests. Two focused launcher tests passed; existing gate/C/expiry tests reused. Full A/B/C integration still incomplete. [Exact live status, expiry and recovery](ASK_LIVE_STATUS_20261022.md).
+Recorded HTTP500 finalized as failed without an allowance stop; no reset/stop bypass required. New manually submitted Ask requests are authorized, not an automatic retry/resume or proof of provider recovery. Current C reserves2 calls/64000 units up front and rechecks approval per call; A/B reserve1/32000. Expiry or insufficient capacity blocks provider requests. Two focused launcher tests passed; existing gate/C/expiry tests reused. Full A/B/C integration still incomplete. [Exact live status, expiry and recovery](../archive/docs/ASK_LIVE_STATUS_20261022.md).
 
 
 ## NVIDIA paired smoke stopped: HTTP500 · 22 October 2026
@@ -150,14 +150,14 @@ Authorized one paired development-02 A/B/C repetition with <=4 attempts and12800
 
 Actual run `nvidia-development-02-ABC-20261022-v1` stopped on first A generation: **HTTP500, NIMStatusError, provider_or_schema_error**. Exactly1 attempt; B/C unattempted; answer/usage/message/code/request-ID unavailable/null, error type redacted. Client14737.045702ms; boundary14754.541283ms; first-call pacing0.000000657s (no intentional wait). No retry/repair/rerun/fallback/probe. Original evidence preserved; C screening/retained evidence unobserved/null; no semantic support judgment possible.
 
-A's new32000-unit reservation retained; NVIDIA cumulative2/64000, remaining **3 calls/96000 units**. All prior call/allowance rows and stop flags compared unchanged; Groq accounting untouched. Root .env unchanged. Services restarted live-disabled/free-only true. **A/B/C integration did not pass and remains incomplete**; no full benchmark or effectiveness claim. Three focused offline wrapper tests passed in0.046s, including fake-clock65s pacing and operational/schema stop behavior. compileall/diff checks passed. [Actual partial result and accounting](NVIDIA_ABC_SMOKE_RESULT_20261022.md).
+A's new32000-unit reservation retained; NVIDIA cumulative2/64000, remaining **3 calls/96000 units**. All prior call/allowance rows and stop flags compared unchanged; Groq accounting untouched. Root .env unchanged. Services restarted live-disabled/free-only true. **A/B/C integration did not pass and remains incomplete**; no full benchmark or effectiveness claim. Three focused offline wrapper tests passed in0.046s, including fake-clock65s pacing and operational/schema stop behavior. compileall/diff checks passed. [Actual partial result and accounting](../archive/docs/NVIDIA_ABC_SMOKE_RESULT_20261022.md).
 
 
 ## Single NVIDIA A baseline succeeded · 22 October 2026
 
 Applied the expressly authorized unknown-entitlement-expiry amendment to PROJECT_CONTRACT and Approval validation. Recorded current-eligibility evidence/check time, activation and exactly one hour of local approval; unknown remains unknown, never unlimited or API-key expiry. Missing/unverified eligibility and invalid windows fail closed. Legacy approval serialization/fingerprint input unchanged. Focused offline command: 18 passed in0.952s; compileall/diff checks passed.
 
-Exactly one NVIDIA A/development-02 request returned HTTP200 and answered “Development mentor check-ins occur every Friday.” Actual cited source contains the exact policy; agent inspection found support, without official human benchmark grades or effectiveness claims. Usage353 input/345 output/698 total; client latency3982.962357ms. No B/C/retry/repair/fallback/probe. One32000-unit reservation retained; NVIDIA capacity **0 calls/0 units**. Same NVIDIA identity/ceilings and all historical Groq usage/stops preserved. Root .env unchanged. Services restarted live-disabled, FREE_ONLY=true. Local approval expires22October2026 16:24:06 IST; provider entitlement expiry remains unknown. Full A/B/C evaluation incomplete. [Actual result and exact checks](NVIDIA_BASELINE_RESULT_20261022.md).
+Exactly one NVIDIA A/development-02 request returned HTTP200 and answered “Development mentor check-ins occur every Friday.” Actual cited source contains the exact policy; agent inspection found support, without official human benchmark grades or effectiveness claims. Usage353 input/345 output/698 total; client latency3982.962357ms. No B/C/retry/repair/fallback/probe. One32000-unit reservation retained; NVIDIA capacity **0 calls/0 units**. Same NVIDIA identity/ceilings and all historical Groq usage/stops preserved. Root .env unchanged. Services restarted live-disabled, FREE_ONLY=true. Local approval expires22October2026 16:24:06 IST; provider entitlement expiry remains unknown. Full A/B/C evaluation incomplete. [Actual result and exact checks](../archive/docs/NVIDIA_BASELINE_RESULT_20261022.md).
 
 
 ## NVIDIA credential loading fixed · 22 October 2026
@@ -189,7 +189,7 @@ Exact test command: `PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 
 
 After the user's reported root .env key replacement, restarted only the project services and made exactly one A/development-02 request using the final existing reservation. Groq returned HTTP 401, `invalid_request_error` / `invalid_api_key`, sanitized message **Invalid API Key**, request ID `req_01m5hdvxa3emfbqj5mnt984pgy`. Runtime root/effective credential equality and single-Bearer/effective equality were true at the expected Groq endpoint. No answer/usage was returned; no semantic success is claimed. No retries, repairs, fallback or further provider calls.
 
-Approval was unexpired and was not extended. All four reservations remain retained: **0 calls / 0 units remaining**. Identity, ceilings, stop flags, previous artifacts and user-edited root .env preserved. Backend/frontend healthy and live disabled; ongoing UI answering remains disabled. Existing verified runner reused; no new runtime code or repeated offline tests. Phase 6/full A/B/C evaluation remains incomplete. [Sanitized attempt report](GROQ_REPLACED_KEY_ATTEMPT_20261022.md).
+Approval was unexpired and was not extended. All four reservations remain retained: **0 calls / 0 units remaining**. Identity, ceilings, stop flags, previous artifacts and user-edited root .env preserved. Backend/frontend healthy and live disabled; ongoing UI answering remains disabled. Existing verified runner reused; no new runtime code or repeated offline tests. Phase 6/full A/B/C evaluation remains incomplete. [Sanitized attempt report](../archive/docs/GROQ_REPLACED_KEY_ATTEMPT_20261022.md).
 
 
 ## Groq restoration attempt stopped · 22 October 2026 (India)
@@ -198,7 +198,7 @@ Exactly one newly authorized A/development-02 provider attempt returned HTTP 401
 
 Added safe readiness/source and wire-auth equality booleans, disabled automatic redirect following, and an exclusive bounded diagnostic runner. Offline checks: 9 tests passed in 1.802s (actual SDK/synthetic HTTP, including 307 no-follow), plus 2 wrapper-bound tests passed in 0.008s. Compileall/diff checks passed. Only expired approval expiry refreshed; existing ceilings/identity/history/stops preserved. New 32000-unit failed reservation retained; 1 call/32000 units remain; expiry 22 October 2026 15:31:52 IST. Root .env unchanged/ignored. Both old failures and datasets/uploads/Chroma preserved. Services healthy, live disabled, Ask cannot yet generate real answers. Phase 6/full A/B/C evaluation incomplete; Phase 7 offline status unchanged.
 
-Required action: replace only GROQ_API_KEY locally in root .env with an active key from the intended Groq account/project, keep live disabled and restart. No further provider attempt is authorized by this record. [Full report and exact verification](GROQ_RESTORE_ATTEMPT_20261022.md).
+Required action: replace only GROQ_API_KEY locally in root .env with an active key from the intended Groq account/project, keep live disabled and restart. No further provider attempt is authorized by this record. [Full report and exact verification](../archive/docs/GROQ_RESTORE_ATTEMPT_20261022.md).
 
 
 ## Phase 7 instruction-separation offline gate · 22 October 2026 (India)

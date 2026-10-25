@@ -1,6 +1,6 @@
 ## Current authorized staged execution and interactive handover
 
-[Actual current state,17phases and seven deliverables](STAGED_EXECUTION_HANDOVER_20261023.md).
+[Actual current state,17phases and seven deliverables](../archive/docs/STAGED_EXECUTION_HANDOVER_20261023.md).
 Remaining development stopped at08 C:HTTP200 length/empty content, cap700;
 1actual call,2slots/64000units reserved,0new completed records. No retry/settings
 change. Conditional final NOT activated. Original18benign human approvals and
@@ -10,14 +10,14 @@ may consume this capacity. See the app for actual remaining budget/expiry.
 
 ## Current independent continuation preparation
 
-[Actual state and verification](CONTINUATION_PREPARATION_STATUS_20261023.md) · [one staged execution proposal](CONSOLIDATED_EXECUTION_APPROVAL_20261023.md).
+[Actual state and verification](../archive/docs/CONTINUATION_PREPARATION_STATUS_20261023.md) · [one staged execution proposal](../archive/docs/CONSOLIDATED_EXECUTION_APPROVAL_20261023.md).
 Provider-blocked diagnostics remain separate from application outcomes.
 No further calls/activation; Ask remains disabled without valid interactive
 capacity. Reviewed benign records preserved; attack/final completion not claimed.
 
 ## One linked diagnostic executed under trial-credit-only authorization
 
-[Actual diagnostic result](DEVELOPMENT07_DIAGNOSTIC_RESULT_20261023.md):one
+[Actual diagnostic result](../archive/docs/DEVELOPMENT07_DIAGNOSTIC_RESULT_20261023.md):one
 HTTP400 attempt, Azure code content_filter / ResponsibleAIPolicyViolation,
 filtered category jailbreak. No model answer or defense-success grade. Diagnostic
 1call/32000 units consumed;0 remaining, stopped. Original evaluation accounting,
@@ -26,7 +26,7 @@ change; finish live-disabled. Historical original400 details remain redacted.
 
 ## Current reviewed report and panel artifacts
 
-[Completed report/panel preparation and phase updates](REVIEWED_PANEL_COMPLETION_20261023.md)
+[Completed report/panel preparation and phase updates](../archive/docs/REVIEWED_PANEL_COMPLETION_20261023.md)
 use18 explicitly approved benign A/B/C records. [Technical report](REPORT.md),
 [seven labeled figures and tables](panel/partial-benign-six-cases-v1/INDEX.md),
 and [panel walkthrough](PANEL_WALKTHROUGH.md) are ready from actual saved evidence.
@@ -36,7 +36,7 @@ as history; current phase12/13/15/16/17 Partial,14 Not started.
 
 ## Current website implementation and handover
 
-See [current17-phase status, seven deliverables and verified website](END_TO_END_HANDOVER_20261023.md).
+See [current17-phase status, seven deliverables and verified website](../archive/docs/END_TO_END_HANDOVER_20261023.md).
 Actual saved-result downloads/charts and operational explanations implemented;
 no provider calls or accounting changes. Local website verified, Ask disabled
 by stopped development authorization. Representative attack evaluation and
@@ -44,7 +44,7 @@ human review remain incomplete. Earlier dated statuses below are historical.
 
 ## Current DEVELOPMENT execution · 23 October 2026
 
-[Actual stopped development run](AZURE_DEVELOPMENT_EXECUTION_20261023.md):18/36 records operationally
+[Actual stopped development run](../archive/docs/AZURE_DEVELOPMENT_EXECUTION_20261023.md):18/36 records operationally
 completed,1 HTTP400 failure on development-07 A,17 records not executed.
 25 provider attempts;19854 known reported tokens plus1 unknown-usage call.
 Used800000 local units;23 calls/736000 units unspent but STOPPED and unusable.
@@ -58,7 +58,7 @@ Earlier dated states below remain history.
 
 ## Current paired Azure integration · 23 October 2026
 
-[Actual paired A/B/C result](AZURE_PAIRED_INTEGRATION_RESULT_20261023.md): development-02 completed with4 real
+[Actual paired A/B/C result](../archive/docs/AZURE_PAIRED_INTEGRATION_RESULT_20261023.md): development-02 completed with4 real
 HTTP200 attempts, source-supported Friday answers in A/B/C, valid clear C
 screening and identical original/retained evidence. No operational defect or
 retry. Original integration allowance exhausted:0 calls/0 units; unchanged expiry
@@ -67,7 +67,7 @@ Roadmap Phase11 and checklist Phase9 local workflow/live integration are complet
 for this benign integration case; representative attack evaluation and human
 review remain pending. No defense-effectiveness claim is made.
 
-See [separate development approval package](DEVELOPMENT_EVALUATION_APPROVAL_20261023.md).
+See [separate development approval package](../archive/docs/DEVELOPMENT_EVALUATION_APPROVAL_20261023.md).
 12 cases/36 mode records need at most48 attempts/1536000 units under a new,
 separately scoped approval/policy. Actual model/code/evidence identities bound in
 preparation only; no benchmark executed or execution freeze invented. Seven
@@ -76,7 +76,7 @@ are retained as history and superseded for these integration facts.
 
 ## Current Azure baseline and paid test status · 23 October 2026
 
-[Actual baseline result and accounting](AZURE_PAID_BASELINE_RESULT_20261023.md): ONE real Azure A request
+[Actual baseline result and accounting](../archive/docs/AZURE_PAID_BASELINE_RESULT_20261023.md): ONE real Azure A request
 succeeded with source-supported Friday answer. User approved paid use for the
 existing bounded test; free eligibility and actual Azure quota remain unknown.
 Ask enabled at verification with4 calls/128000 local units remaining until
@@ -87,7 +87,7 @@ entries below are historical observations, superseded for this baseline only.
 
 ## Azure loading and settings revision · 23 October 2026
 
-See [verified loading/settings-v2 record](AZURE_LOADING_AND_SETTINGS_V2_20261023.md).
+See [verified loading/settings-v2 record](../archive/docs/AZURE_LOADING_AND_SETTINGS_V2_20261023.md).
 Saved root credentials now match the restarted application. Approved temperature
 omission versioned across runtime/future identities; cap700 unchanged.24 focused
 test executions passed. Local services healthy; Ask disabled. No provider call or
@@ -98,7 +98,7 @@ remain incomplete; no historical accounting or results reset.
 
 ## Azure deployment facts checked; live blocked · 23 October 2026
 
-[Compatibility check](AZURE_DEPLOYMENT_COMPATIBILITY_20261023.md):accepted portal
+[Compatibility check](../archive/docs/AZURE_DEPLOYMENT_COMPATIBILITY_20261023.md):accepted portal
 facts are deployment gpt-5-mini-1,model gpt-5-mini/version2025-08-07,GlobalStandard,
 Succeeded,configured100000TPM/100RPM. These do not establish remaining quota or
 funding. Private root settings still have blank key/endpoint/deployment;live=false
@@ -134,7 +134,7 @@ binding. No automatic limit increase,batching or renewal was introduced.
 
 ## Current independent assignment handoff · 23 October 2026
 
-[Current17-phase assessment,deliverables and exact outcomes](ASSIGNMENT_HANDOFF_20261023.md)
+[Current17-phase assessment,deliverables and exact outcomes](../archive/docs/ASSIGNMENT_HANDOFF_20261023.md)
 is authoritative for this handoff. All identified independent preparation is
 finished:53 named requirements mapped,report/demo/setup complete offline,
 source-preserving CSV/JSON and seven metric charts,blank bound review exports,
@@ -204,7 +204,7 @@ untouched unless isolation explicitly requires a separately identified test serv
 
 ## Local-workflow portion completed · 23 October 2026
 
-[Current verification report](LOCAL_WORKFLOW_VERIFICATION_20261023.md):the actual
+[Current verification report](../archive/docs/LOCAL_WORKFLOW_VERIFICATION_20261023.md):the actual
 isolated backend/frontend workflow passed11 checkpoints using real cached CPU
 embeddings and temporary SQLite/raw/Chroma. Successful replacement changed active
 retrieval;invalid replacement preserved it;actual Documents UI deletion removed
@@ -217,7 +217,7 @@ baseline/paired integration. No other phase completion status changed.
 
 ## Azure resumption check · 23 October 2026
 
-[Current blocker record](AZURE_RESUME_STATUS_20261023.md):three Azure settings
+[Current blocker record](../archive/docs/AZURE_RESUME_STATUS_20261023.md):three Azure settings
 remain blank;Azure allowance and both intended run directories absent. No
 provider calls or activation. Reused the completed11-checkpoint local workflow.
 Roadmap11 remains Blocked;checklist9 remains Partial. Latest bounded live
@@ -228,7 +228,7 @@ not establish account funding or capability facts. Live remains disabled.
 
 Azure remains unavailable. Latest instruction permits only independent preparation,
 with no provider calls, allowance changes or activation. Prepared six explicit
-approval decisions in [the review packet](reviews/PHASE12_DECISIONS_20261023.md),
+approval decisions in [the review packet](../archive/docs/reviews/PHASE12_DECISIONS_20261023.md),
 including evidence, recommendations and scoring effects. No decision is approved
 or applied. Current coverage/hash arithmetic passed19 checks (42 fixture hashes
 verified) in `evidence/phase12-preparation-v1.json`; saved parsing/retrieval,
@@ -240,7 +240,7 @@ response review are pending. No new security results or unseen-holdout claim.
 ## Approved Phase12 semantics applied · 23 October 2026
 
 Latest user message approves P12-01/02/03/04/06, with designated-fictional-marker
-scope and human review for02. [Approval/application record](reviews/PHASE12_APPROVAL_20261023.md)
+scope and human review for02. [Approval/application record](../archive/docs/reviews/PHASE12_APPROVAL_20261023.md)
 binds that authorization to `backend/benchmark/revisions/phase12-approved-v1/rules.json`.
 Versioned evaluator-only annotations/rules preserve original manifest,annotations,
 fixtures,legacy cases and historical results. Pre-change SCORING.md and original
@@ -258,7 +258,7 @@ The latest user message approves the exact E037 rubric. Applied as separate
 criteria snapshot and original-case fingerprint are saved before generation.
 Original legacy case/fixtures/rubric/grades/history unchanged;no regrading or
 mixing with current aggregates. Earlier P12-05-pending records are historical.
-All six semantic decisions are now approved/applied. [Approval and freeze review](reviews/P12_05_APPROVAL_AND_FREEZE_20261023.md)
+All six semantic decisions are now approved/applied. [Approval and freeze review](../archive/docs/reviews/P12_05_APPROVAL_AND_FREEZE_20261023.md)
 records remaining gaps:actual Azure deployment/model/version/capability facts,
 final controlled evaluation plan and frozen execution identity. Account readiness
 is also absent. Thus dataset/scoring preparation is not marked fully complete;
@@ -268,7 +268,7 @@ shared-runner tests in0.039s. No provider calls,allowance changes or activation.
 
 ## Controlled evaluation plan DRAFT · 23 October 2026
 
-[Draft plan](CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md) specifies all12 development
+[Draft plan](../archive/docs/CONTROLLED_EVALUATION_PLAN_DRAFT_20261023.md) specifies all12 development
 cases once and all30 final cases three times,paired initial evidence,seed5 reset
 per split,explicit mode-order schedule,actual fixed provider/screening settings,
 serial/no-added-delay generic-runner pacing,stop/resume and human metric rules.
