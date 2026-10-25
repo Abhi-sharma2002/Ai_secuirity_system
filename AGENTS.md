@@ -38,3 +38,17 @@ The user authorized extending the current OpenRouter benign interactive allowanc
 to 25 October 2026, 13:00 IST (07:30 UTC). This specific amendment preserves its
 identity, consumed reservations and stop flags, adds no capacity and authorizes
 no benchmark execution. It is not permission for automatic renewal.
+
+## Explicit new manual authorization, 26 October 2026
+
+The user explicitly requested enabling twenty live provider calls for their
+manual checking now. This authorizes a new, independent interactive scope
+on the fixed NVIDIA-only Nemotron free route, capped at 20 provider calls
+and 640000 local reservation units. It does not authorize benchmark execution,
+background inference, retries, paid routes, or automatic renewal.
+
+Activation: 2026-10-25T22:59:48.248634+00:00. Expiry: 2026-10-25T23:59:48.248634+00:00
+(2026-10-26T05:29:48.248634+05:30 IST). The existing API key authenticated and
+the account reported sufficient free-request capacity during preflight.
+Old receipts, consumed reservations and stop flags remain intact. This is
+a separately authorized scope, not reactivation of any old authorization.
