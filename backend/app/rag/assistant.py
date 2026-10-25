@@ -1,5 +1,6 @@
 """Shared A/B/C service. Runtime never imports a fake provider or evaluator labels."""
 import hashlib
+import os
 from time import perf_counter
 from uuid import uuid4
 from app.rag.retrieval import search
@@ -19,7 +20,11 @@ def messages(mode, question, evidence):
     return build(question, evidence)
 
 
-def respond(question, mode, *, initial=None, snapshot_items=None, run_context=None):
+def respond(question, mode, *, initial=None, snapshot_items=None, run_context=None, _evaluation_call=None):
+    # Only the explicit local evaluation adapter can supply this call boundary.
+    # Interactive API callers never pass it, even if EVAL_MODE is set.
+    if _evaluation_call is not None and (os.getenv('EVAL_MODE') != '1' or initial is None):
+        raise ValueError('Evaluation calls require EVAL_MODE=1 and supplied retrieval')
     start = perf_counter()
     result = {'request_id': str(uuid4()), 'mode': mode, 'question': question, 'status': 'error',
         'answer': '', 'references': [], 'candidate_evidence': [], 'supplied_evidence': [],
@@ -34,19 +39,26 @@ def respond(question, mode, *, initial=None, snapshot_items=None, run_context=No
         if not evidence and mode != 'C':
             result.update(status='insufficient_evidence', answer='No active evidence was retrieved.')
             return result
-        live.validate_interactive_input(question, evidence)
-        # Reserve the entire C screening + generation unit; failed/unused reservations are not refunded.
-        calls = live.reserve(2 if mode == 'C' else 1, 64_000 if mode == 'C' else 32_000, metadata={'request_id': result['request_id'], 'mode': mode, **(run_context or {})})
-        result.update(reservation_units=64_000 if mode == 'C' else 32_000, reservation_ids=calls)
+        if _evaluation_call is None:
+            live.validate_interactive_input(question, evidence)
+            # Failed/unused interactive reservations are not refunded.
+            calls = live.reserve(2 if mode == 'C' else 1, 64_000 if mode == 'C' else 32_000, metadata={'request_id': result['request_id'], 'mode': mode, **(run_context or {})})
+            result.update(reservation_units=64_000 if mode == 'C' else 32_000, reservation_ids=calls)
+        else:
+            calls = [None, None] if mode == 'C' else [None]
         if mode == 'C':
-            evidence = screening.apply(question, evidence, calls, result)
+            if _evaluation_call is None:
+                evidence = screening.apply(question, evidence, calls, result)
+            else:
+                evidence = screening.apply(question, evidence, calls, result, _evaluation_call=_evaluation_call)
             if evidence is None:
                 return result
         result['supplied_evidence'] = evidence
         if not evidence:
             result.update(status='insufficient_evidence', answer='No usable evidence remains after screening.')
             return result
-        raw, trace = live.call(messages(mode, question, evidence), Answer.model_json_schema(), 'generation', calls[-1])
+        call = live.call if _evaluation_call is None else _evaluation_call
+        raw, trace = call(messages(mode, question, evidence), Answer.model_json_schema(), 'generation', calls[-1])
         result['calls'].append(trace)
         answer = Answer.model_validate_json(raw)
         lookup = {h['id']: h for h in evidence}
@@ -68,9 +80,11 @@ def respond(question, mode, *, initial=None, snapshot_items=None, run_context=No
         result['calls'].append(exc.record)
         result.update(status='llm_error', error=exc.category)
     except Exception:
+        if _evaluation_call is not None:
+            raise
         result.update(status='operational_error', error='Retrieval, model response, or schema failed; no fallback answer generated')
     finally:
-        if result['status'] in {'screening_error', 'llm_error', 'operational_error', 'invalid_citations'}:
+        if _evaluation_call is None and result['status'] in {'screening_error', 'llm_error', 'operational_error', 'invalid_citations'}:
             live.stop_paid_test_on_error(result['reservation_ids'])
         result['latency_ms'] = (perf_counter() - start) * 1000
     return result
