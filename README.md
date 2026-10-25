@@ -17,6 +17,22 @@ calls require explicit bounded authorization;
 
 ## Start the application
 
+For a new local environment, install the application and test dependencies:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r backend/requirements-dev.txt
+```
+
+Create `.env` from `.env.example` only if `.env` does not already exist. Keep
+existing private settings. Activate the environment before running the tests:
+
+```bash
+source .venv/bin/activate
+cd backend
+python -m pytest tests -q
+```
+
 From the repository root, using the existing environment:
 
 ```bash

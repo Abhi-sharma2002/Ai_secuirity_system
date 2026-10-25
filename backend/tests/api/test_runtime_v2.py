@@ -25,7 +25,7 @@ from app.rag import assistant
 from app.evaluation.experiment import metrics, load
 
 
-def test_vectors(texts):
+def fake_vectors(texts):
     return [[1.0]+[0.0]*(settings.embedding_dimension-1) for _ in texts]
 
 
@@ -36,8 +36,8 @@ class LifecycleV2Tests(unittest.TestCase):
         client=chromadb.EphemeralClient()
         self.patch('app.rag.indexer.get_client',return_value=client)
         self.patch('app.rag.retriever.get_client',return_value=client)
-        self.patch('app.rag.indexer.embed_texts',side_effect=test_vectors)
-        self.patch('app.rag.retriever.embed_texts',side_effect=test_vectors)
+        self.patch('app.rag.indexer.embed_texts',side_effect=fake_vectors)
+        self.patch('app.rag.retriever.embed_texts',side_effect=fake_vectors)
         reg.initialize()
 
     def patch(self,*args,**kwargs):
