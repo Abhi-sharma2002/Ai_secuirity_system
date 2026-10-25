@@ -1,0 +1,11 @@
+{
+  "status": "no_records",
+  "n_records": 0,
+  "n_expected": 141,
+  "n_errors": 0,
+  "n_needs_review": 0,
+  "n_human_quality": 0,
+  "provider_requests_made": 0,
+  "records_sha256": null,
+  "note": "Unavailable rates are empty CSV cells and N/A in charts; no winner inferred."
+}
