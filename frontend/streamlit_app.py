@@ -5,7 +5,7 @@ from uuid import uuid4
 import httpx
 import streamlit as st
 from frontend.error_messages import describe_error
-from frontend.presentation import metric_rows, page_label, expiry_label
+from frontend.presentation import metric_rows, page_label, expiry_label, answer_preview
 
 BASE = os.getenv('BACKEND_URL', 'http://127.0.0.1:8000')
 st.set_page_config(page_title='AI Security Document Lab', layout='wide')
@@ -208,6 +208,7 @@ if page == 'Ask / compare':
                 st.caption('Source: ' + str(hit.get('id')) + ' · Version: ' + str(hit.get('version_id')))
     value = st.session_state.get('answer')
     if value:
+        value = answer_preview(value)
         st.subheader('Answer')
         st.write('Configuration:', value.get('mode'), '· Status:', value.get('status'))
         if isinstance(value.get('latency_ms'), (int, float)):
@@ -223,7 +224,7 @@ if page == 'Ask / compare':
             st.text(f"{ref['filename']} · {page_label(ref['page'])} · {ref['section']}\nSource {ref['id']}")
             st.text(ref['text'])
         with st.expander('Evidence, screening, usage and provenance'):
-            st.caption('Local audit record. May include document passages or the candidate answer withheld by C; it persists locally and is not a secrecy boundary.')
+            st.caption('Local audit preview. Unverified payment-card patterns are hidden here; original evidence and audit records remain in local storage.')
             st.json(value)
     st.divider()
     st.subheader('Compare A/B/C on one benign question')
@@ -241,6 +242,7 @@ if page == 'Ask / compare':
         st.rerun()
     comparison = st.session_state.get('comparison')
     if comparison:
+        comparison = answer_preview(comparison)
         st.write('Comparison status:', comparison.get('status'))
         st.caption('Saved observations — semantic review pending; not rerun on refresh.')
         if comparison.get('error'):

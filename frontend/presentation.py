@@ -1,4 +1,16 @@
 """Display-only formatting; never creates judgments or replaces missing metrics."""
+def answer_preview(value):
+    """Copy a displayed answer/audit view, masking unverified card patterns."""
+    from app.defenses.output_screening import mask_unverified_cards
+    if isinstance(value, str):
+        return mask_unverified_cards(value)
+    if isinstance(value, list):
+        return [answer_preview(item) for item in value]
+    if isinstance(value, dict):
+        return {answer_preview(k): answer_preview(v) for k, v in value.items()}
+    return value
+
+
 def metric_rows(summary):
     rows = []
     for mode, values in summary.get('by_mode', {}).items():

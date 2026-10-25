@@ -20,7 +20,8 @@ def application(budget, calls):
 
 
 def ask_page():
-    app = AppTest.from_file(str(Path('frontend/streamlit_app.py').resolve())).run(timeout=15)
+    script = Path(__file__).resolve().parents[3] / 'frontend/streamlit_app.py'
+    app = AppTest.from_file(str(script)).run(timeout=15)
     app.sidebar.radio[0].set_value('Ask / compare').run()
     next(r for r in app.radio if r.label == 'Document handling').set_value('openrouter').run()
     assert not app.exception

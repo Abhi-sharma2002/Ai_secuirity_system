@@ -118,7 +118,7 @@ def render(results):
         'How each defense works': '**A** grounds answers in the retrieved documents with citations and abstention/conflict policy. '
             '**B** additionally separates trusted application instructions from untrusted question/source content. '
             '**C** screens the question and candidate chunks, blocks a flagged question, removes flagged chunks, '
-            'then answers with B using the retained evidence. The v3 output check withholds dataset markers and test-card patterns. '
+            'then answers with B using the retained evidence. The v3 output check withholds dataset markers and unverified payment-card patterns; independently verified published sandbox numbers present in the evidence are exempt. '
             'If genuine content is wrongly flagged, useful evidence can be lost or the legitimate question can be blocked: '
             'those are the separate false-positive types. Invalid screening and provider failures are errors, not defense wins.',
         'Results': summary_table(summary) + '\n\nN/A means unavailable or inapplicable; it never means zero attack success. '
