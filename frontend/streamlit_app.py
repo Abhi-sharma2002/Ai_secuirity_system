@@ -11,7 +11,7 @@ from frontend.redaction import artifact_preview
 BASE = os.getenv('BACKEND_URL', 'http://127.0.0.1:8000')
 st.set_page_config(page_title='AI Security Document Lab', layout='wide')
 st.title('AI Security Document Lab')
-st.caption('Local-first employee-document Q&A · single user · isolated single-turn requests')
+st.caption('Upload documents, ask questions and check the cited sources.')
 
 
 def api(method, path, **kwargs):
@@ -50,7 +50,7 @@ if ready and 'remaining_calls' in ready['live']:
     expiry = live_status.get('expires_at')
     expiry_text = ('No time expiry' if expiry is None and 'expires_at' in live_status
                    else 'Approval expires ' + expiry_label(expiry))
-    st.caption(f"Remaining: {live_status['remaining_calls']} provider calls · {live_status['remaining_reserved_tokens']} local units · {expiry_text}")
+    st.caption(f"Remaining: {live_status['remaining_calls']} provider calls · {expiry_text}")
 page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / compare', 'Metrics / evaluation', 'Saved experiments', 'Assignment guide'])
 if ready:
     config = ready.get('configuration', {})
@@ -58,17 +58,22 @@ if ready:
 selected_provider = (ready or {}).get('configuration', {}).get('provider', 'azure_openai')
 provider_name = 'OpenRouter' if selected_provider == 'openrouter' else 'Azure OpenAI'
 external_mode = 'openrouter' if selected_provider == 'openrouter' else 'azure_openai'
-st.info(
-    'Documents are parsed, indexed, and searched locally. Local-only mode never calls a model and returns matching evidence. '
-    f'{provider_name} mode sends your question and retrieved passages to the external provider for answering (and, in C, screening). '
-    'Use it only for content you are authorized to send. Files, indexes, and request results persist locally; this app does not provide encryption, access control, or secure-erasure guarantees. '
-    'A is the baseline; B adds instruction separation; C adds model-based screening and a payment-card-number check. These are experimental defenses, not production secrecy controls.'
-)
+with st.expander('Processing and defense details'):
+    st.write(
+        'Documents are parsed, indexed, and searched locally. Local-only mode never calls a model and returns matching evidence. '
+        f'{provider_name} mode sends your question and retrieved passages to the external provider for answering (and, in C, screening). '
+        'Use it only for content you are authorized to send. Files, indexes, and request results persist locally; this app does not provide encryption, access control, or secure-erasure guarantees. '
+        'A is the baseline; B adds instruction separation; C adds model-based screening and a payment-card-number check. These are experimental defenses, not production secrecy controls.'
+    )
+    if ready and 'remaining_reserved_tokens' in ready['live']:
+        st.caption(f"Local reservation units remaining: {ready['live']['remaining_reserved_tokens']}. These are accounting units, not measured token usage or a provider charge.")
 if page == 'Documents':
-    st.write('UTF-8 TXT/MD, text PDF, non-macro DOCX. No OCR. Limits are enforced by the backend.')
+    st.subheader('Upload documents')
+    st.caption('Upload TXT, Markdown, text PDF or DOCX files, then open Ask / compare to ask questions. Scanned PDFs require text extraction first.')
     if ready:
-        st.json(ready.get('limits', {}), expanded=False)
-    st.caption('Up to 5 files per upload. The first upload may take longer while the cached CPU embedding model loads. Scanned/image-only PDFs need text extraction outside this app; OCR is not supported.')
+        with st.expander('Upload limits and extraction details'):
+            st.caption('Up to 5 files per upload. The first upload may take longer while the cached CPU embedding model loads. UTF-8 TXT/MD and non-macro DOCX are supported. OCR is not supported.')
+            st.json(ready.get('limits', {}), expanded=False)
     file_limit_bytes = (ready or {}).get('limits', {}).get('max_file_bytes', 5 * 1024 * 1024)
     file_limit_mb = max(1, (file_limit_bytes + 1024**2 - 1) // 1024**2)
     with st.form('upload', clear_on_submit=True):
