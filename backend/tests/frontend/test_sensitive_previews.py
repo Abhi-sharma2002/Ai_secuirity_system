@@ -105,9 +105,14 @@ def test_real_workspace_views_hide_sensitive_source_values(page, session):
         # Include nested expander contents: collapsed UI must not conceal raw leaks.
         rendered = '\n'.join(str(element.value) for kind in ('text', 'json', 'caption', 'warning')
                              for element in app.get(kind))
-        assert POLICY in rendered
+        if 'local_search' in session:
+            assert POLICY not in rendered
+            assert 'Source: policy.txt' in rendered
+        else:
+            assert POLICY in rendered
         assert all(s not in rendered for s in (KEY, EMAIL, CANARY))
-        assert '[credential hidden]' in rendered
+        if 'local_search' not in session:
+            assert '[credential hidden]' in rendered
         assert all(method == 'GET' for method, _ in requests)
         for name, value in session.items():
             assert app.session_state[name] == value

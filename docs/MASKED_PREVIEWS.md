@@ -11,7 +11,13 @@ This applies to answers, references, nested audit details, comparison previews,
 document blocks, upload outcomes, local searches, saved experiment views and
 diagnostic views. Text downloads from the UI are explicitly marked as masked
 previews; JSON and CSV are parsed before masking to preserve their structure.
-Citation excerpts are collapsed and labeled as masked document text.
+This was followed by the user's clarification that all document details should
+be omitted after an answer. The current Ask workspace therefore shows only the
+answer and source filename/page, without a source-body or raw-audit expander.
+Interactive comparison downloads likewise contain only answers, status and
+citation locations. The separate document/search/review workspaces still allow
+intentional masked inspection. The checks below record the earlier masking
+change; the answer-only change has its own verification in ANSWER_ONLY_VIEW.md.
 
 The known public PayPal sandbox fixture exception remains. Masking makes a
 display copy: original documents, raw local API/audit records, benchmark inputs,

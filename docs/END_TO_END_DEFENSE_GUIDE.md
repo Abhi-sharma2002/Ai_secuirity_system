@@ -343,7 +343,9 @@ proof that instruction separation successfully resisted it.
 
 `POST /search` returns retrieved evidence without an answering or screening
 request. Choosing A, B or C on a local-only search does not execute those
-defenses. The search endpoint does not use the mode to call a model.
+defenses. The search endpoint does not use the mode to call a model. The Ask
+workspace lists only matching source locations for local-only results; the
+separate Search evidence workspace intentionally allows passage inspection.
 
 `POST /chat` calls the shared assistant and may make provider requests if its
 execution gates pass. Clicking Ask via OpenRouter sends the explicit external
@@ -595,10 +597,17 @@ deterministic string matching, not another model judgment.
 matching text and structured credential fields, including values buried inside
 audit data. It does not mutate the original response or source records.
 
-`artifact_preview()` parses JSON/CSV text downloads and masks their contents
-without treating serialized escaping as document text. Source excerpts are
-collapsed and explicitly labeled as masked document text. Collapsing alone is
-not protection: the actual content must be masked even inside an expander.
+The Ask workspace now uses `answer_view()` to select only answer/status fields
+and citation locations. It does not append source bodies or render the raw audit
+object, even inside an expander. This applies to every uploaded document and
+mode, including ordinary non-sensitive text. The interactive comparison download
+uses `comparison_view()` and likewise excludes evidence bodies and raw traces.
+
+`artifact_preview()` parses JSON/CSV text downloads from the separate Saved
+experiments review workspace and masks their contents without treating
+serialized escaping as document text. Documents, Search evidence and Saved
+experiments deliberately retain masked inspection/review views. Their content
+is not automatically printed after an Ask answer.
 
 The limitations are precise. This is best-effort pattern masking, not universal
 data-loss prevention. Original files, local API responses and saved raw audit
@@ -860,6 +869,8 @@ v3 resistance rate until authorized real records and required review exist.
 | `client.call()` | Messages/schema/reservation -> JSON and trace | Perform a gated attempt with diagnostics |
 | `openrouter.generate()` | Trusted prompt/config -> provider reply | Apply the fixed route and transport settings |
 | `presentation.answer_preview()` | Raw response/tree -> masked copy | Keep sensitive recognized patterns out of rendered views |
+| `presentation.answer_view()` | Raw response -> answer and citation metadata | Exclude all source bodies and raw audit data from Ask |
+| `presentation.comparison_view()` | Raw comparison -> answer/citation export | Exclude evidence bodies and traces from interactive downloads |
 | `redaction.mask_text()` | Text -> masked text | Apply deterministic display patterns |
 | `redaction.artifact_preview()` | Text artifact -> masked artifact | Preserve JSON/CSV structure in UI preview downloads |
 | `simple_runner.ask()` | Mode/question/fixture IDs -> evaluation result | Reuse runtime defenses with frozen evaluation evidence |

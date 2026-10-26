@@ -5,7 +5,7 @@ from uuid import uuid4
 import httpx
 import streamlit as st
 from frontend.error_messages import describe_error
-from frontend.presentation import metric_rows, page_label, expiry_label, answer_preview
+from frontend.presentation import metric_rows, page_label, expiry_label, answer_preview, answer_view, comparison_view
 from frontend.redaction import artifact_preview
 
 BASE = os.getenv('BACKEND_URL', 'http://127.0.0.1:8000')
@@ -199,36 +199,30 @@ if page == 'Ask / compare':
         st.rerun()
     local_search = answer_preview(st.session_state.get('local_search'))
     if local_search is not None:
-        st.subheader('Local-only evidence')
-        st.info('No model was called. These are retrieved passages, not a generated answer.')
+        st.subheader('Matching sources')
+        st.info('No model was called. Open Search evidence to inspect matching passages, or use live Ask for a generated answer when available.')
         hits = local_search.get('hits', [])
         if not hits:
             st.info('No active evidence matched this question.')
         for hit in hits:
-            with st.expander(str(hit.get('filename', 'Document')) + ' · ' + page_label(hit.get('page'))):
-                st.text(hit.get('text', ''))
-                st.caption('Source: ' + str(hit.get('id')) + ' · Version: ' + str(hit.get('version_id')))
+            st.caption('Source: ' + str(hit.get('filename', 'Document')) + ' · ' + page_label(hit.get('page')))
     value = st.session_state.get('answer')
     if value:
-        value = answer_preview(value)
+        error_description = describe_error(answer_preview(value)) if value.get('status') in {'llm_error', 'screening_error'} else None
+        value = answer_view(value)
         st.subheader('Answer')
         st.write('Configuration:', value.get('mode'), '· Status:', value.get('status'))
         if isinstance(value.get('latency_ms'), (int, float)):
             st.caption(f"Elapsed: {value['latency_ms']/1000:.2f} seconds · Local units reserved: {value.get('reservation_units', 0)}")
         if value.get('status') in {'llm_error', 'screening_error'}:
-            st.error(describe_error(value))
+            st.error(error_description)
             st.caption('This is the saved result of your previous submission; it is not retried on refresh.')
         else:
             st.text(value.get('answer') or value.get('error', ''))
         for ref in value.get('references', []):
             if ref.get('partial_text'):
                 st.warning('This citation uses explicitly accepted partial extraction; unread content may affect the answer.')
-            st.text(f"{ref['filename']} · {page_label(ref['page'])} · {ref['section']}\nSource {ref['id']}")
-            with st.expander('Source excerpt — masked document text'):
-                st.text(ref['text'])
-        with st.expander('Evidence, screening, usage and provenance'):
-            st.caption('Masked preview: recognized credentials, emails, internal canaries and unverified payment-card patterns are hidden. Original evidence and audit records remain in local storage.')
-            st.json(value)
+            st.caption(f"Source: {ref.get('filename', 'Document')} · {page_label(ref.get('page'))}")
     st.divider()
     st.subheader('Compare A/B/C on one benign question')
     st.caption('One frozen retrieval result; up to 4 calls / 128000 units. Unreviewed interactive observations, not benchmark security metrics. No automatic retries.')
@@ -262,10 +256,10 @@ if page == 'Ask / compare':
                         st.error(describe_error(response))
                     else:
                         st.text(response.get('answer') or response.get('error', ''))
-                    for reference in response.get('references', []):
-                        st.text(str(reference.get('filename')) + ' · ' + page_label(reference.get('page')) + ' · ' + str(reference.get('id')))
+                    for reference in answer_view(response)['references']:
+                        st.caption('Source: ' + str(reference.get('filename')) + ' · ' + page_label(reference.get('page')))
                     st.caption('Latency: ' + str(response.get('latency_ms')) + ' ms')
-        st.download_button('Download masked unreviewed comparison JSON', json.dumps(comparison, indent=2),
+        st.download_button('Download answers and citations JSON', json.dumps(comparison_view(comparison), indent=2),
                            file_name='benign-comparison-unreviewed.json', mime='application/json')
 if page == 'Saved experiments':
     runs = api('GET', '/results')

@@ -12,6 +12,26 @@ def answer_preview(value):
     return value
 
 
+def answer_view(value):
+    """Only the answer, status and citation locations belong in the Ask view."""
+    preview = answer_preview(value)
+    result = {key: preview[key] for key in ('mode', 'status', 'answer', 'error', 'latency_ms', 'reservation_units')
+              if key in preview}
+    result['references'] = [
+        {key: ref[key] for key in ('filename', 'page', 'section', 'partial_text') if key in ref}
+        for ref in preview.get('references', [])
+    ]
+    return result
+
+
+def comparison_view(value):
+    """Interactive downloads contain answers/citation locations, never audit text."""
+    preview = answer_preview(value)
+    return {**{key: preview[key] for key in ('status', 'error') if key in preview},
+            'results': {mode: answer_view(response) for mode, response in preview.get('results', {}).items()
+                        if response is not None}}
+
+
 def metric_rows(summary):
     rows = []
     for mode, values in summary.get('by_mode', {}).items():
