@@ -47,7 +47,10 @@ if ready and not ready['live']['enabled']:
         st.info('Configure the backend root .env: ' + ', '.join(missing))
 if ready and 'remaining_calls' in ready['live']:
     live_status = ready['live']
-    st.caption(f"Remaining: {live_status['remaining_calls']} provider calls · {live_status['remaining_reserved_tokens']} local units · approval expires {expiry_label(live_status['expires_at'])}")
+    expiry = live_status.get('expires_at')
+    expiry_text = ('No time expiry' if expiry is None and 'expires_at' in live_status
+                   else 'Approval expires ' + expiry_label(expiry))
+    st.caption(f"Remaining: {live_status['remaining_calls']} provider calls · {live_status['remaining_reserved_tokens']} local units · {expiry_text}")
 page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / compare', 'Metrics / evaluation', 'Saved experiments', 'Assignment guide'])
 if ready:
     config = ready.get('configuration', {})

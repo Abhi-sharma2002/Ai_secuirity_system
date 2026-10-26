@@ -42,6 +42,49 @@ def approval_values():
 
 
 class AzureTests(unittest.TestCase):
+    def test_removing_interactive_expiry_preserves_used_capacity_and_limit(self):
+        with self.session(capacity=2) as (observed, approved, path):
+            live.reserve(1, 32000, {'mode': 'A'})
+            amendment = live.Approval.model_validate(approved.model_dump() | {'expires_at': None})
+            path.write_text(amendment.model_dump_json())
+            self.assertIsNone(live.approval().approval_deadline)
+            state = live.readiness()
+            self.assertTrue(state['enabled'])
+            self.assertIsNone(state['expires_at'])
+            self.assertEqual(state['remaining_calls'], 1)
+            self.assertEqual(state['reserved_call_records'], 1)
+            class Later(datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return datetime.now(tz) + timedelta(days=2)
+            with patch.object(live, 'datetime', Later):
+                self.assertTrue(live.readiness()['enabled'])
+            live.reserve(1, 32000, {'mode': 'B'})
+            self.assertFalse(live.readiness()['enabled'])
+            self.assertEqual(live.allowance_capacity(amendment)['remaining_calls'], 0)
+            self.assertEqual(observed, [])
+
+    def test_no_expiry_does_not_clear_stop_or_expired_trial_entitlement(self):
+        with self.session() as (observed, approved, path):
+            live.reserve(1, 32000, {'mode': 'A'})
+            with reg.connect() as db:
+                db.execute('UPDATE allowance SET stopped=1')
+            amendment = live.Approval.model_validate(approved.model_dump() | {'expires_at': None})
+            path.write_text(amendment.model_dump_json())
+            state = live.readiness()
+            self.assertFalse(state['enabled'])
+            self.assertTrue(state['stopped'])
+            expired = amendment.model_dump() | {'entitlement_expiry': datetime.now(timezone.utc)-timedelta(days=1)}
+            path.write_text(live.Approval.model_validate(expired).model_dump_json())
+            with self.assertRaisesRegex(live.LiveBlocked, 'trial entitlement expired'):
+                live.approval()
+            self.assertEqual(observed, [])
+
+    def test_no_expiry_is_not_available_to_historical_other_provider_scopes(self):
+        for extra in ({'provider': 'openrouter'}, {'paid_azure_test_authorized': True}):
+            with self.assertRaisesRegex(ValueError, 'ordinary Azure trial interactive'):
+                live.Approval.model_validate(approval_values() | extra | {'expires_at': None})
+
     def test_smoke_initializes_fresh_ledger_before_capacity_preflight(self):
         from scripts import azure_trial_smoke as smoke
         with self.session(capacity=3) as (observed, _, _):

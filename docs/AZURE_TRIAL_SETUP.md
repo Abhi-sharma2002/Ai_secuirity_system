@@ -48,7 +48,8 @@ request allowance. Preserve the trial's spending protection and verify the
 remaining entitlement without upgrading the account. See Microsoft's
 [free-account charging explanation](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/avoid-charges-free-account).
 The user confirmed saved credentials, active trial credits and spending protection.
-The current one-hour scope follows the user's explicit request authorization;
+The current request-bounded scope follows the user's explicit authorization;
+the user subsequently removed its local time expiry.
 old expired/stopped receipts cannot authorize this new account.
 
 The Ask interface now labels the selected provider as Azure OpenAI. The same
@@ -66,7 +67,7 @@ Local dependency check:
 
 The saved endpoint/key/deployment are checked locally without printing their
 values. The user subsequently authorized a current bounded scope and the synthetic
-live check completed. See the verification record for actual results and expiry.
+live check completed. See the verification record for actual results and the later expiry-removal amendment.
 This does not produce defense effectiveness metrics.
 
 

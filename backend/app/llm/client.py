@@ -78,7 +78,7 @@ class Approval(BaseModel):
     allowance_id: str = Field(min_length=1, max_length=100)
     confirmed_free_promotional: bool
     approved_model: str = Field(min_length=1)
-    expires_at: datetime
+    expires_at: datetime | None
     max_calls: int = Field(gt=0, le=1000)
     max_reserved_tokens: int = Field(gt=0, le=32_000_000)
     chat_completions_supported: bool
@@ -105,6 +105,15 @@ class Approval(BaseModel):
     expiry_extension_basis: str | None = Field(default=None, max_length=2000, exclude_if=lambda v: v is None)
 
     @model_validator(mode='after')
+    def nullable_interactive_expiry(self):
+        if self.expires_at is None and (
+                self.provider != 'azure_openai' or not self.confirmed_free_promotional
+                or self.paid_azure_test_authorized or self.development_scope or self.staged_scope
+                or self.extended_expires_at is not None or self.expiry_extension_basis is not None):
+            raise ValueError('No time expiry is supported only for ordinary Azure trial interactive use')
+        return self
+
+    @model_validator(mode='after')
     def explicit_openrouter_extension(self):
         if self.extended_expires_at is None and self.expiry_extension_basis is None:
             return self
@@ -119,6 +128,8 @@ class Approval(BaseModel):
 
     @property
     def approval_deadline(self):
+        if self.expires_at is None:
+            return None
         return self.extended_expires_at or self.activated_at + timedelta(hours=self.window_hours)
 
     @property
@@ -159,7 +170,9 @@ class Approval(BaseModel):
             return self
         if not self.confirmed_free_promotional or not self.eligibility_evidence or len(self.eligibility_evidence.strip()) < 10:
             raise ValueError('Unknown entitlement expiry requires recorded current free eligibility evidence')
-        times = (self.eligibility_checked_at, self.activated_at, self.expires_at)
+        times = (self.eligibility_checked_at, self.activated_at)
+        if self.expires_at is not None:
+            times += (self.expires_at,)
         if any(t is None or t.tzinfo is None or t.utcoffset() is None for t in times):
             raise ValueError('Unknown entitlement expiry requires timezone-aware check, activation and local expiry times')
         if not self.eligibility_checked_at <= self.activated_at <= datetime.now(timezone.utc):
@@ -236,8 +249,10 @@ def approval():
         raise LiveBlocked('Final execution policy is inactive pending settings adoption, identity binding and separate authorization')
     if paid:
         raise LiveBlocked('Historical paid-use approval cannot authorize new calls under the standing trial-credit-only scope.')
+    expired = approved.expires_at is not None and (
+        approved.expires_at.tzinfo is None or approved.expires_at <= datetime.now(timezone.utc))
     if (approved.provider != config.provider or not (approved.confirmed_free_promotional or paid) or approved.approved_model != config.model
-        or approved.expires_at.tzinfo is None or approved.expires_at <= datetime.now(timezone.utc)
+        or expired
         or not approved.chat_completions_supported or not approved.max_output_tokens_supported
         or (config.provider == 'azure_openai' and not approved.structured_outputs_supported)):
         raise LiveBlocked('Free allowance expired, model mismatched, or model API capabilities unconfirmed')
@@ -246,9 +261,10 @@ def approval():
     if (approved.approved_endpoint != config.base_url or not approved.deployment_model_version
             or (not paid and (not approved.eligibility_evidence or approved.eligibility_checked_at is None))
             or approved.activated_at is None or approved.activated_at.tzinfo is None
-            or approved.expires_at != approved.activated_at + timedelta(hours=approved.window_hours)
+            or (approved.expires_at is not None
+                and approved.expires_at != approved.activated_at + timedelta(hours=approved.window_hours))
             or approved.entitlement_expiry is None):
-        raise LiveBlocked('Azure approval needs endpoint, model/version, eligibility evidence and a one-hour activation window')
+        raise LiveBlocked('Azure approval needs endpoint, model/version, eligibility evidence and valid activation settings')
     now = datetime.now(timezone.utc)
     if approved.activated_at > now:
         raise LiveBlocked('Future activation is invalid')
@@ -256,8 +272,9 @@ def approval():
             not approved.eligibility_checked_at <= approved.activated_at <= now):
         raise LiveBlocked('Azure eligibility/activation timestamps are invalid')
     if not paid and isinstance(approved.entitlement_expiry, datetime) and (
-            approved.entitlement_expiry.tzinfo is None or approved.entitlement_expiry < approved.expires_at):
-        raise LiveBlocked('Azure entitlement must cover the one-hour local window')
+            approved.entitlement_expiry.tzinfo is None or approved.entitlement_expiry <= now
+            or (approved.expires_at is not None and approved.entitlement_expiry < approved.expires_at)):
+        raise LiveBlocked('Azure trial entitlement expired or does not cover the local authorization window')
     return approved
 
 
@@ -288,7 +305,8 @@ def readiness():
         # Only publish capacity after the current receipt passes every execution gate.
         a = approval()
         result.update(allowance_capacity(a), model=a.approved_model, allowance_id=a.allowance_id,
-                      expires_at=a.expires_at.isoformat(), approval_confirmed=True)
+                      expires_at=a.expires_at.isoformat() if a.expires_at is not None else None,
+                      approval_confirmed=True)
         available = {mode: not result['stopped'] and result['remaining_calls'] >= count
                      and result['remaining_reserved_tokens'] >= count*32000
                      for mode, count in (('A', 1), ('B', 1), ('C', 2))}

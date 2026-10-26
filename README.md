@@ -48,7 +48,7 @@ calls or renew historical authorization.
 The authorized Azure synthetic A/B/C check has now passed and the current local
 services have bounded manual answering enabled. See the
 [live verification record](docs/AZURE_TRIAL_VERIFICATION.md) for actual results,
-remaining allocation and expiry. The default launcher command above remains
+remaining allocation and expiry-removal amendment. The default launcher command above remains
 local-only; `--live-answers` requires a currently valid authorization.
 
 Open **Metrics / evaluation** to inspect the v3 comparison, formulas, A/B/C

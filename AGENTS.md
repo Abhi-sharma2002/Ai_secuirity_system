@@ -117,3 +117,16 @@ all prior receipts, stop flags and consumed reservations; no historical scope
 is reactivated. Stop the smoke test on its first failure, with no retries or
 fallback. Benchmark execution remains disabled; this authorization does not
 verify Azure's deployment quotas or approve a full evaluation run.
+
+
+## Explicit removal of current Azure time expiry, 26 October 2026
+
+The user explicitly instructed: "dont set any expriy". This supersedes the
+one-hour expiry for the current ordinary Azure interactive allocation. Its
+expires_at is null. Preserve the same allowance identity, request ceiling,
+consumed reservations and stop flags; no additional capacity is granted.
+The aggregate ceiling remains 1000 requests, including the four completed
+synthetic smoke requests. Historical receipts and their expiries remain intact.
+No time limit should be reintroduced without a new user instruction. Trial
+credits only, no new resources/upgrades, no automatic retries/fallback, and no
+benchmark execution remain the active scope.

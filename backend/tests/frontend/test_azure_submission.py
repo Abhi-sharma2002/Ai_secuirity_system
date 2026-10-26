@@ -4,6 +4,19 @@ from unittest.mock import patch
 from backend.tests.frontend.test_openrouter_submission import application, ask_page
 
 
+def test_azure_scope_without_time_expiry_is_shown_explicitly():
+    calls=[]
+    capacity={'enabled':True,'remaining_calls':8,'remaining_reserved_tokens':256000,
+              'expires_at':None,'mode_available':{'A':True,'B':True,'C':True}}
+    with patch('httpx.request',side_effect=application(capacity,calls,provider='azure_openai')), \
+         patch('socket.socket.connect',side_effect=AssertionError('Network forbidden')):
+        app=ask_page('azure_openai')
+        assert not app.exception
+        assert any('No time expiry' in item.value for item in app.caption)
+        assert not next(b for b in app.button if b.label=='Ask once via Azure OpenAI').disabled
+        assert all(method=='GET' for method,_,_ in calls)
+
+
 def test_azure_selected_form_labels_and_submission_are_provider_aware():
     calls=[]
     capacity={'enabled':True, 'mode_available':{'A':True,'B':True,'C':True}}

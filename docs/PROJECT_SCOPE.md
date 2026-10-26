@@ -6,7 +6,7 @@ The active OpenRouter key is blank; historical code, receipts and accounting
 remain intact. Use trial credits only, preserve spending protection and create
 no additional cloud resources. The authorized synthetic Azure check passed and
 manual inference is enabled within its current bounded trial scope; see the
-[verification and expiry](AZURE_TRIAL_VERIFICATION.md). The user approved
+[verification and expiry-removal amendment](AZURE_TRIAL_VERIFICATION.md). The user approved
 omitting unsupported temperature identically for A/B/C; the shared YAML records
 that compatibility amendment. Live benchmark execution remains disabled.
 See [current setup](AZURE_TRIAL_SETUP.md) and the current amendment in AGENTS.md.

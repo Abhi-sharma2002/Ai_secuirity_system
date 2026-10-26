@@ -1,5 +1,9 @@
 # Azure trial integration verification
 
+Current amendment: the user removed the local time expiry. The dated window
+in the original verification below is historical; current status is recorded
+in the expiry-removal section at the end.
+
 The authorized synthetic integration completed against the user's existing
 Azure deployment. This checks the application path with a fictional document;
 it does not establish prompt-injection resistance or produce benchmark rates.
@@ -86,3 +90,55 @@ Actual local UI verification (GET requests only; no additional model call):
   ]
 }
 ```
+
+## User-requested removal of local time expiry
+
+The current Azure interactive receipt now records `expires_at: null` and the
+UI displays **No time expiry**. This is the user's explicit amendment to the
+current authorization; its original identity and activation time remain intact.
+The earlier finite-expiry receipt and parent authorization were backed up
+privately. No historical stopped/expired scope was reactivated, no reservations
+were refunded and no additional capacity was allocated. The original combined
+request ceiling still includes the completed synthetic smoke calls.
+
+Actual amendment verification:
+
+```json
+{
+  "time_expiry": null,
+  "remaining_calls": 996,
+  "consumed_reservations": 0,
+  "call_ceiling_unchanged": true,
+  "identity_unchanged": true,
+  "capacity_and_stop_flags_unchanged": true,
+  "new_provider_calls": 0
+}
+```
+
+Actual running API/UI check, restricted to local GET requests:
+
+```json
+{
+  "live_enabled": true,
+  "expires_at": null,
+  "remaining_calls": 996,
+  "UI_displays_no_time_expiry": true,
+  "new_provider_calls": 0,
+  "UI_HTTP_methods": [
+    "GET"
+  ]
+}
+```
+
+Regression output:
+
+```text
+40 passed, 16 subtests passed in 11.79s
+24 passed, 41 subtests passed in 3.79s
+```
+
+Tests cover continuing beyond the original deadline, unchanged cumulative
+usage, exhausted capacity, preserved stop flags and expired known trial
+entitlement. OpenRouter, staged evaluations and paid historical authorizations
+still require their original finite-expiry rules. No-expiry interactive access
+does not authorize benchmark execution, paid use or additional resources.
