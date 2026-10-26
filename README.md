@@ -28,7 +28,7 @@ PYTHONPATH=backend .venv/bin/python -c "from app.rag.embeddings import get_embed
 ```
 
 This downloads CPU model weights; it makes no answering/screening request.
-See [the project scope](AGENTS.md) and [provider setup](docs/OPENROUTER.md).
+See [the project scope](AGENTS.md) and [Azure trial setup](docs/AZURE_TRIAL_SETUP.md).
 
 ## Run the app
 
@@ -40,8 +40,10 @@ See [the project scope](AGENTS.md) and [provider setup](docs/OPENROUTER.md).
 Open **http://127.0.0.1:8501**. Upload a fictional TXT/MD, text PDF or DOCX, then
 use **Ask / compare → Local-only** to search evidence. Live answering starts
 disabled. Existing expired/stopped authorizations do not become valid on restart.
-The only temporary provider route is the fixed NVIDIA Nemotron free alias;
-Azure code/configuration are retained but inactive.
+The selected runtime is the user's existing Azure gpt-5-mini trial deployment.
+OpenRouter is stopped and its active environment key is blank. Enter Azure's
+actual endpoint, key and deployment name locally; a key alone does not enable
+calls or renew historical authorization.
 
 Open **Metrics / evaluation** to inspect the v3 comparison, formulas, A/B/C
 numerators and denominators, coverage, errors, human-review status and all six
@@ -72,6 +74,12 @@ provider evaluation remains disabled by the explicit local-only scope. The
 provider boundary must be deliberately revised under a later explicit benchmark
 authorization; setting an environment variable alone does not authorize a run.
 No delayed run or automatic authorization renewal is scheduled.
+
+The user approved the Azure compatibility amendment: `eval_config.yaml` now
+selects Azure `gpt-5-mini` and omits temperature (`null`) identically for A/B/C.
+Local index preparation creates a fresh configuration identity and archives the
+previous local generation. Historical results remain separate. Live benchmark
+execution still requires explicit authorization and verified deployment limits.
 
 After authorized real evaluation, follow [human review](docs/HUMAN_REVIEW.md) to
 decide ambiguous responses and fill the seeded quality sample, then regenerate

@@ -54,9 +54,10 @@ def _plan(data, limit=None):
             'full_calls_upper_bound': count * 4, 'new_case_A_smoke_ids': smokes,
             'full_plus_smokes_calls_upper_bound': count * 4 + len(smokes),
             'small_check_included_by_resume': True, 'automatic_retries': 0,
-            'published_default_daily_requests': 50, 'published_requests_per_minute': 20,
+            'published_default_daily_requests': None, 'published_requests_per_minute': None,
+            'quota_note': 'Azure limits depend on the actual deployment and subscription; verify before live authorization.',
             'account_remaining_requests': 'unverified', 'live_execution_enabled': False,
-            'provider_requests_made': 0, 'limits_reference': 'https://openrouter.ai/pricing',
+            'provider_requests_made': 0, 'limits_reference': 'https://learn.microsoft.com/en-us/azure/foundry/openai/quotas-limits',
             'new_case_A_smokes': 'pending; required before full live evaluation'}
 
 

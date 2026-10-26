@@ -1,5 +1,11 @@
 **End-to-end explanation of the current AI Security Document Lab**
 
+Provider update: the user has now selected their existing Azure gpt-5-mini
+Free Trial deployment and stopped OpenRouter. See
+[the current Azure setup](AZURE_TRIAL_SETUP.md). OpenRouter sections below
+describe the preceding configuration and preserved evaluation specification;
+no new Azure benchmark or provider test has been executed.
+
 This guide explains the implementation currently in this repository. It is a
 learning guide, not a benchmark report. Architecture explanations come from the
 source files linked below. Public configuration and dataset counts were read by
@@ -59,7 +65,7 @@ flowchart TD
     F --> B
     A --> GEN[Answer generation]
     B --> GEN
-    C -. authorized screening request .-> P[External OpenRouter provider]
+    C -. authorized screening request .-> P[Selected external provider]
     GEN -. authorized generation request .-> P
     P --> VALID[Validate JSON and source IDs]
     VALID --> OUT[C-only card-pattern output check]
@@ -623,12 +629,11 @@ validity, time window and entitlement/capability metadata. `allowance_capacity()
 reads cumulative usage and stop flags. `reserve()` records required capacity
 before execution. `call()` rechecks identity and permission before transport.
 
-The temporary route is fixed to the configured Nemotron free alias through
-OpenRouter, with NVIDIA-only routing and provider fallbacks disabled in
-[openrouter.generate()](../backend/app/llm/openrouter.py). Azure implementations
-remain in the repository for history but are inactive under the current
-selection and standing scope. Local receipt controls do not independently
-guarantee provider account pricing, daily quota or organization permission.
+The current route uses the user's existing Azure gpt-5-mini deployment through
+[azure_openai.generate()](../backend/app/llm/azure_openai.py). OpenRouter code
+and its original receipts remain historical and inactive. Local receipt controls
+do not independently guarantee provider account credits, quota or organization
+permission. Live calls remain disabled until a current bounded scope is active.
 
 These are execution/accounting controls, distinct from prompt-injection
 defenses. They prevent unauthorized or excess calls; they do not tell whether a
@@ -659,9 +664,9 @@ allowlisted operational metadata rather than printing credential headers.
 The inspected [eval_config.yaml](../eval_config.yaml) contains:
 
 ```yaml
-provider: openrouter
-model: nvidia/nemotron-3-ultra-550b-a55b:free
-temperature: 0
+provider: azure_openai
+model: gpt-5-mini
+temperature: null
 max_tokens: 700
 top_k: 5
 chunk_size: 1000
@@ -674,11 +679,11 @@ bounds retrieved chunks; chunk size/overlap affect evidence layout; a judge
 model would be an additional model used for grading. The configured null judge
 means no separate judge route is authorized.
 
-There is an important current implementation distinction. The interactive
-OpenRouter client does not send temperature or a provider seed, and its
-generation cap is `1400`, while its screening cap is `700`. A/B/C generation
-uses the same interactive settings, but that does not mean the interactive
-transport currently executes every value in the evaluation YAML.
+The user approved omitting unsupported temperature identically for A/B/C.
+The Azure transport does not send temperature or a provider seed; its generation
+and screening completion cap is `700`. Strict JSON Schema is requested from
+Azure and validated again locally. Historical OpenRouter generation settings
+are separate and are not used for the Azure selection.
 
 The v3 adapter reads and validates the shared evaluation configuration, but its
 real model-call boundary is deliberately disabled. Consequently there is no
@@ -811,12 +816,11 @@ Two code-path details deserve explicit attention before a future live demo or
 evaluation. They are described here rather than silently changed by a
 documentation task.
 
-The interactive compare orchestration freezes evidence and plans A/B/C, but the
-current `/compare` path does not forward external-processing confirmation into
-`respond()`'s reservation metadata. The OpenRouter reservation gate requires
-that confirmation. Individual Ask forwards it correctly; a valid allowance
-alone is therefore insufficient to claim that the current compare button
-successfully executes the full OpenRouter comparison.
+The interactive compare orchestration freezes evidence and plans A/B/C. Its
+confirmation-forwarding gap has now been corrected: an explicit compare click
+passes external-processing confirmation through the API to each mode's
+reservation metadata. This is checked locally; it is not an executed live
+comparison or a renewal of provider capacity.
 
 The v3 adapter also contains an evaluation-only C check against known benchmark
 markers. This extra deterministic postfilter is absent from ordinary

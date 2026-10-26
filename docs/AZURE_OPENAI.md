@@ -1,9 +1,14 @@
 > Current standing scope: [PROJECT_SCOPE.md](PROJECT_SCOPE.md). Trial credits only; historical paid-use examples below do not authorize new paid execution. No new Azure resources or account changes.
 
-# Azure OpenAI integration (retained option)
+# Azure OpenAI integration
 
-This page describes the retained Azure option. The temporary active selection is
-the separate OpenRouter Nemotron free route documented in [OPENROUTER.md](OPENROUTER.md).
+Current selection, 26 October 2026: Azure gpt-5-mini on the user's existing
+Free Trial deployment. OpenRouter has been stopped. Follow
+[AZURE_TRIAL_SETUP.md](AZURE_TRIAL_SETUP.md) for the current setup status.
+Historical activation and paid-use examples below do not authorize new calls.
+
+The historical sections below describe the retained Azure implementation and
+earlier provider selections.
 Select `LLM_BACKEND=azure_openai` deliberately to use this configuration. Azure
 uses its own `.private/azure_allowance.json`; no old provider budget funds Azure.
 

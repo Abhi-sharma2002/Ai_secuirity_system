@@ -1,5 +1,29 @@
 # Standing project scope
 
+## Current Azure trial selection, 26 October 2026
+
+The user's latest instruction stops OpenRouter and selects their already
+deployed Azure gpt-5-mini on their own Free Trial account. This supersedes the
+temporary OpenRouter-only selection below. Remove OpenRouter credentials from
+the active environment; preserve its historical code, receipts and accounting.
+Use only the existing Azure deployment, with local embeddings, parsing,
+retrieval, storage, evaluation tooling and UI. Do not create cloud resources,
+upgrade the subscription, alter quota/tier or disable spending protection.
+Trial credits only; no out-of-pocket use is authorized.
+
+The private Azure endpoint, key and actual deployment name must be supplied
+locally. No old expired/stopped Azure receipt authorizes this new account.
+Keep live calls disabled until those settings and a current explicitly bounded
+trial scope are complete. No provider calls, fallback, retries or benchmark
+execution are authorized merely by entering a key. The user explicitly approved
+the gpt-5-mini compatibility amendment: omit temperature identically for A/B/C.
+The shared evaluation YAML records temperature as null; this is not authorization
+to execute a live benchmark.
+
+The earlier restrictions and records below remain historical where they
+conflict with this selection; their no-upgrade, no-new-resource, secrecy and
+history-preservation requirements continue to apply.
+
 These instructions apply to all further work in this repository. They record the
 user's restriction of 24 October 2026 and supersede older paid-use exceptions
 for future execution. Preserve historical receipts/results as historical facts.

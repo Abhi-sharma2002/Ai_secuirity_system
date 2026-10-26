@@ -1,4 +1,16 @@
-# Standing local-first scope and temporary OpenRouter amendment
+# Standing local-first scope
+
+Current selection, 26 October 2026: the user stopped OpenRouter and selected
+their existing Azure gpt-5-mini deployment on their own Free Trial account.
+The active OpenRouter key is blank; historical code, receipts and accounting
+remain intact. Use trial credits only, preserve spending protection and create
+no additional cloud resources. Live inference remains disabled until the local
+Azure settings and a current bounded trial scope are complete. The user approved
+omitting unsupported temperature identically for A/B/C; the shared YAML records
+that compatibility amendment. Live benchmark execution remains disabled.
+See [current setup](AZURE_TRIAL_SETUP.md) and the current amendment in AGENTS.md.
+
+The temporary OpenRouter policy below is preserved as historical context.
 
 On 25 October 2026, the user requested a temporary switch away from paid Azure
 answering to `nvidia/nemotron-3-ultra-550b-a55b:free` through OpenRouter. For the

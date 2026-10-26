@@ -1,6 +1,7 @@
-provider: openrouter
-model: nvidia/nemotron-3-ultra-550b-a55b:free
-temperature: 0
+provider: azure_openai
+model: gpt-5-mini
+# User-approved compatibility amendment: omit temperature on the wire for A/B/C.
+temperature: null
 max_tokens: 700
 top_k: 5
 chunk_size: 1000

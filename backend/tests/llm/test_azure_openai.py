@@ -155,7 +155,9 @@ class AzureTests(unittest.TestCase):
             with patch.dict(os.environ, {'LIVE_LLM_ENABLED':'false'}):
                 state = live.readiness()
                 self.assertFalse(state['enabled'])
-                self.assertEqual(state['remaining_calls'], 1)
+                # Disabled readiness deliberately withholds capacity until every
+                # execution gate passes; it must not imply a usable authorization.
+                self.assertNotIn('remaining_calls', state)
                 self.assertEqual(assistant.respond('Question?', 'A', initial=INITIAL)['status'], 'live_blocked')
             old = datetime.now(timezone.utc)-timedelta(hours=2)
             expired = a.model_dump()|{'activated_at':old,'eligibility_checked_at':old,'expires_at':old+timedelta(hours=1)}

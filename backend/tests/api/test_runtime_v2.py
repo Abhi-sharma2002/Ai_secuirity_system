@@ -147,6 +147,15 @@ class ParserV2Tests(unittest.TestCase):
 class RoutingV2Tests(unittest.TestCase):
     evidence={'hits':[{'id':'source-1','text':'Leave facts.'},{'id':'source-2','text':'Other facts.'}], 'snapshot':[], 'omitted_ids':[]}
 
+    def setUp(self):
+        # These tests replace reservation/provider I/O, so their synthetic IDs
+        # must never read or mutate the operator's actual account receipt.
+        environment=offline_environment();environment.start();self.addCleanup(environment.stop)
+        for name in ('validate_interactive_input','stop_paid_test_on_error'):
+            guard=patch.object(live,name);guard.start();self.addCleanup(guard.stop)
+        network=patch('socket.socket.connect',side_effect=AssertionError('Network forbidden'))
+        network.start();self.addCleanup(network.stop)
+
     def invoke(self,decisions,mode='C'):
         traces=[]
         def call(*args):

@@ -81,10 +81,10 @@ def verify(output):
         env = {**os.environ, 'PYTHONPATH': os.pathsep.join([str(ROOT / 'backend'), str(ROOT)]), 'PYTHONDONTWRITEBYTECODE': '1',
                'APP_DATA_DIRECTORY': str(task / 'runtime'), 'CHROMA_DB_PATH': str(task / 'chroma'),
                'UPLOAD_DIRECTORY': str(task / 'uploads'), 'DOCUMENT_DIRECTORY': str(task / 'documents'),
-               'BACKEND_URL': base, 'LIVE_LLM_ENABLED': 'false', 'FREE_ONLY': 'true', 'LLM_BACKEND': 'openrouter',
+               'BACKEND_URL': base, 'LIVE_LLM_ENABLED': 'false', 'FREE_ONLY': 'true', 'LLM_BACKEND': 'azure_openai',
                'OPENROUTER_API_KEY': '', 'AZURE_OPENAI_API_KEY': '',
-               'OPENROUTER_MODEL': 'nvidia/nemotron-3-ultra-550b-a55b:free',
-               'OPENROUTER_ALLOWANCE_FILE': str(task / 'never-created.json'),
+               'AZURE_OPENAI_ENDPOINT': 'https://synthetic.openai.azure.com', 'AZURE_OPENAI_DEPLOYMENT': 'gpt-5-mini',
+               'AZURE_OPENAI_ALLOWANCE_FILE': str(task / 'never-created.json'),
                'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1', 'HF_HUB_DISABLE_TELEMETRY': '1',
                'ANONYMIZED_TELEMETRY': 'False', 'CHUNK_SIZE': '1000', 'CHUNK_OVERLAP': '150',
                'STREAMLIT_BROWSER_GATHER_USAGE_STATS': 'false', 'LANGCHAIN_TRACING_V2': 'false', 'LANGSMITH_TRACING': 'false'}
@@ -132,17 +132,24 @@ def verify(output):
                     next(t for t in ui.text_area if t.label == 'Question').input(question['question'])
                     next(b for b in ui.button if b.label == 'Search locally').click().run()
                     assert not ui.exception and not ui.error
-                    assert any(fact in str(t.value) for t in ui.text)
-                    next(r for r in ui.radio if r.label == 'Document handling').set_value('openrouter').run()
-                    assert next(b for b in ui.button if b.label == 'Ask once via OpenRouter').disabled
+                    # Ask intentionally shows source labels without raw passages.
+                    assert any('Fictional local policy.md' in str(t.value) for t in ui.caption)
+                    assert not any(fact in str(t.value) for t in ui.text)
+                    next(r for r in ui.radio if r.label == 'Workspace').set_value('Search evidence').run()
+                    next(t for t in ui.text_input if t.label == 'What fact are you looking for?').input(question['question'])
+                    next(b for b in ui.button if b.label == 'Search locally').click().run()
+                    assert not ui.exception and any(fact in str(t.value) for t in ui.text)
+                    next(r for r in ui.radio if r.label == 'Workspace').set_value('Ask / compare').run()
+                    next(r for r in ui.radio if r.label == 'Document handling').set_value('azure_openai').run()
+                    assert next(b for b in ui.button if b.label == 'Ask once via Azure OpenAI').disabled
                     for mode in 'ABC':
                         next(s for s in ui.selectbox if s.label == 'Defense configuration').set_value(mode).run()
-                        assert not ui.exception and next(b for b in ui.button if b.label == 'Ask once via OpenRouter').disabled
+                        assert not ui.exception and next(b for b in ui.button if b.label == 'Ask once via Azure OpenAI').disabled
                         query = {**question, 'mode': mode, 'request_id': str(uuid4())}
                         a = api.post('/chat', json=query).json()
                         b = api.post('/chat', json=query).json()
                         assert a == b and a['status'] == 'live_blocked'
-                    for name in ('Search evidence', 'Saved experiments', 'Assignment guide', 'Documents'):
+                    for name in ('Metrics / evaluation', 'Search evidence', 'Saved experiments', 'Assignment guide', 'Documents'):
                         next(r for r in ui.radio if r.label == 'Workspace').set_value(name).run()
                         assert not ui.exception and not ui.error
                     result.update(actual_ui_local_search=True, all_workspaces_render=True,

@@ -36,6 +36,16 @@ class ComparisonTests(unittest.TestCase):
             with patch.object(comparison.live,'approval',return_value=SimpleNamespace()), patch.object(comparison.live,'allowance_capacity',return_value=CAPACITY|edit), patch.object(comparison,'search',side_effect=AssertionError('No retrieval')):
                 self.assertEqual(comparison.compare('Fictional', 'id')['status'],'live_blocked')
 
+    def test_external_processing_confirmation_reaches_each_mode(self):
+        with patch.object(comparison.live,'approval',return_value=SimpleNamespace()), \
+             patch.object(comparison.live,'allowance_capacity',return_value=CAPACITY), \
+             patch.object(comparison,'search',return_value=INITIAL), \
+             patch.object(comparison.live,'validate_interactive_input'), \
+             patch.object(comparison,'respond',return_value={'status':'answered'}) as answer:
+            comparison.compare('Synthetic confirmed question','synthetic-confirmed',external_processing_confirmed=True)
+        self.assertEqual(answer.call_count,3)
+        self.assertTrue(all(call.kwargs['run_context']['external_processing_confirmed'] for call in answer.call_args_list))
+
     def test_error_stops_later_modes(self):
         with patch.object(comparison.live,'approval',return_value=SimpleNamespace()), patch.object(comparison.live,'allowance_capacity',return_value=CAPACITY), patch.object(comparison,'search',return_value=INITIAL), patch.object(comparison.live,'validate_interactive_input'), patch.object(comparison,'respond',return_value={'status':'llm_error'}) as answer:
             result=comparison.compare('Fictional', 'id')
@@ -46,8 +56,9 @@ class ComparisonTests(unittest.TestCase):
     def test_api_idempotency_without_provider(self):
         with tempfile.TemporaryDirectory() as folder, patch.object(registry,'ROOT',Path(folder)), patch.object(comparison,'compare',return_value={'status':'completed','results':{}}) as execute:
             registry.initialize()
-            query=Query(question='Fictional',request_id='synthetic-idempotent')
+            query=Query(question='Fictional',request_id='synthetic-idempotent',external_processing_confirmed=True)
             self.assertEqual(compare_query(query),compare_query(query))
             self.assertEqual(execute.call_count,1)
+            self.assertTrue(execute.call_args.kwargs['external_processing_confirmed'])
             with self.assertRaises(HTTPException):
                 compare_query(query.model_copy(update={'question':'Changed question'}))

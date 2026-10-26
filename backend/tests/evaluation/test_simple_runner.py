@@ -203,7 +203,7 @@ class SimpleRunnerTests(unittest.TestCase):
         self.assertNotIn('SYNTHETIC-FRAGMENT', result['error'])
         self.assertTrue(result['error'])
 
-    def test_paid_model_configuration_is_rejected_before_retrieval(self):
+    def test_different_model_configuration_is_rejected_before_retrieval(self):
         from app.evaluation import simple_config
         import yaml
         with tempfile.TemporaryDirectory() as folder:
@@ -211,7 +211,7 @@ class SimpleRunnerTests(unittest.TestCase):
             path.write_text(yaml.safe_dump({**load_config(), 'model': 'SYNTHETIC-PAID-ROUTE'}))
             with patch.object(simple_config, 'CONFIG_PATH', path), patch.object(runner, '_model_call') as model:
                 result = runner.ask('A', QUESTION, DOC_IDS)
-        self.assertIn('fixed OpenRouter free route', result['error'])
+        self.assertIn('selected Azure gpt-5-mini deployment', result['error'])
         self.retrieval.assert_not_called()
         model.assert_not_called()
 
@@ -273,10 +273,21 @@ class LocalRetrievalTests(unittest.TestCase):
         self.assertEqual(factory.call_args.kwargs['path'], str(store / 'chroma' / identity['generation']))
 
     def test_configuration_has_no_environment_provider_or_model_override(self):
-        with patch.dict(os.environ, {'LLM_BACKEND': 'azure_openai', 'OPENROUTER_MODEL': 'SYNTHETIC-WRONG',
+        with patch.dict(os.environ, {'LLM_BACKEND': 'openrouter', 'AZURE_OPENAI_DEPLOYMENT': 'SYNTHETIC-WRONG',
                                      'RETRIEVAL_TOP_K': '19', 'CHUNK_SIZE': '17', 'MAX_TOKENS': '5'}):
             config = load_config()
-        self.assertEqual(config['provider'], 'openrouter')
-        self.assertEqual(config['model'], 'nvidia/nemotron-3-ultra-550b-a55b:free')
+        self.assertEqual(config['provider'], 'azure_openai')
+        self.assertEqual(config['model'], 'gpt-5-mini')
+        self.assertIsNone(config['temperature'])
         self.assertEqual(config['top_k'], 5)
         self.assertEqual(config['chunk_size'], 1000)
+
+    def test_azure_temperature_must_be_omitted(self):
+        from app.evaluation import simple_config
+        import yaml
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'eval_config.yaml'
+            path.write_text(yaml.safe_dump({**load_config(), 'temperature': 0}))
+            with patch.object(simple_config, 'CONFIG_PATH', path):
+                with self.assertRaisesRegex(simple_config.EvaluationError, 'omit temperature'):
+                    load_config()

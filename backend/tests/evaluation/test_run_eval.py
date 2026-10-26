@@ -55,6 +55,9 @@ class RunEvaluationTests(unittest.TestCase):
         self.assertEqual((plan['selected_records'], plan['selected_calls_upper_bound']), (9, 12))
         self.assertEqual((plan['full_records'], plan['full_plus_smokes_calls_upper_bound']), (141, 193))
         self.assertEqual(plan['automatic_retries'], 0)
+        self.assertIsNone(plan['published_default_daily_requests'])
+        self.assertIsNone(plan['published_requests_per_minute'])
+        self.assertIn('learn.microsoft.com', plan['limits_reference'])
         self.assertFalse(plan['live_execution_enabled'])
         with patch('builtins.print'):
             self.assertEqual(run.main(['--plan', '--limit', '3']), 0)

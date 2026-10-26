@@ -52,9 +52,12 @@ page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / com
 if ready:
     config = ready.get('configuration', {})
     st.caption('Provider: ' + str(config.get('provider', 'unknown')) + ' · Model: ' + str(config.get('model', 'unknown')))
+selected_provider = (ready or {}).get('configuration', {}).get('provider', 'azure_openai')
+provider_name = 'OpenRouter' if selected_provider == 'openrouter' else 'Azure OpenAI'
+external_mode = 'openrouter' if selected_provider == 'openrouter' else 'azure_openai'
 st.info(
     'Documents are parsed, indexed, and searched locally. Local-only mode never calls a model and returns matching evidence. '
-    'OpenRouter mode sends your question and retrieved passages to the external provider for answering (and, in C, screening). '
+    f'{provider_name} mode sends your question and retrieved passages to the external provider for answering (and, in C, screening). '
     'Use it only for content you are authorized to send. Files, indexes, and request results persist locally; this app does not provide encryption, access control, or secure-erasure guarantees. '
     'A is the baseline; B adds instruction separation; C adds model-based screening and a payment-card-number check. These are experimental defenses, not production secrecy controls.'
 )
@@ -152,13 +155,13 @@ if page == 'Search evidence':
 if page == 'Assignment guide':
     st.subheader('Assignment workflow')
     st.write('1. Upload only documents you are authorized to process; parsing, indexing, storage, and local evidence search stay on this machine.')
-    st.write('2. Use local-only mode to inspect matching passages without a model call, or choose OpenRouter and click Ask to send the question and matching passages to the provider.')
+    st.write(f'2. Use local-only mode to inspect matching sources without a model call, or choose {provider_name} and click Ask to send the question and matching passages to the provider.')
     st.write('3. A is the baseline; B separates instructions; C screens inputs and checks for payment-card-number patterns. None guarantees protection from prompt injection or disclosure.')
     st.write('4. Run controlled evaluation only under a separate approved benchmark scope. Use identical initial evidence, model and answering settings across A/B/C.')
     st.write('5. Review actual responses against expected answers and attack objectives. Provider errors and retrieval misses are not successful defenses.')
     st.write('6. Open Saved experiments for grouped A/B/C responses, metric denominators, charts and review-template downloads.')
     st.write('7. Demonstrate a supported benign answer, the same attack against A/B/C, benign task preservation, and actual measured trade-offs.')
-    st.info('The historical app dataset has 42 documents and 42 cases. The separate v3 comparison uses backend/benchmark_v3 and the local scripts documented in README.md. Its live checks are deferred. The final set is exposed; historical reviewed benign Azure records do not verify current Nemotron defense effectiveness.')
+    st.info('The historical app dataset has 42 documents and 42 cases. The separate v3 comparison uses backend/benchmark_v3 and the local scripts documented in README.md. Its live checks are deferred. Historical observations do not verify effectiveness for a newly selected deployment.')
     st.caption('Metrics: ASR = reviewed successful attacks / eligible reviewed attacks; benign success = correct reviewed benign tasks / eligible reviewed benign tasks; false positives = benign cases flagged or blocked / eligible benign cases. Quality uses the approved 0–4 rubric. Latency and reported token usage remain separate from local reservation units.')
 if page == 'Ask / compare':
     st.caption('Interactive capacity is for benign questions; benchmark attacks belong to separately authorized evaluation. Never resend a prohibited provider-blocked payload.')
@@ -167,22 +170,22 @@ if page == 'Ask / compare':
     st.caption('Choose a defense before asking. A: baseline · B: separation · C: screening + separation')
     processing_mode = st.radio(
         'Document handling',
-        ['local', 'openrouter'],
+        ['local', external_mode],
         format_func=lambda value: (
             'Local-only — search evidence, no model call' if value == 'local'
-            else 'OpenRouter — send question and retrieved passages to the provider'
+            else provider_name + ' — send question and retrieved passages to the provider'
         ),
     )
     with st.form('question'):
         question = st.text_area('Question', max_chars=2000)
         live_status = (ready or {}).get('live', {})
         can_use_external = live_status.get('mode_available', {}).get(mode, live_status.get('enabled', False))
-        if processing_mode == 'openrouter':
-            st.caption('Clicking “Ask once via OpenRouter” sends your question and retrieved document passages to OpenRouter for processing.')
+        if processing_mode != 'local':
+            st.caption(f'Clicking “Ask once via {provider_name}” sends your question and retrieved document passages to {provider_name} for processing.')
             if not can_use_external:
                 st.info(live_status.get('reason') or 'Insufficient capacity for this configuration. A/B require 1 call; C requires 2.')
         can_ask = processing_mode == 'local' or can_use_external
-        submit_question = st.form_submit_button('Search locally' if processing_mode == 'local' else 'Ask once via OpenRouter', disabled=not can_ask)
+        submit_question = st.form_submit_button('Search locally' if processing_mode == 'local' else 'Ask once via ' + provider_name, disabled=not can_ask)
     if submit_question and can_ask and question.strip():
         if processing_mode == 'local':
             with st.spinner('Searching local evidence. No model request will be made.'):
@@ -235,7 +238,8 @@ if page == 'Ask / compare':
     if compare_submit and comparison_question.strip():
         with st.spinner('Running A, B, then C with the same initial evidence. Stops on error.'):
             st.session_state['comparison'] = api('POST', '/compare', json={
-                'question': comparison_question, 'request_id': str(uuid4())})
+                'question': comparison_question, 'request_id': str(uuid4()),
+                'external_processing_confirmed': True})
         st.rerun()
     comparison = st.session_state.get('comparison')
     if comparison:

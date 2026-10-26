@@ -6,11 +6,11 @@ import httpx
 from streamlit.testing.v1 import AppTest
 
 
-def application(budget, calls):
+def application(budget, calls, provider='openrouter'):
     def request(method, url, **kwargs):
         calls.append((method, url, kwargs))
         if url.endswith('/ready'):
-            data = {'live': budget, 'limits': {}}
+            data = {'live': budget, 'limits': {}, 'configuration': {'provider': provider}}
         elif url.endswith('/chat'):
             data = {'status': 'answered', 'answer': 'Synthetic form test answer.', 'mode': 'B', 'references': []}
         else:
@@ -19,11 +19,11 @@ def application(budget, calls):
     return request
 
 
-def ask_page():
+def ask_page(provider='openrouter'):
     script = Path(__file__).resolve().parents[3] / 'frontend/streamlit_app.py'
     app = AppTest.from_file(str(script)).run(timeout=15)
     app.sidebar.radio[0].set_value('Ask / compare').run()
-    next(r for r in app.radio if r.label == 'Document handling').set_value('openrouter').run()
+    next(r for r in app.radio if r.label == 'Document handling').set_value(provider).run()
     assert not app.exception
     return app
 

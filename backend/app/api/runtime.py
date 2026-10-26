@@ -171,7 +171,8 @@ def compare_query(query: Query):
                 return json.loads(previous['result'])
             db.execute('INSERT INTO requests VALUES(?,?,?)', (query.request_id, fingerprint,
                 json.dumps({'status':'interrupted_or_in_progress','error':'Comparison ID reserved. No automatic replay.'})))
-        result = compare(query.question, query.request_id)
+        result = compare(query.question, query.request_id,
+                         external_processing_confirmed=query.external_processing_confirmed)
         with reg.connect() as db:
             db.execute('UPDATE requests SET result=? WHERE id=?', (json.dumps(result), query.request_id))
         return result

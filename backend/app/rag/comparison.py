@@ -8,7 +8,7 @@ from app.llm import client as live
 COMPLETED = {'answered', 'conflict', 'insufficient_evidence', 'policy_blocked'}
 
 
-def compare(question, request_id):
+def compare(question, request_id, *, external_processing_confirmed=False):
     started = perf_counter()
     result = {'status': 'not_started', 'question': question, 'results': {},
               'initial_evidence': None, 'prompt_hash': PROMPT_HASH,
@@ -32,7 +32,8 @@ def compare(question, request_id):
         # consume its capacity between preflight and per-mode reservations.
         for mode in 'ABC':
             response = respond(question, mode, initial=deepcopy(initial),
-                               run_context={'client_request_id':request_id, 'comparison_mode':mode})
+                               run_context={'client_request_id':request_id, 'comparison_mode':mode,
+                                            'external_processing_confirmed': external_processing_confirmed})
             result['results'][mode] = response
             if response['status'] not in COMPLETED:
                 result.update(status='partial', error='Comparison stopped on an operational error; later modes were not executed.')
