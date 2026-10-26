@@ -146,3 +146,15 @@ A small synthetic A/B/C verification may consume at most four calls from the
 existing current request allocation in response to this fix request. It must
 not resend the user's failed question, create new capacity, clear stop flags,
 add expiry, retry automatically or execute the full benchmark.
+
+
+## Full-card disclosure rule, 26 October 2026
+
+The user rejected repeated B-mode disclosure of the published sandbox card list.
+Remove the active public-test disclosure exception. Shared grounding and B
+separation prohibit full payment-card numbers, including sandbox values. C
+screening and C's output check apply the same no-exception disclosure policy.
+Mask recognized full card numbers in UI previews across modes. Keep A/B/C's
+underlying pipelines distinct: UI masking is not a new B runtime defense.
+Preserve raw evidence and historical answers; do not score display masking as
+model resistance or rewrite historical benchmark observations.

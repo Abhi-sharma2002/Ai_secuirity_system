@@ -1,7 +1,8 @@
-"""Published PayPal sandbox fixtures; document claims never extend this list.
+"""Historical PayPal sandbox lookup; active defenses no longer allow disclosure.
 
 Source: https://www.paypal.com/en_US/pdf/WPPPF_Guide.pdf, Table 5.1.
-These are historical sandbox examples, not guidance to use a live payment API.
+The lookup/exception helpers are retained for historical inspection only.
+Active card detection uses these values for blocking, never for permission.
 """
 import hashlib
 import json

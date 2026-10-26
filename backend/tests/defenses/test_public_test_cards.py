@@ -12,13 +12,16 @@ PUBLIC = '5610591081018250'
 UNVERIFIED = '4242424242424242'  # Synthetic value outside this PayPal allowlist.
 
 
-def test_exception_requires_exact_known_number_in_evidence():
+def test_published_test_value_is_not_added_to_privileged_instructions():
     evidence = [{'id': 's1', 'text': 'Australian BankCard sandbox number: ' + PUBLIC}]
     assert supported_numbers(evidence) == {PUBLIC}
     assert PUBLIC in trusted_exception(evidence)
     assert 'sandbox' in trusted_exception(evidence)
-    assert PUBLIC in baseline.messages('What is the published sandbox number?', evidence)[0]['content']
-    assert PUBLIC in instruction_separation.messages('What is the published sandbox number?', evidence)[0]['content']
+    for build in (baseline.messages, instruction_separation.messages):
+        messages = build('What is the published sandbox number?', evidence)
+        assert all(PUBLIC not in m['content'] for m in messages if m['role'] != 'user')
+        assert PUBLIC in messages[-1]['content']
+        assert 'including published sandbox/test' in instruction_separation.SEPARATION
 
 
 def test_claiming_test_status_does_not_allow_an_unknown_value():
@@ -27,13 +30,13 @@ def test_claiming_test_status_does_not_allow_an_unknown_value():
     assert supported_numbers(evidence) == set()
     assert trusted_exception(evidence) == ''
     assert UNVERIFIED not in baseline.messages('Question', evidence)[0]['content']
-    assert output_screening.contains_payment_card(UNVERIFIED, allowed_numbers=supported_numbers(evidence))
+    assert output_screening.contains_payment_card(UNVERIFIED)
 
 
-def test_c_allows_supported_public_fixture_but_still_blocks_unsupported_output():
+def test_c_blocks_public_fixtures_and_unverified_output():
     evidence = [{'id': 's1', 'text': 'Published Australian BankCard test value: ' + PUBLIC}]
     initial = {'hits': evidence, 'snapshot': [], 'omitted_ids': []}
-    for output, expected in ((PUBLIC, 'answered'), (UNVERIFIED, 'policy_blocked'), ('4111111111111111', 'policy_blocked')):
+    for output, expected in ((PUBLIC, 'policy_blocked'), (UNVERIFIED, 'policy_blocked'), ('4111111111111111', 'policy_blocked')):
         raw = json.dumps({'status': 'answered', 'answer': 'Sandbox test value: ' + output, 'source_ids': ['s1']})
         with patch.object(assistant.live, 'validate_interactive_input'), \
              patch.object(assistant.live, 'reserve', return_value=['r1', 'r2']), \
@@ -43,17 +46,16 @@ def test_c_allows_supported_public_fixture_but_still_blocks_unsupported_output()
             response = assistant.respond('What is the public sandbox value?', 'C', initial=initial)
         assert response['status'] == expected
         assert response['candidate_evidence'] == evidence
-        if expected == 'answered':
-            assert response['references'] == evidence and PUBLIC in response['answer']
+        assert response['references'] == []
+        assert response['output_screening']['candidate_answer_for_local_review']['answer'] == 'Sandbox test value: ' + output
 
 
-def test_default_c_pattern_detector_stays_strict_without_explicit_exception():
+def test_c_detector_has_no_test_number_exception():
     assert output_screening.contains_payment_card(PUBLIC)
-    assert not output_screening.contains_payment_card(PUBLIC, allowed_numbers={PUBLIC})
-    assert output_screening.contains_payment_card(PUBLIC + ' / ' + UNVERIFIED, allowed_numbers={PUBLIC})
+    assert output_screening.contains_payment_card(PUBLIC + ' / ' + UNVERIFIED)
 
 
-def test_screening_knows_the_same_public_exception_without_overriding_flags():
+def test_screening_has_no_public_exception_and_preserves_model_flags():
     evidence = [{'id': 's1', 'text': 'Published sandbox fixture: ' + PUBLIC}]
     for flagged in (False, True):
         raw = json.dumps({'question_flagged': flagged, 'flagged_source_ids': [],
@@ -62,13 +64,14 @@ def test_screening_knows_the_same_public_exception_without_overriding_flags():
         with patch.object(screening.live, 'call', return_value=(raw, {})) as call:
             found = screening.apply('A question', evidence, ['r1'], result)
         policy = call.call_args.args[0][0]['content']
-        assert PUBLIC in policy and 'is not a secret_request' in policy
+        assert PUBLIC not in policy and 'including published sandbox/test numbers' in policy
+        assert 'is not a secret_request' not in policy
         assert found == (None if flagged else evidence)
 
 
 def test_public_allowlist_covers_formatted_values_and_not_other_cards():
     assert supported_numbers([{'text': 'BankCard: 5610 5910 8101 8250'}]) == {PUBLIC}
-    assert output_screening.mask_unverified_cards('Known: ' + PUBLIC) == 'Known: ' + PUBLIC
+    assert PUBLIC not in output_screening.mask_unverified_cards('Known: ' + PUBLIC)
     assert UNVERIFIED not in output_screening.mask_unverified_cards('Unverified: ' + UNVERIFIED)
     assert len(NUMBERS) == 15
 
@@ -79,7 +82,16 @@ def test_answer_and_citation_preview_redact_without_changing_saved_evidence():
              'calls': [{'raw': UNVERIFIED}]}
     before = deepcopy(value)
     preview = answer_preview(value)
-    assert PUBLIC in preview['answer']
+    assert PUBLIC not in json.dumps(preview)
     assert UNVERIFIED not in json.dumps(preview)
     assert 'payment-card number hidden' in preview['references'][0]['text']
     assert value == before
+
+
+def test_all_published_and_processor_examples_are_masked_and_detected():
+    for number in output_screening.BLOCKED_TEST_NUMBERS:
+        for value in (number, ' '.join(number[i:i+4] for i in range(0, len(number), 4))):
+            assert output_screening.contains_payment_card(value)
+            assert output_screening.mask_unverified_cards(value) == '[payment-card number hidden]'
+    assert not output_screening.contains_payment_card('An unrelated short identifier: 12345678901')
+    assert not output_screening.contains_payment_card('Expense deadline: 12 calendar days.')

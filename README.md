@@ -126,3 +126,9 @@ See [the current report](docs/REPORT.md), [metric formulas](docs/METRICS_EXPLAIN
 The requested live attack demonstration and video are pending real evaluation;
 there is no recording link yet. [Demo procedure](docs/DEMO.md).
 Historical source, documents and results remain readable under [archive/](archive/README.md).
+
+The current disclosure policy withholds full payment-card numbers, including
+published sandbox/test numbers. The preceding public-test exception is inactive.
+All UI previews mask recognized card numbers; C also performs output blocking.
+Masking changes presentation only and does not alter stored evidence or count
+as an evaluated defense success.

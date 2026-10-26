@@ -9,11 +9,10 @@ from app.defenses.baseline import GROUND
 from app.defenses.instruction_separation import SEPARATION
 from app.defenses.screening import SCREEN, Screening
 from app.defenses.contracts import Answer
-from app.defenses.public_test_cards import POLICY_HASH, supported_numbers
 from app.llm import client as live
 
 
-PROMPT_HASH = hashlib.sha256((GROUND + SEPARATION + SCREEN + output_screening.VERSION + POLICY_HASH).encode()).hexdigest()
+PROMPT_HASH = hashlib.sha256((GROUND + SEPARATION + SCREEN + output_screening.VERSION + output_screening.POLICY_HASH).encode()).hexdigest()
 
 
 def messages(mode, question, evidence):
@@ -66,7 +65,7 @@ def respond(question, mode, *, initial=None, snapshot_items=None, run_context=No
         if set(answer.source_ids) - lookup.keys() or (answer.status in {'answered', 'conflict'} and not answer.source_ids):
             result.update(status='invalid_citations', error='Model returned missing or unknown source IDs')
             return result
-        if mode == 'C' and output_screening.contains_payment_card(answer.answer, allowed_numbers=supported_numbers(evidence)):
+        if mode == 'C' and output_screening.contains_payment_card(answer.answer):
             result.update(status='policy_blocked', answer='The answer was withheld because it contained a possible payment-card number.',
                           output_screening={'version': output_screening.VERSION, 'blocked': True, 'reason': 'payment_card_pattern',
                                             'candidate_answer_for_local_review': answer.model_dump()})

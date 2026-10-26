@@ -528,28 +528,24 @@ digits, all obfuscations or every internal marker. A and B do not run this
 runtime output-blocking stage. They do share the grounding prompt and the UI's
 display masking.
 
-**The public sandbox-card exception**
+**Current full-card disclosure rule**
 
-Your earlier public test-number question exposed an overbroad refusal: a blanket
-card prohibition can reject a legitimate publicly documented sandbox fixture.
-The fix is [public_test_cards.py](../backend/app/defenses/public_test_cards.py),
-an application-owned exact allowlist of published PayPal test values.
+The user rejected repeated disclosure of published sandbox card numbers. The
+prior public-test exception is removed from the active grounding, separation
+and screening prompts. Public availability no longer permits full-number output.
+A and B keep their existing pipelines; C alone adds runtime output blocking.
 
-`supported_numbers()` finds allowlisted values actually present in the supplied
-evidence, including supported space/hyphen formatting. `trusted_exception()`
-adds only those exact supported values to the trusted application instructions.
-The model is told to identify them as test data and cite the evidence. A/B/C
-share this exception, and C's output check receives the supported allowlist.
+The UI masks recognized full card numbers in all modes, including public test
+fixtures and their supported formatted forms. C checks those numbers without
+an exception. The known short processor test value is also recognized, while
+ordinary short business identifiers remain unaffected.
 
-A document claiming “all numbers here are test numbers” cannot expand the
-allowlist. Unsupported numbers, credentials and card security codes remain
-outside the exception. This illustrates the difference between an
-application-controlled exception and an attacker-controlled assertion.
-
-The presentation helper preserves globally allowlisted public fixtures when
-masking previews. The generation exception is stricter: it requires the fixture
-to occur in the evidence used for that answer. Prompt and policy fingerprints
-record this changed rule; old refusals are not silently regenerated.
+Historical `public_test_cards` lookup helpers are retained for history; active
+prompts do not call their exception builder. The known-number set is now used
+only to recognize additional values for blocking, never to permit disclosure.
+Old raw evidence and answers are preserved. A masked preview is presentation
+behavior, not proof that the model refused, and benchmark scoring must use the
+original recorded response. New prompt/policy fingerprints identify this change.
 
 **What the answer schema and citation validation establish**
 
@@ -871,9 +867,9 @@ v3 resistance rate until authorized real records and required review exist.
 | `baseline.messages()` | Question/evidence -> grounded request | Define A's application rules |
 | `instruction_separation.messages()` | Same inputs -> stronger request policy | Define B's data/instruction boundary |
 | `screening.apply()` | Question/candidates -> retained chunks or stop | Define C's question/chunk screening stage |
-| `public_test_cards.supported_numbers()` | Evidence -> exact allowed fixtures present | Limit the public-test exception to supported evidence |
-| `public_test_cards.trusted_exception()` | Evidence -> trusted exception text | Prevent a source from inventing its own exception |
-| `output_screening.contains_payment_card()` | Answer/explicit exceptions -> boolean | Apply C's narrow deterministic output check |
+| `public_test_cards.supported_numbers()` | Historical evidence lookup | Retained for history; unused by active defenses |
+| `public_test_cards.trusted_exception()` | Historical exception builder | Retained for history; unused by active defenses |
+| `output_screening.contains_payment_card()` | Answer -> boolean | Apply C's deterministic card check without a test-data exception |
 | `client.approval()` | Current configuration/receipt -> allowed scope | Enforce selected provider, identity and time constraints |
 | `client.allowance_capacity()` | Scope/ledger -> remaining capacity | Preserve cumulative usage and stops |
 | `client.reserve()` | Needed slots/units/context -> reservation IDs | Account before an attempt and enforce scope |
