@@ -50,6 +50,30 @@ def metric_rows(summary):
     return rows
 
 
+def evaluation_metric_rows(summary, definitions):
+    modes = {row['mode']: row for row in summary}
+    result = []
+    for definition in definitions:
+        key, kind = definition['key'], definition['kind']
+        row = {'Metric': definition['metric']}
+        for mode in 'ABC':
+            values = modes.get(mode, {})
+            value = values.get(key)
+            if value is None:
+                text = 'N/A (C only)' if key in {'false_positive_rate', 'answer_chunk_removed_rate', 'false_positive_total'} and mode != 'C' else 'N/A'
+            elif kind == 'rate':
+                text = f"{value:.1%} ({values[key+'_numerator']}/{values[key+'_denominator']})"
+            elif kind == 'seconds':
+                text = f"{value:.3f} s (n={values['n_latency']})"
+            elif kind == 'quality':
+                text = f"{value:.2f}/4 (n={values['n_quality']})"
+            else:
+                text = f"{value:.1%} (n={values['n_agreement']})"
+            row[mode] = text
+        result.append(row)
+    return result
+
+
 def page_label(page):
     return f'Page {page}' if isinstance(page, int) and page > 0 else 'Page not established'
 

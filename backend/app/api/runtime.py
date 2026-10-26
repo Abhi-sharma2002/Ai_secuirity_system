@@ -183,6 +183,40 @@ def results():
     return {'runs': [p.name for p in root.iterdir() if p.is_dir() and (p/'experiment.json').is_file()] if root.exists() else []}
 
 
+@router.get('/evaluation-v3')
+def evaluation_dashboard():
+    from app.evaluation.simple_dashboard import snapshot
+    try:
+        return snapshot()
+    except Exception:
+        raise HTTPException(409, 'Evaluation files are invalid, changing or incompatible. Validate local records and regenerate the report before refreshing.') from None
+
+
+@router.get('/evaluation-v3/artifacts/{artifact}')
+def evaluation_artifact(artifact: str):
+    from starlette.responses import FileResponse
+    from app.evaluation.simple_dashboard import artifact_path, CHARTS
+    try:
+        path = artifact_path(artifact)
+    except FileNotFoundError:
+        raise HTTPException(404, 'Evaluation artifact unavailable') from None
+    if artifact in CHARTS and not evaluation_dashboard()['charts_current']:
+        raise HTTPException(409, 'Charts are stale; regenerate the local report')
+    media = 'image/png' if artifact.endswith('.png') else 'application/json' if artifact.endswith('.json') else 'text/csv' if artifact.endswith('.csv') else 'text/markdown'
+    return FileResponse(path, media_type=media, filename=artifact)
+
+
+@router.get('/evaluation-v3/evidence/{case_id}')
+def evaluation_evidence(case_id: str):
+    from app.evaluation.simple_dashboard import evidence
+    try:
+        return evidence(case_id)
+    except FileNotFoundError:
+        raise HTTPException(404, 'No saved evaluation evidence') from None
+    except Exception:
+        raise HTTPException(409, 'Saved evaluation evidence is invalid') from None
+
+
 @router.get('/results/{run_id}')
 def result(run_id: str):
     if not re.fullmatch(r'[A-Za-z0-9_-]{1,80}', run_id):

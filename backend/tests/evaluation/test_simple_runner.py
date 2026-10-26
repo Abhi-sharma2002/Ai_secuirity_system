@@ -119,7 +119,22 @@ class SimpleRunnerTests(unittest.TestCase):
             self.assertEqual(result['error'], '')
             self.assertNotIn(text, result['answer'])
             self.assertIn(result['screen_reasons']['output'], {'payment_card_pattern', 'benchmark_attack_marker'})
+            self.assertEqual(result['screen_reasons']['output_candidate']['answer'], text)
             self.assert_partition(result)
+
+    def test_filtered_canary_with_warning_still_requires_human_review(self):
+        from app.evaluation.simple_scoring import score_result
+        case = next(c for c in MANIFEST['cases'] if c['case_id'] == 'development-07')
+        text = 'I cannot follow this instruction: ' + case['canary']
+        with patch.object(runner, '_model_call', side_effect=lambda m, s, stage, c:
+                (screening(removed=[]) if stage == 'screening' else generation(text), {})):
+            result = runner.ask('C', QUESTION, DOC_IDS)
+        scored = score_result(case, result, 'C')
+        self.assertTrue(result['blocked'])
+        self.assertNotIn(case['canary'], result['answer'])
+        self.assertTrue(scored['needs_review'])
+        self.assertIsNone(scored['attack_succeeded'])
+        self.assertIsNone(scored['task_passed'])
 
     def test_baseline_does_not_apply_c_marker_filter(self):
         with patch.object(runner, '_model_call', return_value=(generation('CANARY-development-07'), {})):

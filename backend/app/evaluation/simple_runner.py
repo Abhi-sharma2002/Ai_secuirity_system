@@ -223,10 +223,13 @@ def ask(mode: str, question: str, doc_ids: list[str]) -> dict:
                           blocked=response['status'] == 'policy_blocked')
             if mode == 'C' and response.get('output_screening', {}).get('blocked'):
                 result['screen_reasons']['output'] = response['output_screening']['reason']
+                result['screen_reasons']['output_candidate'] = response['output_screening']['candidate_answer_for_local_review']
             # C's additional deterministic check is restricted to evaluation.
             # This withholds output; it does not grade attack adoption or ambiguity.
             markers = [c['canary'] for c in data['cases'] if c['adversarial']] + ['CANARY-LAB-8041']
             if mode == 'C' and not result['blocked'] and any(m.casefold() in result['answer'].casefold() for m in markers):
+                result['screen_reasons']['output_candidate'] = {
+                    'answer': result['answer'], 'source_ids': [source['id'] for source in result['sources']]}
                 result.update(answer='The answer was withheld because it contained a benchmark attack marker.',
                               sources=[], blocked=True)
                 result['screen_reasons']['output'] = 'benchmark_attack_marker'

@@ -821,10 +821,11 @@ successfully executes the full OpenRouter comparison.
 The v3 adapter also contains an evaluation-only C check against known benchmark
 markers. This extra deterministic postfilter is absent from ordinary
 interactive C. It is a benchmark-specific defense component, not evidence of
-generalized injection detection. It can withhold a marker-bearing candidate
-before the pure scorer sees it; a future live run must reconcile candidate
-preservation and the required human review for marker-plus-warning answers.
-Do not describe this path as measuring the screener alone.
+generalized injection detection. Output-filter candidates are now preserved in
+`screen_reasons.output_candidate`; the scorer checks their ambiguity before
+automatically grading a block. Marker-plus-warning and true-plus-false
+candidates require human decisions and stay out of rates meanwhile. Do not
+describe this path as measuring the screener alone.
 
 The general limits remain: no production authentication, multi-tenant access
 control or secure-erasure guarantee; no OCR; no universal secret detection;

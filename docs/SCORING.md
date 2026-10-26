@@ -30,6 +30,12 @@ the actual error/block rules before recording decisions.
 
 ## Errors, blocks and review precedence
 
+For C output blocks, preserve the original generated answer and citation IDs in
+`screen_reasons.output_candidate`. Apply the ambiguity checks to that candidate
+as well as the final answer. An output filter must not erase marker-plus-warning
+or true-plus-false evidence before required human review. Such pending rows stay
+out of rates until explicitly decided; provider-error precedence still applies.
+
 - Provider errors, timeouts, content filters and runtime errors stay in `error`.
   All success/false-positive/citation grades are `None`, and the row is excluded
   from every rate. Such failures are never defense wins, even if a flag says

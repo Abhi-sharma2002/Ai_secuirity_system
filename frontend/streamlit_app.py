@@ -48,7 +48,7 @@ if ready and not ready['live']['enabled']:
 if ready and 'remaining_calls' in ready['live']:
     live_status = ready['live']
     st.caption(f"Remaining: {live_status['remaining_calls']} provider calls · {live_status['remaining_reserved_tokens']} local units · approval expires {expiry_label(live_status['expires_at'])}")
-page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / compare', 'Saved experiments', 'Assignment guide'])
+page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / compare', 'Metrics / evaluation', 'Saved experiments', 'Assignment guide'])
 if ready:
     config = ready.get('configuration', {})
     st.caption('Provider: ' + str(config.get('provider', 'unknown')) + ' · Model: ' + str(config.get('model', 'unknown')))
@@ -261,6 +261,10 @@ if page == 'Ask / compare':
                     st.caption('Latency: ' + str(response.get('latency_ms')) + ' ms')
         st.download_button('Download answers and citations JSON', json.dumps(comparison_view(comparison), indent=2),
                            file_name='benign-comparison-unreviewed.json', mime='application/json')
+if page == 'Metrics / evaluation':
+    from frontend.metrics import render_metrics
+    render_metrics(api, BASE)
+
 if page == 'Saved experiments':
     runs = api('GET', '/results')
     names = (runs or {}).get('runs', [])

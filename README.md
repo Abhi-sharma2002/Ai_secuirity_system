@@ -43,6 +43,14 @@ disabled. Existing expired/stopped authorizations do not become valid on restart
 The only temporary provider route is the fixed NVIDIA Nemotron free alias;
 Azure code/configuration are retained but inactive.
 
+Open **Metrics / evaluation** to inspect the v3 comparison, formulas, A/B/C
+numerators and denominators, coverage, errors, human-review status and all six
+charts. Case details and masked table/report downloads are available there.
+This is a local read-only view; missing results show N/A and stale charts are
+withheld. Historical runs remain separate under **Saved experiments**.
+See the [metrics dashboard guide](docs/METRICS_DASHBOARD.md) for the inspection
+workflow and verification details.
+
 ## Run the evaluation
 
 ```bash

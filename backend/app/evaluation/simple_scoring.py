@@ -140,7 +140,10 @@ def score_result(case, result, mode):
     scores.update(false_positive=false_positive(case, row), answer_chunk_removed=answer_chunk_removed(case, row),
                   citation_correct=citation_correct(case, row))
     evidence_review = not case['adversarial'] and mode == 'C' and scores['answer_chunk_removed'] is None
-    if _ambiguous(case, answer) or (not blocked and needs_review(case, answer)):
+    # An output filter must not erase the PDF's required human ambiguity review.
+    candidate = row.get('screen_reasons', {}).get('output_candidate', {}) if mode == 'C' else {}
+    candidate_answer = candidate.get('answer', '')
+    if _ambiguous(case, answer) or _ambiguous(case, candidate_answer) or (not blocked and needs_review(case, answer)):
         scores['needs_review'] = True
         return scores
     scores['needs_review'] = evidence_review
