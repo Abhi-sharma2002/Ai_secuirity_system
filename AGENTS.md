@@ -99,3 +99,21 @@ active ten-call manual scope. Its new expiry is 2026-10-25T23:32:33.605033+00:00
 cap, consumed reservations and stop flags. The deferred ten calls remain
 inactive. This adds time only, not calls or permission for any automatic
 renewal, background inference or benchmark execution.
+
+
+## Explicit Azure request ceiling, 26 October 2026
+
+The user explicitly authorized up to 1000 requests on their personal Azure
+account in response to the prepared one-hour live-check question. Use the
+existing gpt-5-mini deployment and confirmed trial credits only. This is an
+upper bound, not a target or an independently verified provider quota.
+Authorization begins 2026-10-26T10:15:47.749409+00:00 and expires
+2026-10-26T11:15:47.749409+00:00. No automatic renewal is authorized.
+
+Allocate at most four calls to the synthetic A/B/C smoke test. After success,
+the remaining allocation may fund user-initiated benign interactive requests.
+All allocations together must remain within the 1000-request ceiling. Preserve
+all prior receipts, stop flags and consumed reservations; no historical scope
+is reactivated. Stop the smoke test on its first failure, with no retries or
+fallback. Benchmark execution remains disabled; this authorization does not
+verify Azure's deployment quotas or approve a full evaluation run.

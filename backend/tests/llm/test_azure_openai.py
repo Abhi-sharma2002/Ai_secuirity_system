@@ -42,6 +42,34 @@ def approval_values():
 
 
 class AzureTests(unittest.TestCase):
+    def test_smoke_initializes_fresh_ledger_before_capacity_preflight(self):
+        from scripts import azure_trial_smoke as smoke
+        with self.session(capacity=3) as (observed, _, _):
+            root = reg.ROOT
+            workspace = root / '.private' / 'new-smoke'
+            with patch.object(smoke, 'ROOT', root), patch.object(reg, 'ROOT', workspace / 'runtime'), \
+                 patch('app.evaluation.simple_config.load_config', return_value={
+                     'provider': 'azure_openai', 'model': ENV['AZURE_OPENAI_DEPLOYMENT']}):
+                with self.assertRaisesRegex(ValueError, 'four-call trial receipt'):
+                    smoke.run(workspace)
+                with reg.connect() as db:
+                    self.assertEqual(db.execute('SELECT COUNT(*) FROM calls').fetchone()[0], 0)
+            self.assertEqual(observed, [])
+
+    def test_large_explicit_trial_scope_preserves_cumulative_accounting(self):
+        with self.session(capacity=1000) as (observed, approved, _):
+            capacity = live.allowance_capacity(approved)
+            self.assertEqual(capacity['remaining_calls'], 1000)
+            self.assertEqual(capacity['remaining_reserved_tokens'], 32000000)
+            live.reserve(2, 64000, {'mode': 'C'})
+            remaining = live.allowance_capacity(approved)
+            self.assertEqual(remaining['remaining_calls'], 998)
+            self.assertEqual(remaining['remaining_reserved_tokens'], 31936000)
+            self.assertEqual(len(observed), 0)
+            for invalid in ({'max_calls': 1001}, {'max_reserved_tokens': 32000001}):
+                with self.assertRaises(ValueError):
+                    live.Approval.model_validate(approved.model_dump() | invalid)
+
     @contextmanager
     def session(self, *, status=200, screen=CLEAR, answer=ANSWER, timeout=False, capacity=5):
         observed = []

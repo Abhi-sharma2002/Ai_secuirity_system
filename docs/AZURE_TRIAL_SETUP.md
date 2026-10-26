@@ -2,12 +2,15 @@
 
 The user selected their already deployed Azure gpt-5-mini on their own Free
 Trial account and requested that OpenRouter stop. The active root environment
-now selects Azure, leaves the active OpenRouter key blank and keeps live
-execution disabled. Historical private settings, receipts, stop flags and
+now selects Azure and leaves the active OpenRouter key blank. After explicit
+bounded authorization and a successful synthetic A/B/C check, live interactive
+use is enabled. See [the recorded verification](AZURE_TRIAL_VERIFICATION.md). Historical private settings, receipts, stop flags and
 cumulative accounting are preserved. No account/key was revoked remotely and
 no cloud resource, deployment, plan, quota or spending protection was changed.
 
-Enter these values only in the local root `.env`, never in chat or a commit:
+Initial setup template: enter values only in the local root `.env`, never in
+chat or a commit. Do not overwrite the current private receipt path or enabled
+settings with this disabled template after activation:
 
 ```dotenv
 LLM_BACKEND=azure_openai
@@ -45,8 +48,8 @@ request allowance. Preserve the trial's spending protection and verify the
 remaining entitlement without upgrading the account. See Microsoft's
 [free-account charging explanation](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/avoid-charges-free-account).
 The user confirmed saved credentials, active trial credits and spending protection.
-No new live scope has been activated, and old expired/stopped receipts cannot
-authorize this new account.
+The current one-hour scope follows the user's explicit request authorization;
+old expired/stopped receipts cannot authorize this new account.
 
 The Ask interface now labels the selected provider as Azure OpenAI. The same
 backend selection is used for A/B/C; there is no UI OpenRouter selection while
@@ -62,9 +65,9 @@ Local dependency check:
 ```
 
 The saved endpoint/key/deployment are checked locally without printing their
-values. The remaining prerequisite for live verification is a current explicitly
-bounded request scope. Until a real run completes, local setup checks do not
-establish provider success or produce defense effectiveness metrics.
+values. The user subsequently authorized a current bounded scope and the synthetic
+live check completed. See the verification record for actual results and expiry.
+This does not produce defense effectiveness metrics.
 
 
 Local verification completed for this change:
@@ -110,4 +113,5 @@ no original benchmark or user-uploaded document is sent. It checks the actual
 answer for the expected fact and citation and checks identical initial evidence.
 It stops on the first error, never retries and never writes security metrics.
 Running requires a separately authorized current four-call trial receipt and
-explicitly enabled live settings. The script cannot create or renew that scope.
+explicitly enabled live settings. The completed receipt is consumed; do not
+rerun or renew it. The script cannot create or renew authorization.

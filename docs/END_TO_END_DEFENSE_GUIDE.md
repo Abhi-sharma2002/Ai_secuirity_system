@@ -3,8 +3,9 @@
 Provider update: the user has now selected their existing Azure gpt-5-mini
 Free Trial deployment and stopped OpenRouter. See
 [the current Azure setup](AZURE_TRIAL_SETUP.md). OpenRouter sections below
-describe the preceding configuration and preserved evaluation specification;
-no new Azure benchmark or provider test has been executed.
+describe the preceding configuration. The authorized synthetic Azure A/B/C
+integration check has since passed; see [actual verification](AZURE_TRIAL_VERIFICATION.md).
+No new Azure benchmark has been executed.
 
 This guide explains the implementation currently in this repository. It is a
 learning guide, not a benchmark report. Architecture explanations come from the

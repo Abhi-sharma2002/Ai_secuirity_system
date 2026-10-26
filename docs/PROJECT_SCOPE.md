@@ -4,8 +4,9 @@ Current selection, 26 October 2026: the user stopped OpenRouter and selected
 their existing Azure gpt-5-mini deployment on their own Free Trial account.
 The active OpenRouter key is blank; historical code, receipts and accounting
 remain intact. Use trial credits only, preserve spending protection and create
-no additional cloud resources. Live inference remains disabled until the local
-Azure settings and a current bounded trial scope are complete. The user approved
+no additional cloud resources. The authorized synthetic Azure check passed and
+manual inference is enabled within its current bounded trial scope; see the
+[verification and expiry](AZURE_TRIAL_VERIFICATION.md). The user approved
 omitting unsupported temperature identically for A/B/C; the shared YAML records
 that compatibility amendment. Live benchmark execution remains disabled.
 See [current setup](AZURE_TRIAL_SETUP.md) and the current amendment in AGENTS.md.

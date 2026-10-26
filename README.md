@@ -45,6 +45,12 @@ OpenRouter is stopped and its active environment key is blank. Enter Azure's
 actual endpoint, key and deployment name locally; a key alone does not enable
 calls or renew historical authorization.
 
+The authorized Azure synthetic A/B/C check has now passed and the current local
+services have bounded manual answering enabled. See the
+[live verification record](docs/AZURE_TRIAL_VERIFICATION.md) for actual results,
+remaining allocation and expiry. The default launcher command above remains
+local-only; `--live-answers` requires a currently valid authorization.
+
 Open **Metrics / evaluation** to inspect the v3 comparison, formulas, A/B/C
 numerators and denominators, coverage, errors, human-review status and all six
 charts. Case details and masked table/report downloads are available there.

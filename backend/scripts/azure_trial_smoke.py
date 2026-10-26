@@ -47,6 +47,7 @@ def run(workspace):
     from app.llm import client as live
     from app.evaluation.simple_config import load_config
     from app.main import app
+    from app.storage import registry
     from scripts.azure_live_integration import Bound
     from fastapi.testclient import TestClient
     from unittest.mock import patch
@@ -58,6 +59,7 @@ def run(workspace):
         raise ValueError('Requires explicitly enabled current Azure trial settings matching the shared configuration')
     workspace.mkdir(parents=True, mode=0o700)
     workspace.chmod(0o700)
+    registry.initialize()
     approved = live.approval()
     capacity = live.allowance_capacity(approved)
     if (approved.max_calls != len(ORDER) or approved.max_reserved_tokens != len(ORDER) * 32000

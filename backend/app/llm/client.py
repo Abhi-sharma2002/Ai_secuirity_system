@@ -80,7 +80,7 @@ class Approval(BaseModel):
     approved_model: str = Field(min_length=1)
     expires_at: datetime
     max_calls: int = Field(gt=0, le=1000)
-    max_reserved_tokens: int = Field(gt=0, le=10_000_000)
+    max_reserved_tokens: int = Field(gt=0, le=32_000_000)
     chat_completions_supported: bool
     structured_outputs_supported: bool
     max_output_tokens_supported: bool
