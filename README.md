@@ -5,6 +5,10 @@ separation**, and **C: screening plus output checks** against prompt injection.
 FastAPI and Streamlit serve the app; parsing, CPU embeddings, retrieval, Chroma,
 SQLite, evaluation and charts run locally. Current v3 live evaluation is deferred.
 
+For a detailed explanation of ingestion, retrieval, A/B/C defenses, display
+masking and evaluation limits, read the
+[end-to-end defense guide](docs/END_TO_END_DEFENSE_GUIDE.md).
+
 ## Setup
 
 Use Python with the pinned dependencies and preserve an existing private `.env`:
