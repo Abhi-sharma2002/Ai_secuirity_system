@@ -485,16 +485,17 @@ def call(messages, schema, stage, reservation, *, screening_reasoning_effort=Non
                     record['settings'].update(configuration_version='screening-question-source-contract-v2-minimal-cap700-probe-v1',
                                               screening_prompt_version='screening-question-source-contract-v2')
                 reply = generate(prompt, schema, config, observe_request, observe_response,
-                                 screening_reasoning_effort=screening_reasoning_effort)
+                                 screening_reasoning_effort=screening_reasoning_effort, settings=record['settings'])
             else:
-                reply = generate(prompt, schema, config, observe_request, observe_response)
+                reply = generate(prompt, schema, config, observe_request, observe_response, settings=record['settings'])
         record['usage'] = reply.usage_metadata
         record['finish_reason'] = getattr(reply, 'finish_reason', None)
         record['response_content_type'] = type(reply.content).__name__
         record['answer_content_present'] = isinstance(reply.content, str) and bool(reply.content.strip())
+        if config.provider == 'azure_openai':
+            record['reasoning_tokens'] = reply.response_metadata.get('reasoning_tokens')
         if screening_reasoning_effort is not None:
             record['response_content'] = reply.content.replace(config.api_key, '[redacted]') if isinstance(reply.content, str) else None
-            record['reasoning_tokens'] = reply.response_metadata.get('reasoning_tokens')
         try:
             record['provider_request_id'] = record['provider_request_id'] or diagnostics.identifier(reply.response_metadata.get('request_id'), config.api_key)
         except Exception:

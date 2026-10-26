@@ -116,3 +116,7 @@ It stops on the first error, never retries and never writes security metrics.
 Running requires a separately authorized current four-call trial receipt and
 explicitly enabled live settings. The completed receipt is consumed; do not
 rerun or renew it. The script cannot create or renew authorization.
+
+The later [token-efficiency fix](TOKEN_EFFICIENCY_FIX.md) adds shared minimal
+reasoning effort to the YAML without raising the completion cap. Historical
+verification outputs below remain facts about their original settings.

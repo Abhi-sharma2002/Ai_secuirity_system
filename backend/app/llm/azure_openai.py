@@ -1,7 +1,7 @@
 """Azure OpenAI v1 Chat Completions. One HTTP attempt, strict schema, no fallback."""
 from types import SimpleNamespace
 import httpx
-from app.llm.experiment_settings import MAX_COMPLETION_TOKENS
+from app.llm.experiment_settings import identity_settings
 
 
 class AzureStatusError(Exception):
@@ -18,12 +18,14 @@ class AzureStatusError(Exception):
             pass
 
 
-def generate(prompt, schema, config, observe_request, observe_response, *, screening_reasoning_effort=None):
+def generate(prompt, schema, config, observe_request, observe_response, *, screening_reasoning_effort=None, settings=None):
     if config.provider != 'azure_openai':
         raise ValueError('Historical provider routing is disabled')
+    profile = identity_settings() if settings is None else settings
     payload = {'model': config.model, 'messages': [
         {'role': 'system' if m.type == 'system' else 'user', 'content': m.content} for m in prompt],
-        'max_completion_tokens': MAX_COMPLETION_TOKENS, 'stream': False,
+        'max_completion_tokens': profile['max_output_tokens'],
+        'reasoning_effort': profile['reasoning_effort'], 'stream': False,
         'response_format': {'type': 'json_schema', 'json_schema': {
             'name': schema.get('title', 'security_response'), 'strict': True, 'schema': schema}}}
     if screening_reasoning_effort is not None:

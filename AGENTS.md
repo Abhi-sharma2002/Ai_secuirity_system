@@ -130,3 +130,19 @@ synthetic smoke requests. Historical receipts and their expiries remain intact.
 No time limit should be reintroduced without a new user instruction. Trial
 credits only, no new resources/upgrades, no automatic retries/fallback, and no
 benchmark execution remain the active scope.
+
+
+## Azure token-efficiency fix, 26 October 2026
+
+After diagnosis of an empty answer at the completion cap, the user explicitly
+requested fixing excessive token use. The shared Azure configuration now adds
+reasoning_effort: minimal to the original eight-key configuration as a recorded
+compatibility amendment. The completion cap stays 700 and temperature stays
+omitted. Apply identical answering settings to A/B/C and minimal reasoning to
+screening. Read these settings from eval_config.yaml and record their revised
+identity. Preserve historical configuration receipts and results.
+
+A small synthetic A/B/C verification may consume at most four calls from the
+existing current request allocation in response to this fix request. It must
+not resend the user's failed question, create new capacity, clear stop flags,
+add expiry, retry automatically or execute the full benchmark.

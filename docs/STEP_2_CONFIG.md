@@ -1,3 +1,7 @@
+Current Azure compatibility amendments are documented in
+[Azure setup](AZURE_TRIAL_SETUP.md) and [token-efficiency verification](TOKEN_EFFICIENCY_FIX.md).
+The original setup output below is historical.
+
 # Step 2: shared evaluation configuration
 
 `eval_config.yaml` contains exactly the required keys. It selects the standing

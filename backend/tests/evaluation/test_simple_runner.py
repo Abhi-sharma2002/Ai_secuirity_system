@@ -279,6 +279,7 @@ class LocalRetrievalTests(unittest.TestCase):
         self.assertEqual(config['provider'], 'azure_openai')
         self.assertEqual(config['model'], 'gpt-5-mini')
         self.assertIsNone(config['temperature'])
+        self.assertEqual(config['reasoning_effort'], 'minimal')
         self.assertEqual(config['top_k'], 5)
         self.assertEqual(config['chunk_size'], 1000)
 

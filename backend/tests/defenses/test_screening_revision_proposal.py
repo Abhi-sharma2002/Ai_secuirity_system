@@ -44,8 +44,11 @@ class ScreeningRevisionProposalTests(unittest.TestCase):
             azure_openai.generate(prompt, Screening.model_json_schema(), config, lambda _: None, lambda _: None,
                                   screening_reasoning_effort='minimal')
         self.assertEqual(len(captured), 2)
-        old = captured[0]
+        # The active transport now sends minimal effort by default. Reconstruct
+        # the historical omitted-parameter baseline without altering its record.
+        old = {k: v for k, v in captured[0].items() if k != 'reasoning_effort'}
         candidate = proposed_screening_payload(old)
+        self.assertEqual(captured[0], candidate)
         self.assertEqual(captured[1], candidate)
         self.assertNotIn('reasoning_effort', old)
         self.assertEqual(candidate.pop('reasoning_effort'), 'minimal')
@@ -53,7 +56,7 @@ class ScreeningRevisionProposalTests(unittest.TestCase):
         self.assertEqual(old['response_format']['json_schema']['schema'], Screening.model_json_schema())
         self.assertTrue(old['response_format']['json_schema']['strict'])
         self.assertEqual(json.loads(old['messages'][1]['content'])['sources'], saved['response']['candidate_evidence'])
-        self.assertEqual(identity_settings()['configuration_version'], 'azure-gpt5mini-v2-temperature-not-sent')
+        self.assertEqual(identity_settings()['configuration_version'], 'azure-gpt5mini-v4-shared-minimal-reasoning')
 
     def test_rejects_answer_payload_and_other_setting_changes(self):
         payload = {'response_format': {'json_schema': {'name': 'Screening'}}, 'max_completion_tokens': 700}

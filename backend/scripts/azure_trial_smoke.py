@@ -19,10 +19,14 @@ ORDER = [('A', 'generation'), ('B', 'generation'), ('C', 'screening'), ('C', 'ge
 
 
 def plan():
+    sys.path.insert(0, str(ROOT / 'backend'))
+    from app.evaluation.simple_config import load_config
+    config = load_config()
     return {'scope': 'Synthetic integration only; no attack benchmark or user documents',
             'document': FACT, 'question': QUESTION, 'provider': 'azure_openai',
             'model': 'gpt-5-mini', 'temperature_sent': False,
-            'max_completion_tokens': 700, 'request_timeout_seconds': 30,
+            'max_completion_tokens': config['max_tokens'], 'reasoning_effort': config['reasoning_effort'],
+            'request_timeout_seconds': 30,
             'request_order': ORDER, 'maximum_provider_attempts': len(ORDER),
             'maximum_reserved_units': len(ORDER) * 32000,
             'automatic_retries': 0, 'stop_on_first_failure': True,

@@ -668,6 +668,7 @@ The inspected [eval_config.yaml](../eval_config.yaml) contains:
 provider: azure_openai
 model: gpt-5-mini
 temperature: null
+reasoning_effort: minimal
 max_tokens: 700
 top_k: 5
 chunk_size: 1000
@@ -682,7 +683,11 @@ means no separate judge route is authorized.
 
 The user approved omitting unsupported temperature identically for A/B/C.
 The Azure transport does not send temperature or a provider seed; its generation
-and screening completion cap is `700`. Strict JSON Schema is requested from
+and screening completion cap is `700`. Minimal reasoning effort is read from
+the same YAML for every call, leaving more of the completion cap available for
+the answer. This is the recorded Azure compatibility amendment after an actual
+empty completion at the cap; see [token-efficiency verification](TOKEN_EFFICIENCY_FIX.md).
+Strict JSON Schema is requested from
 Azure and validated again locally. Historical OpenRouter generation settings
 are separate and are not used for the Azure selection.
 

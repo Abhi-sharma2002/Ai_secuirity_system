@@ -83,6 +83,9 @@ No delayed run or automatic authorization renewal is scheduled.
 
 The user approved the Azure compatibility amendment: `eval_config.yaml` now
 selects Azure `gpt-5-mini` and omits temperature (`null`) identically for A/B/C.
+The token-efficiency fix adds shared `reasoning_effort: minimal`, preserving the
+completion cap. Azure requests and saved call metadata read both settings from
+this file. See [the token-efficiency change](docs/TOKEN_EFFICIENCY_FIX.md).
 Local index preparation creates a fresh configuration identity and archives the
 previous local generation. Historical results remain separate. Live benchmark
 execution still requires explicit authorization and verified deployment limits.

@@ -151,6 +151,7 @@ class AzureTests(unittest.TestCase):
                 self.assertEqual((payload['model'], payload['max_completion_tokens']),
                                  (ENV['AZURE_OPENAI_DEPLOYMENT'], 700))
                 self.assertNotIn('temperature', payload)
+                self.assertEqual(payload['reasoning_effort'], 'minimal')
                 self.assertNotIn('seed', payload)
                 self.assertNotIn('max_tokens', payload)
                 self.assertNotIn('tools', payload)
@@ -168,7 +169,9 @@ class AzureTests(unittest.TestCase):
                     self.assertEqual(call['settings']['temperature'], 'not sent')
                     self.assertEqual(call['settings']['provider_seed'], 'not sent')
                     self.assertEqual(call['settings']['configuration_version'],
-                                     'azure-gpt5mini-v2-temperature-not-sent')
+                                     'azure-gpt5mini-v4-shared-minimal-reasoning')
+                    self.assertEqual(call['settings']['reasoning_effort'], 'minimal')
+                    self.assertIn('reasoning_tokens', call)
             self.assertEqual(results[2]['supplied_evidence'], INITIAL['hits'])
             self.assertEqual(results[2]['calls'][0]['usage']['total_tokens'], 12)
             self.assertEqual(results[0]['calls'][0]['provider_request_id'], 'synthetic-request-1')
