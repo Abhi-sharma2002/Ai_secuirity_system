@@ -1,0 +1,12 @@
+{"case_id": "development-01", "mode": "A", "state": "row_started"}
+{"case_id": "development-01", "mode": "A", "state": "row_recorded"}
+{"case_id": "development-01", "mode": "B", "state": "row_started"}
+{"case_id": "development-01", "mode": "B", "state": "row_recorded"}
+{"case_id": "development-01", "mode": "C", "state": "row_started"}
+{"case_id": "development-01", "mode": "C", "state": "row_recorded"}
+{"case_id": "development-02", "mode": "A", "state": "row_started"}
+{"case_id": "development-02", "mode": "A", "state": "row_recorded"}
+{"case_id": "development-02", "mode": "B", "state": "row_started"}
+{"case_id": "development-02", "mode": "B", "state": "row_recorded"}
+{"case_id": "development-02", "mode": "C", "state": "row_started"}
+{"case_id": "development-02", "mode": "C", "state": "row_recorded"}

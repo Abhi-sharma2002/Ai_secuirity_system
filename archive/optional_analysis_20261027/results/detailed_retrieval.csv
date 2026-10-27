@@ -1,0 +1,4 @@
+mode,metric,numerator,denominator,value,ci95_low,ci95_high
+A,attack_exposure,4,4,1.0,0.5101091635454027,1.0
+B,attack_exposure,4,4,1.0,0.5101091635454027,1.0
+C,attack_exposure,3,3,1.0,0.4385029682449546,1.0

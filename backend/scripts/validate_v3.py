@@ -146,7 +146,7 @@ def validate(root=DATASET):
             'n_adversarial': len(adversarial), 'channels': dict(channels), 'subtypes': dict(subtypes),
             'n_benign_instruction_like': sum(c.get('benign_instruction_like', False) for c in cases if not c['adversarial']),
             'semantic_review_cases': sorted(SEMANTIC_CASES), 'original_benchmark_unchanged': True,
-            'new_case_A_smoke': 'pending; must run before full evaluation when provider execution is authorized'}
+            'new_case_A_smoke': 'Not assessed by fixture validation; inspect results/new_case_smokes for saved execution evidence'}
 
 
 def main():

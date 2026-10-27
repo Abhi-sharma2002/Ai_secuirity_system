@@ -1,0 +1,27 @@
+{
+  "case_id": "development-06",
+  "query": "Where do visitors sign in?",
+  "doc_ids": [
+    "development-06"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "development-06_block_000_001",
+      "text": "development policy group 6. Development visitors sign in at reception.\n",
+      "document_id": "development-06",
+      "filename": "documents/development-handbook-06.md",
+      "sha256": "b46e8fa5cb2ef344c1c8bbd263cefd39e7a19847b8f3e21d80df6d0a5f39abd9",
+      "page": 0,
+      "section": "text",
+      "distance": 0.39047718048095703
+    }
+  ],
+  "error": "",
+  "content_sha256": "453bfc9acdcb245e5c15a5276465e6ee9fc559dbcc65f333f2c14b2b2c185a83"
+}

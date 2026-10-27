@@ -56,7 +56,7 @@ def test_review_requires_explicit_labels_and_preserves_old_records(tmp_path):
     before = path.read_bytes()
     status = review.prepare(path, tmp_path)
     assert status['n_pending_review'] == 1
-    assert status['n_sample_rows'] == 0
+    assert status['n_sample_rows'] == 30
     forms = read_csv(tmp_path / 'review_decisions.csv')
     with patch.object(review, 'ROOT', tmp_path), pytest.raises(EvaluationError):
         review.apply_decisions(path, tmp_path / 'review_decisions.csv')
@@ -111,12 +111,13 @@ def test_quality_and_agreement_require_explicit_complete_human_fields(tmp_path):
         report.read_spot_checks(tmp_path / 'spot_check.csv', rows)
 
 
-def test_partial_run_cannot_claim_complete_spot_check(tmp_path):
+def test_partial_run_allows_review_of_available_answers(tmp_path):
     path, rows = records(tmp_path)
     report.write_csv(path, COLUMNS, rows[:9])
     status = review.prepare(path, tmp_path)
-    assert status['status'] == 'waiting_for_complete_comparison'
-    assert status['n_sample_rows'] == 0
+    assert status['status'] == 'sample_ready'
+    assert status['n_sample_rows'] == 9
+    assert status['n_human_checked'] == 0
 
 
 def test_changed_record_cannot_accept_stale_review(tmp_path):
@@ -131,3 +132,43 @@ def test_changed_record_cannot_accept_stale_review(tmp_path):
     report.write_csv(path, COLUMNS, rows)
     with pytest.raises(EvaluationError, match='changed record'):
         review.apply_decisions(path, tmp_path / 'review_decisions.csv')
+
+
+def test_explicit_partial_quality_survives_later_sample_changes(tmp_path):
+    path, rows = records(tmp_path)
+    report.write_csv(path, COLUMNS, rows[:3])
+    review.prepare(path, tmp_path)
+    target = rows[0]
+    with patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        result = review.submit_quality(path, tmp_path, case_id=target['case_id'], mode=target['mode'],
+            record_sha256=report.row_digest(target), reviewer='SYNTHETIC HUMAN TEST INPUT',
+            quality_0_4=3, task_correct=True, attack_correct=None)
+    assert result['provider_requests_made'] == 0
+    report.write_csv(path, COLUMNS, rows)
+    review.prepare(path, tmp_path)
+    checks = report.read_spot_checks(tmp_path / 'spot_check.csv', rows)
+    assert len(checks) == 1 and checks[0]['quality'] == 3
+    with pytest.raises(EvaluationError, match='name, quality'):
+        review.submit_quality(path, tmp_path, case_id=target['case_id'], mode=target['mode'],
+            record_sha256=report.row_digest(target), reviewer='', quality_0_4=3,
+            task_correct=True, attack_correct=None)
+
+
+def test_human_correction_archives_raw_record_and_invalidates_old_quality(tmp_path):
+    path, rows = records(tmp_path)
+    target = rows[0]
+    review.prepare(path, tmp_path)
+    review.submit_quality(path, tmp_path, case_id=target['case_id'], mode=target['mode'],
+        record_sha256=report.row_digest(target), reviewer='SYNTHETIC HUMAN TEST INPUT',
+        quality_0_4=1, task_correct=False, attack_correct=None)
+    before = path.read_bytes()
+    with patch.object(review, 'ROOT', tmp_path), patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        result = review.submit_judgment(path, tmp_path, case_id=target['case_id'], mode=target['mode'],
+            record_sha256=report.row_digest(target), reviewer='SYNTHETIC HUMAN TEST INPUT',
+            rationale='Synthetic answer misses required evidence', task_passed=False, attack_succeeded=None)
+    assert result['n_applied'] == 1
+    assert next((tmp_path / 'archive/evaluation_reviews').glob('*/records.before.csv')).read_bytes() == before
+    changed = report.read_records(path)
+    assert changed[0]['task_passed'] == 'false'
+    assert report.read_spot_checks(tmp_path / 'spot_check.csv', changed) == []
+    assert list((tmp_path / '.review_history').glob('*/spot_check.before.csv'))

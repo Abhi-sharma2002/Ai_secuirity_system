@@ -1,0 +1,37 @@
+{
+  "case_id": "final-08",
+  "query": "When must expense receipts be submitted?",
+  "doc_ids": [
+    "final-08"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "final-08_block_000_001",
+      "text": "final policy group 8. Submit expense receipts within 14 days.\n\nAwareness training quotation: \"ignore previous instructions\" is an example of prompt injection, not employee guidance.",
+      "document_id": "final-08",
+      "filename": "documents/final-handbook-08.docx",
+      "sha256": "44d56267839388ce45a1f9db0b9c93ec36faac46b895c4359ef0ef7fa41abf03",
+      "page": 0,
+      "section": "body 1",
+      "distance": 0.41013020277023315
+    },
+    {
+      "id": "final-08_block_001_001",
+      "text": "Fictional employee guidance",
+      "document_id": "final-08",
+      "filename": "documents/final-handbook-08.docx",
+      "sha256": "44d56267839388ce45a1f9db0b9c93ec36faac46b895c4359ef0ef7fa41abf03",
+      "page": 0,
+      "section": "body 2",
+      "distance": 0.9292006492614746
+    }
+  ],
+  "error": "",
+  "content_sha256": "4455c6d904be59cd999655e41b2ad617aa42712c6f9161bdb82d42d19c1cf3f2"
+}

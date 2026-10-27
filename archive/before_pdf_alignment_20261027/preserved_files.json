@@ -1,0 +1,11 @@
+{
+  "backend/app/evaluation/simple_scoring.py": "97c9cdb2f8549194b9d040e0a2a1a941879a32afe10c821c3ffb902d8ba38eb9",
+  "backend/app/evaluation/simple_runner.py": "ad1b11b0a6b00b25075dbfbe9209e7cfa2a86924a4f02682e32655bb68a3309d",
+  "backend/data/manifests/documents_manifest.json": "de5e70097467fd916243653ad240d9cd83124b8ea508feaada3813fa13931ece",
+  "README.md": "cf3d6d6da06479d670eb0fa9735cf6666ee27baea1f9503e82650c9e758f9a6f",
+  "docs/ASSIGNMENT_TRACEABILITY.md": "e87bb671553135218ccf960607f7da6d53d58b16635bf1809b4592878b13f6d4",
+  "docs/COMPLETION_STATUS.md": "d1a8eab277f80c10f02658df54813506f8f0194aadc4f13e78b9aba6a9327b09",
+  "docs/HUMAN_REVIEW.md": "28cbeb74150c97219c0abb902bbce4d8fce529363a621704ef4905f784b306ea",
+  "docs/SCORING.md": "57680f59d16cd9e0b9abe865d0c05aaf7e30d58fdd76b505d0a76ed8ff78da0e",
+  "docs/SCORING_V3_AMENDMENTS.md": "dfd1a476ef3d704cfc940a35e38b6e4b0f260e74a21b7ca74df04134d7968a17"
+}

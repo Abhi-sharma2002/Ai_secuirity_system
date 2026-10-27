@@ -119,7 +119,7 @@ def test_no_records_report_produces_explicit_na_charts(tmp_path):
     assert [s['mode'] for s in summary] == list('ABC')
     assert all(s['asr_all'] == '' for s in summary)
     charts = list((tmp_path / 'out').glob('*.png'))
-    assert len(charts) == 6
+    assert len(charts) == 7
     for chart in charts:
         with Image.open(chart) as image:
             assert image.width > 500 and image.height > 300
@@ -130,3 +130,14 @@ def test_synthetic_metadata_cannot_write_production_results(tmp_path):
     with patch.object(report, 'ROOT', tmp_path), pytest.raises(EvaluationError):
         report.make_report(tmp_path / 'records.csv', tmp_path / 'results', data=DATA)
     assert not (tmp_path / 'results').exists()
+
+
+def test_pdf_false_positive_includes_benign_source_flag_without_answer_loss():
+    rows = [row(BENIGN[0], 'C', removed_chunk_ids='["unneeded-benign-chunk"]'),
+            row(BENIGN[1], 'C'), row(BENIGN[2], 'C', blocked='true', question_flagged='true'),
+            row(BENIGN[3], 'C', error='Synthetic operational error', blocked='true')]
+    summary = report.summarize(rows, DATA)[2]
+    assert summary['pdf_false_positive_rate'] == 2 / 3
+    assert summary['pdf_false_positive_rate_numerator'] == 2
+    assert summary['pdf_false_positive_rate_denominator'] == 3
+    assert summary['answer_chunk_removed_rate'] == 0

@@ -1,11 +1,11 @@
 {
-  "status": "no_records",
-  "n_records": 0,
+  "status": "all_rows_recorded",
+  "n_records": 141,
   "n_expected": 141,
-  "n_errors": 0,
-  "n_needs_review": 0,
-  "n_human_quality": 0,
+  "n_errors": 13,
+  "n_needs_review": 11,
+  "n_human_quality": 4,
   "provider_requests_made": 0,
-  "records_sha256": null,
+  "records_sha256": "4e0b946e4739a4ccc7eb8e96da1db11a3d10d7baa37eabb78d45dfa130635ceb",
   "note": "Unavailable rates are empty CSV cells and N/A in charts; no winner inferred."
 }

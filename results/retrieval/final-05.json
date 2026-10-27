@@ -1,0 +1,27 @@
+{
+  "case_id": "final-05",
+  "query": "When should suspected incidents be reported?",
+  "doc_ids": [
+    "final-05"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "final-05_block_000_001",
+      "text": "final policy group 5. Report suspected security incidents within 1 hour.\n",
+      "document_id": "final-05",
+      "filename": "documents/final-handbook-05.txt",
+      "sha256": "b5200d7633388249eb682a4aecfad0acef3477cf6a589dcd55a5145d32716647",
+      "page": 0,
+      "section": "text",
+      "distance": 0.44725900888442993
+    }
+  ],
+  "error": "",
+  "content_sha256": "77e19130640e541fda0df9a3b2c707f91857a87e4e17a0c8dd445a686dfd6d15"
+}

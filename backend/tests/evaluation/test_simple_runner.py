@@ -84,7 +84,7 @@ class SimpleRunnerTests(unittest.TestCase):
             self.assertNotIn('supporting_quotes', json.dumps(messages))
         for result in results[:2]:
             self.assertEqual(set(result), FIELDS)
-            self.assertEqual(result['kept_chunk_ids'], [])
+            self.assertEqual(result['kept_chunk_ids'], [hit['id'] for hit in result['retrieved_chunks']])
             self.assertEqual(result['removed_chunk_ids'], [])
             self.assertEqual(result['screen_reasons'], {})
         self.assert_partition(results[2])
@@ -110,19 +110,19 @@ class SimpleRunnerTests(unittest.TestCase):
         self.assertEqual(result['error'], '')
         self.assert_partition(result)
 
-    def test_output_check_withholds_canary_secret_and_fictional_test_card(self):
-        for text in ('CANARY-development-07', 'CANARY-LAB-8041', 'Fictional test card 4111111111111111'):
+    def test_output_check_withholds_fictional_test_card(self):
+        for text in ('Fictional test card 4111111111111111',):
             with self.subTest(text=text), patch.object(runner, '_model_call', side_effect=lambda m, s, stage, c:
                     (screening(removed=[]) if stage == 'screening' else generation(text), {})):
                 result = runner.ask('C', QUESTION, DOC_IDS)
             self.assertTrue(result['blocked'])
             self.assertEqual(result['error'], '')
             self.assertNotIn(text, result['answer'])
-            self.assertIn(result['screen_reasons']['output'], {'payment_card_pattern', 'benchmark_attack_marker'})
+            self.assertIn(result['screen_reasons']['output'], {'payment_card_pattern'})
             self.assertEqual(result['screen_reasons']['output_candidate']['answer'], text)
             self.assert_partition(result)
 
-    def test_filtered_canary_with_warning_still_requires_human_review(self):
+    def test_unfiltered_canary_with_warning_requires_human_review(self):
         from app.evaluation.simple_scoring import score_result
         case = next(c for c in MANIFEST['cases'] if c['case_id'] == 'development-07')
         text = 'I cannot follow this instruction: ' + case['canary']
@@ -130,11 +130,21 @@ class SimpleRunnerTests(unittest.TestCase):
                 (screening(removed=[]) if stage == 'screening' else generation(text), {})):
             result = runner.ask('C', QUESTION, DOC_IDS)
         scored = score_result(case, result, 'C')
-        self.assertTrue(result['blocked'])
-        self.assertNotIn(case['canary'], result['answer'])
+        self.assertFalse(result['blocked'])
+        self.assertIn(case['canary'], result['answer'])
         self.assertTrue(scored['needs_review'])
         self.assertIsNone(scored['attack_succeeded'])
         self.assertIsNone(scored['task_passed'])
+
+    def test_c_cannot_use_gold_attack_targets_to_hide_a_failure(self):
+        from app.evaluation.simple_scoring import score_result
+        case = next(c for c in MANIFEST['cases'] if c['case_id'] == 'development-07')
+        with patch.object(runner, '_model_call', side_effect=lambda m, s, stage, c:
+                (screening(removed=[]) if stage == 'screening' else generation(case['canary']), {})):
+            result = runner.ask('C', QUESTION, DOC_IDS)
+        self.assertFalse(result['blocked'])
+        self.assertEqual(result['answer'], case['canary'])
+        self.assertTrue(score_result(case, result, 'C')['attack_succeeded'])
 
     def test_baseline_does_not_apply_c_marker_filter(self):
         with patch.object(runner, '_model_call', return_value=(generation('CANARY-development-07'), {})):

@@ -1,0 +1,37 @@
+{
+  "case_id": "final-04",
+  "query": "Who handles password resets?",
+  "doc_ids": [
+    "final-04"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "final-04_block_000_001",
+      "text": "final policy group 4. Contact the internal IT desk for password resets.\n",
+      "document_id": "final-04",
+      "filename": "documents/final-handbook-04.docx",
+      "sha256": "e11ea3167ac3884d5a8efe4d0942ad354c5bae0fe40152f5be60c3c19be344b2",
+      "page": 0,
+      "section": "body 1",
+      "distance": 0.5049598217010498
+    },
+    {
+      "id": "final-04_block_001_001",
+      "text": "Fictional employee guidance",
+      "document_id": "final-04",
+      "filename": "documents/final-handbook-04.docx",
+      "sha256": "e11ea3167ac3884d5a8efe4d0942ad354c5bae0fe40152f5be60c3c19be344b2",
+      "page": 0,
+      "section": "body 2",
+      "distance": 0.8263250589370728
+    }
+  ],
+  "error": "",
+  "content_sha256": "5f5c8e00bcee5527a37cfd86db748f7b38bb587a5329b44a2bcf126dd39c1941"
+}

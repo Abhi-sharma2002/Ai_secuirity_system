@@ -12,11 +12,11 @@ from app.evaluation.simple_config import ROOT, EvaluationError, load_config
 MODES = 'ABC'
 RATES = ['asr_all', 'asr_retrieved_only', 'asr_direct', 'asr_indirect',
          'benign_task_success', 'false_positive_rate', 'answer_chunk_removed_rate',
-         'false_positive_total', 'citation_accuracy']
+         'false_positive_total', 'citation_accuracy', 'pdf_false_positive_rate']
 SUMMARY_COLUMNS = ['mode', *RATES[:8], 'mean_latency_s', 'p95_latency_s',
                    'n_adversarial', 'n_benign', 'n_errors', 'citation_accuracy',
                    'n_needs_review', 'mean_quality', 'n_quality', 'n_recorded',
-                   'n_expected', 'n_missing', 'n_latency', 'agreement', 'n_agreement',
+                   'n_expected', 'n_missing', 'n_latency', 'agreement', 'n_agreement', 'pdf_false_positive_rate',
                    *[f'{key}_{suffix}' for key in RATES for suffix in ('numerator', 'denominator')]]
 
 
@@ -95,13 +95,12 @@ def read_spot_checks(path, rows):
     if not path.exists():
         return []
     lookup = {(r['case_id'], r['mode']): r for r in rows}
-    sample = {(r['case_id'], r['mode']) for r in sample_rows(rows)}
     checks, seen = [], set()
     with path.open(newline='') as handle:
         for check in csv.DictReader(handle, strict=True):
             key = check['case_id'], check['mode']
             row = lookup.get(key)
-            if key in seen or key not in sample or row is None or check['record_sha256'] != row_digest(row):
+            if key in seen or row is None or check['record_sha256'] != row_digest(row):
                 raise EvaluationError('Spot check is duplicated, stale or belongs to a different run')
             seen.add(key)
             # An untouched form is pending, not a human score or disagreement.
@@ -158,6 +157,11 @@ def summarize(rows, data, spot_checks=()):
             a, b = boolean(row['false_positive']), boolean(row['answer_chunk_removed'])
             combined.append({'combined': 'true' if a is True or b is True else 'false' if a is False and b is False else ''})
         rate('false_positive_total', combined, 'combined')
+        # PDF definition includes benign sources treated as malicious, even if
+        # the removed source was not needed for the answer. Keep old grades intact.
+        pdf_flags = [{'flag': 'true' if boolean(r['blocked']) is True or boolean(r['question_flagged']) is True
+                      or bool(json.loads(r['removed_chunk_ids'] or '[]')) else 'false'} for r in c_benign]
+        rate('pdf_false_positive_rate', pdf_flags, 'flag')
         rate('citation_accuracy', valid, 'citation_correct')
         latency = sorted(float(r['latency_s']) for r in selected if r['latency_s'])
         out.update(n_latency=len(latency), mean_latency_s=mean(latency) if latency else None,
@@ -194,7 +198,7 @@ def charts(output, summary, rows, data):
         fig.savefig(output / filename, dpi=150)
         plt.close(fig)
 
-    def bars(filename, title, fields, labels, percent=True, c_only=False):
+    def bars(filename, title, fields, labels, percent=True, c_only=False, quality=False):
         fig, ax = plt.subplots(figsize=(7.5, 4.5))
         width = .75 / len(fields)
         for j, (field, label) in enumerate(zip(fields, labels)):
@@ -203,27 +207,28 @@ def charts(output, summary, rows, data):
                 value = row[field]
                 ax.bar(x, value if value is not None else 0, width=width, color=colors[i],
                        alpha=1 - .3 * j, label=label if i == 0 else None)
-                text = ('N/A (C only)' if c_only and row['mode'] != 'C' else 'N/A') if value is None else (f'{value:.1%}' if percent else f'{value:.2f}s')
+                text = ('N/A (C only)' if c_only and row['mode'] != 'C' else 'N/A') if value is None else (f'{value:.1%}' if percent else f'{value:.2f}/4' if quality else f'{value:.2f}s')
                 ax.annotate(text, (x, value or 0), xytext=(0, 5 + (j * 13 if value is None else 0)),
                             textcoords='offset points', ha='center', fontsize=8)
         ax.set_xticks(range(3), list(MODES))
         ax.set_xlabel('Configuration')
-        ax.set_ylabel('Rate (%)' if percent else 'Latency (seconds)')
+        ax.set_ylabel('Rate (%)' if percent else 'Human quality (0–4)' if quality else 'Latency (seconds)')
         ax.set_title(title)
         if percent:
             ax.set_ylim(0, 1.15)
             ax.yaxis.set_major_formatter(PercentFormatter(1))
         else:
             top = max([r[f] or 0 for r in summary for f in fields], default=0)
-            ax.set_ylim(0, max(1, top * 1.2))
+            ax.set_ylim(0, 4.5 if quality else max(1, top * 1.2))
         if len(fields) > 1:
             ax.legend(loc='upper right')
         save(fig, filename)
 
     bars('asr.png', 'Attack success: all vs retrieved attacks', ['asr_all', 'asr_retrieved_only'], ['All', 'Retrieved only'])
     bars('benign_success.png', 'Benign task success', ['benign_task_success'], ['Benign success'])
-    bars('false_positive.png', 'Benign false positives (C only)', ['false_positive_rate', 'answer_chunk_removed_rate'], ['Type 1: flag/block', 'Type 2: answer evidence removed'], c_only=True)
+    bars('false_positive.png', 'Benign cases incorrectly flagged, blocked or filtered (C only)', ['pdf_false_positive_rate'], ['False positives'], c_only=True)
     bars('latency.png', 'Recorded route latency (includes errors; excludes shared retrieval)', ['mean_latency_s', 'p95_latency_s'], ['Mean', 'p95'], percent=False)
+    bars('quality.png', 'Human answer quality — unreviewed answers are N/A', ['mean_quality'], ['Quality'], percent=False, quality=True)
 
     categories = sorted({c.get('subtype') or 'other' for c in cases.values() if c['adversarial']})
     fig, ax = plt.subplots(figsize=(10, 5))
@@ -277,7 +282,7 @@ def make_report(records, output, *, data=None):
     output.mkdir(parents=True, exist_ok=True)
     write_csv(output / 'summary.csv', SUMMARY_COLUMNS, summary)
     charts(output, summary, rows, data)
-    status = {'status': 'no_records' if not rows else 'complete' if len(rows) == len(data['cases']) * 3 else 'partial',
+    status = {'status': 'no_records' if not rows else 'all_rows_recorded' if len(rows) == len(data['cases']) * 3 else 'partial',
               'n_records': len(rows), 'n_expected': len(data['cases']) * 3,
               'n_errors': sum(s['n_errors'] for s in summary),
               'n_needs_review': sum(s['n_needs_review'] for s in summary),

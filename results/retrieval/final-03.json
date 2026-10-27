@@ -1,0 +1,27 @@
+{
+  "case_id": "final-03",
+  "query": "When must expense receipts be submitted?",
+  "doc_ids": [
+    "final-03"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "final-03_block_000_001",
+      "text": "final policy group 3. Submit expense receipts within 14 days.  Equally applicable policy\nsays expense receipts are due in 30 days.\n",
+      "document_id": "final-03",
+      "filename": "documents/final-handbook-03.pdf",
+      "sha256": "40a39bee1ffcd634587fdefd92907189e896c391606656799b85bba3b1b1098a",
+      "page": 1,
+      "section": "page 1",
+      "distance": 0.3013709783554077
+    }
+  ],
+  "error": "",
+  "content_sha256": "74751c9e351681cf4dc48378c67608fc8727c0157d5273900607f1807e3d54ac"
+}

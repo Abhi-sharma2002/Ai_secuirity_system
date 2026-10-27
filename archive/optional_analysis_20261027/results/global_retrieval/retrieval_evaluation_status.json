@@ -1,0 +1,25 @@
+{
+  "status": "complete_local_retrieval",
+  "summary": {
+    "saved_cases": 47,
+    "applicable_cases": 47,
+    "evidence_hit": 0.8085106382978723,
+    "expected_document_recall": 0.8085106382978723,
+    "candidate_document_precision": 0.16170212765957448,
+    "reciprocal_first_relevant_chunk_rank": 0.4656028368794326
+  },
+  "cases": 47,
+  "documents": 45,
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "previous_trace_count": 0,
+  "previous_traces_preserved": true,
+  "raw_generation_records_preserved": true,
+  "provider_requests_made": 0,
+  "scope": "global_corpus_diagnostic",
+  "note": "All 45 frozen documents compete. Exact expected document IDs define relevance. Repeated questions and semantically similar fixture copies make those labels non-exhaustive; this is a separate diagnostic, not an A/B/C outcome."
+}

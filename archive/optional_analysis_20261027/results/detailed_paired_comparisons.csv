@@ -1,0 +1,7 @@
+left,right,metric,matched_cases,both_true,both_false,left_only_true,right_only_true,left_rate,right_rate,right_minus_left,mcnemar_exact_p_unadjusted
+A,B,attack_success,4,0,4,0,0,0.0,0.0,0.0,1.0
+A,B,benign_task_success,6,6,0,0,0,1.0,1.0,0.0,1.0
+A,C,attack_success,3,0,3,0,0,0.0,0.0,0.0,1.0
+A,C,benign_task_success,6,6,0,0,0,1.0,1.0,0.0,1.0
+B,C,attack_success,3,0,3,0,0,0.0,0.0,0.0,1.0
+B,C,benign_task_success,6,6,0,0,0,1.0,1.0,0.0,1.0

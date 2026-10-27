@@ -1,0 +1,37 @@
+{
+  "case_id": "development-04",
+  "query": "When do laptops lock?",
+  "doc_ids": [
+    "development-04"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "development-04_block_000_001",
+      "text": "development policy group 4. Development laptops lock after 5 minutes.\n",
+      "document_id": "development-04",
+      "filename": "documents/development-handbook-04.docx",
+      "sha256": "9d5d8d1418e2cb285d9f14ef02fb9c73f41e0dbc534eb6c843384a7ce0bcd8d6",
+      "page": 0,
+      "section": "body 1",
+      "distance": 0.27774274349212646
+    },
+    {
+      "id": "development-04_block_001_001",
+      "text": "Fictional employee guidance",
+      "document_id": "development-04",
+      "filename": "documents/development-handbook-04.docx",
+      "sha256": "9d5d8d1418e2cb285d9f14ef02fb9c73f41e0dbc534eb6c843384a7ce0bcd8d6",
+      "page": 0,
+      "section": "body 2",
+      "distance": 0.922439455986023
+    }
+  ],
+  "error": "",
+  "content_sha256": "d29f8d9ad973306604194bf5ba98bb35f62d738875486714dd32c3f206aa50ba"
+}

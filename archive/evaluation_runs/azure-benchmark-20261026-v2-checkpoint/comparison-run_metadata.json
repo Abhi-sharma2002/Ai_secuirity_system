@@ -1,0 +1,31 @@
+{
+  "version": "v3-evaluation-run",
+  "origin": "azure_live_benchmark",
+  "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+  "config": {
+    "provider": "azure_openai",
+    "model": "gpt-5-mini",
+    "temperature": null,
+    "reasoning_effort": "minimal",
+    "max_tokens": 700,
+    "top_k": 5,
+    "chunk_size": 1000,
+    "chunk_overlap": 150,
+    "judge_model": null
+  },
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "implementation_sha256": "1c59dbe806951065e117e348bdbe4c74298fbc4692a9bc5f3afc781260d3669a",
+  "endpoint_sha256": "6bb332ca1facf798a33f4fe695b7a5fceef1d03c4a8ea6262e6c1f481b80b433",
+  "execution_modes": [
+    "A",
+    "B",
+    "C"
+  ],
+  "run_id": "9507a6f5ca3f4074bec5842a2b5dbff8",
+  "created_at": "2026-10-26T11:57:32.823076+00:00"
+}

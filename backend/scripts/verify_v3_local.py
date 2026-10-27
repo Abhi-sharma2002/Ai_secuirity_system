@@ -126,7 +126,7 @@ def verify(output):
                     ui = AppTest.from_file(str(ROOT / 'frontend/streamlit_app.py'), default_timeout=120).run()
                     assert not ui.exception and not ui.error
                     workspace = next(r for r in ui.radio if r.label == 'Workspace')
-                    assert workspace.value == 'Documents'
+                    assert workspace.value == 'Ask / compare'
                     workspace.set_value('Ask / compare').run()
                     assert not ui.exception and not ui.error
                     next(t for t in ui.text_area if t.label == 'Question').input(question['question'])

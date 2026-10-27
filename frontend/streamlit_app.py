@@ -4,7 +4,7 @@ import json
 from uuid import uuid4
 import httpx
 import streamlit as st
-from frontend.error_messages import describe_error
+from frontend.error_messages import describe_error, provider_rejected
 from frontend.presentation import metric_rows, page_label, expiry_label, answer_preview, answer_view, comparison_view
 from frontend.redaction import artifact_preview
 
@@ -51,7 +51,7 @@ if ready and 'remaining_calls' in ready['live']:
     expiry_text = ('No time expiry' if expiry is None and 'expires_at' in live_status
                    else 'Approval expires ' + expiry_label(expiry))
     st.caption(f"Remaining: {live_status['remaining_calls']} provider calls · {expiry_text}")
-page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / compare', 'Metrics / evaluation', 'Saved experiments', 'Assignment guide'])
+page = st.sidebar.radio('Workspace', ['Documents', 'Search evidence', 'Ask / compare', 'Metrics / evaluation', 'Saved experiments', 'Assignment guide'], index=2)
 if ready:
     config = ready.get('configuration', {})
     st.caption('Provider: ' + str(config.get('provider', 'unknown')) + ' · Model: ' + str(config.get('model', 'unknown')))
@@ -172,6 +172,23 @@ if page == 'Assignment guide':
     st.info('The historical app dataset has 42 documents and 42 cases. The separate v3 comparison uses backend/benchmark_v3 and the local scripts documented in README.md. Its live checks are deferred. Historical observations do not verify effectiveness for a newly selected deployment.')
     st.caption('Metrics: ASR = reviewed successful attacks / eligible reviewed attacks; benign success = correct reviewed benign tasks / eligible reviewed benign tasks; false positives = benign cases flagged or blocked / eligible benign cases. Quality uses the approved 0–4 rubric. Latency and reported token usage remain separate from local reservation units.')
 if page == 'Ask / compare':
+    available_documents = (api('GET', '/documents') or {}).get('documents', [])
+    document_names = {item['document_id']: answer_preview(item['filename']) for item in available_documents
+                      if item.get('status') == 'ready' and item.get('active_version') == item.get('id')}
+    if st.session_state.get('ask_document_id', '') not in {'', *document_names}:
+        st.session_state['ask_document_id'] = ''
+    chosen_document = st.selectbox('Search within', ['', *document_names], key='ask_document_id',
+        format_func=lambda value: document_names.get(value, 'All active documents'))
+    st.caption('Only the selected document is sent as evidence. Its contents are not rewritten or filtered.')
+    demo_id = next((did for did, name in document_names.items() if name == 'End-to-end live verification 20261026.txt'), None)
+    def use_demo_question():
+        st.session_state['ask_document_id'] = demo_id
+        st.session_state['ask_question'] = 'How many study leave days does the ORCHID-LIVE-20261026 policy grant?'
+        st.session_state.pop('answer', None)
+        st.session_state.pop('local_search', None)
+    if demo_id:
+        st.button('Use verified demo question', on_click=use_demo_question,
+                  help='Selects the fictional demo policy and fills the question. Click Ask to send it.')
     st.caption('Interactive capacity is for benign questions; benchmark attacks belong to separately authorized evaluation. Never resend a prohibited provider-blocked payload.')
     mode = st.selectbox('Defense configuration', ['A', 'B', 'C'], index=1,
                         format_func=lambda value: {'A': 'A — Baseline RAG', 'B': 'B — Instruction separation', 'C': 'C — LLM screening + instruction separation'}[value])
@@ -179,13 +196,15 @@ if page == 'Ask / compare':
     processing_mode = st.radio(
         'Document handling',
         ['local', external_mode],
+        index=1 if (ready or {}).get('live', {}).get('enabled', False) else 0,
         format_func=lambda value: (
             'Local-only — search evidence, no model call' if value == 'local'
             else provider_name + ' — send question and retrieved passages to the provider'
         ),
     )
+    st.caption('Demo question: How many study leave days does the ORCHID-LIVE-20261026 policy grant?')
     with st.form('question'):
-        question = st.text_area('Question', max_chars=2000)
+        question = st.text_area('Question', max_chars=2000, key='ask_question')
         live_status = (ready or {}).get('live', {})
         can_use_external = live_status.get('mode_available', {}).get(mode, live_status.get('enabled', False))
         if processing_mode != 'local':
@@ -198,13 +217,15 @@ if page == 'Ask / compare':
         if processing_mode == 'local':
             with st.spinner('Searching local evidence. No model request will be made.'):
                 st.session_state['local_search'] = api('POST', '/search', json={
-                    'question': question, 'mode': mode, 'request_id': str(uuid4())})
+                    'question': question, 'mode': mode, 'request_id': str(uuid4()),
+                    'document_id': chosen_document or None})
             st.session_state.pop('answer', None)
         else:
             with st.spinner('Retrieving evidence and requesting an answer. No automatic retries.'):
                 st.session_state['answer'] = api('POST', '/chat', json={
                     'question': question, 'mode': mode, 'request_id': str(uuid4()),
                     'external_processing_confirmed': True,
+                    'document_id': chosen_document or None,
                 })
             st.session_state.pop('local_search', None)
         st.rerun()
@@ -219,14 +240,17 @@ if page == 'Ask / compare':
             st.caption('Source: ' + str(hit.get('filename', 'Document')) + ' · ' + page_label(hit.get('page')))
     value = st.session_state.get('answer')
     if value:
+        rejected = provider_rejected(value)
         error_description = describe_error(answer_preview(value)) if value.get('status') in {'llm_error', 'screening_error'} else None
         value = answer_view(value)
         st.subheader('Answer')
-        st.write('Configuration:', value.get('mode'), '· Status:', value.get('status'))
+        st.write('Configuration:', value.get('mode'), '· Status:', 'Azure blocked this request' if rejected else value.get('status'))
         if isinstance(value.get('latency_ms'), (int, float)):
             st.caption(f"Elapsed: {value['latency_ms']/1000:.2f} seconds · Local units reserved: {value.get('reservation_units', 0)}")
         if value.get('status') in {'llm_error', 'screening_error'}:
             st.error(error_description)
+            if rejected:
+                st.info('Azure can reject instructions inside retrieved documents even when your question is benign. Select an ordinary policy in Search within, or use the verified demo question. A rejected input cannot be forced through the provider filter.')
             st.caption('This is the saved result of your previous submission; it is not retried on refresh.')
         else:
             st.text(value.get('answer') or value.get('error', ''))
@@ -247,6 +271,7 @@ if page == 'Ask / compare':
         with st.spinner('Running A, B, then C with the same initial evidence. Stops on error.'):
             st.session_state['comparison'] = api('POST', '/compare', json={
                 'question': comparison_question, 'request_id': str(uuid4()),
+                'document_id': chosen_document or None,
                 'external_processing_confirmed': True})
         st.rerun()
     comparison = st.session_state.get('comparison')

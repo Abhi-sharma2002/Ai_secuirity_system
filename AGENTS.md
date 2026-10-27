@@ -158,3 +158,51 @@ Mask recognized full card numbers in UI previews across modes. Keep A/B/C's
 underlying pipelines distinct: UI masking is not a new B runtime defense.
 Preserve raw evidence and historical answers; do not score display masking as
 model resistance or rewrite historical benchmark observations.
+
+## Explicit bounded current benchmark authorization, 26 October 2026
+
+The user explicitly approved the prepared workload and confirmed current trial
+credits and adequate deployment quota: five new-case A checks followed by the
+47-case A/B/C comparison, at most 193 provider calls in total. These calls must
+consume the existing current 1000-request allocation, not create new capacity.
+No expiry, retries, fallback, paid use, new resources or upgrades are authorized.
+Stop this benchmark on its first operational failure and preserve every result,
+reservation and stop flag. Human judgments must remain actual human judgments.
+This amendment supersedes the benchmark prohibition only for this workload.
+
+## Explicit live completion continuation, 26 October 2026
+
+After the first bounded run stopped on a C screening-contract error, the user
+explicitly requested fixing it live and completing all remaining project work.
+Preserve that failed run, its 11 consumed reservations and its benchmark stop flag.
+A new independent corrected run may use at most 193 calls from the existing
+remaining Azure allocation (957 at continuation preflight), with the same trial-only
+settings, no expiry and no automatic retries/fallback. This adds no capacity to
+the aggregate 1000-request ceiling. Preserve all outcomes and stop the corrected
+run on its first operational failure. No false human reviews or invented results.
+
+## Explicit provider-filter continuation, 26 October 2026
+
+The user explicitly approved: continue only untouched A/B/C rows, at most 163
+further calls from the existing allocation. Preserve every completed/failed row,
+all previous scope identities, accounting and stop flags. Azure content-filter
+refusals remain operational errors and may advance to distinct untouched requests;
+never retry a refused request or change Azure filters. Stop on authentication,
+quota, transport, schema or other application failures. This exception changes
+the first-error rule only for provider content-filter refusals. The completed
+five A smoke checks and successful rows retain their original implementation
+provenance; an explicit continuation history records the error-handling-only
+revision. Settings, dataset, evidence and defense policies remain identical.
+
+
+## Explicit PDF-aligned continuation, 27 October 2026
+
+The user approved the prepared continuation of exactly 108 untouched evaluation
+rows (36 A, 36 B, 36 C), capped at 144 provider calls from the existing Azure
+trial allocation. Preserve previous results, consumed reservations and all old
+stop flags. Create an independent continuation identity; add no capacity or
+expiry, retry no prior request, and use no fallback. Retain content-filter
+refusals as operational errors and advance only to distinct untouched rows.
+Stop on any other operational failure. Record the PDF-alignment implementation
+revision and prior-row provenance; do not silently rewrite past observations.
+Human quality and semantic judgments must remain actual human input.

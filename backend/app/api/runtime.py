@@ -1,4 +1,4 @@
-"""Local single-user API. Benchmark mutation is intentionally CLI-only."""
+"""Local single-user API with explicit human review; provider evaluation is CLI-only."""
 from app.rag import retrieval
 import hashlib
 import json
@@ -26,10 +26,90 @@ class Query(Strict):
     collection: Literal['playground'] = 'playground'
     request_id: str = Field(pattern=r'^[a-zA-Z0-9-]{8,80}$')
     external_processing_confirmed: bool = Field(default=False, strict=True)
+    document_id: str | None = Field(default=None, min_length=1, max_length=100)
+
+
+def selected_documents(query):
+    if query.document_id is None:
+        return None
+    items = [item for item in life.snapshot() if item['document_id'] == query.document_id]
+    if not items:
+        raise HTTPException(409, 'Selected document is no longer active. Choose an available document.')
+    return items
+
+
+def query_fingerprint(query):
+    excluded = {'request_id'} | ({'document_id'} if query.document_id is None else set())
+    return query.model_dump_json(exclude=excluded)
 
 
 class Expected(Strict):
     expected_version: str | None = None
+
+
+class HumanQualityReview(Strict):
+    case_id: str = Field(min_length=1, max_length=100)
+    mode: Literal['A', 'B', 'C']
+    record_sha256: str = Field(pattern=r'^[0-9a-f]{64}$')
+    reviewer: str = Field(min_length=1, max_length=80)
+    quality_0_4: int = Field(ge=0, le=4, strict=True)
+    task_correct: bool = Field(strict=True)
+    attack_correct: bool | None = Field(default=None, strict=True)
+
+
+class HumanCaseReview(Strict):
+    case_id: str = Field(min_length=1, max_length=100)
+    mode: Literal['A', 'B', 'C']
+    record_sha256: str = Field(pattern=r'^[0-9a-f]{64}$')
+    reviewer: str = Field(min_length=1, max_length=80)
+    rationale: str = Field(min_length=1, max_length=2000)
+    task_passed: bool = Field(strict=True)
+    attack_succeeded: bool | None = Field(default=None, strict=True)
+    answer_chunk_removed: bool | None = Field(default=None, strict=True)
+
+
+def refresh_evaluation_reports():
+    from app.evaluation.simple_config import ROOT
+    from app.evaluation.simple_reporting import make_report, manifest, read_records
+    from app.evaluation.simple_documents import write_documents
+    from app.evaluation.case_audit import write_case_audit
+    output = ROOT / 'results'
+    make_report(output / 'records.csv', output)
+    # The case audit requires actual retrieval traces, which live runs retain.
+    if (output / 'retrieval').is_dir():
+        data = manifest()
+        write_case_audit(output, output / 'records.csv', read_records(output / 'records.csv', data), data)
+    write_documents(output, ROOT / 'docs', False)
+
+
+@router.post('/evaluation-v3/quality-review')
+def quality_review(review: HumanQualityReview):
+    from app.evaluation.simple_config import ROOT, EvaluationError
+    from app.evaluation.simple_review import submit_quality
+    try:
+        result = submit_quality(ROOT / 'results/records.csv', ROOT / 'results', **review.model_dump())
+    except EvaluationError as exc:
+        raise HTTPException(409, str(exc)) from None
+    try:
+        refresh_evaluation_reports()
+    except Exception:
+        result['report_refresh'] = 'Review saved. Regenerate reports locally before using downloaded charts.'
+    return result
+
+
+@router.post('/evaluation-v3/case-review')
+def case_review(review: HumanCaseReview):
+    from app.evaluation.simple_config import ROOT, EvaluationError
+    from app.evaluation.simple_review import submit_judgment
+    try:
+        result = submit_judgment(ROOT / 'results/records.csv', ROOT / 'results', **review.model_dump())
+    except EvaluationError as exc:
+        raise HTTPException(409, str(exc)) from None
+    try:
+        refresh_evaluation_reports()
+    except Exception:
+        result['report_refresh'] = 'Decision saved. Regenerate reports locally before using downloaded charts.'
+    return result
 
 
 @router.get('/health')
@@ -133,14 +213,16 @@ def status(version_id: str):
 
 @router.post('/search')
 def search(query: Query):
-    return retrieval.search(query.question)
+    items = selected_documents(query)
+    return retrieval.search(query.question) if items is None else retrieval.search(query.question, items)
 
 
 @router.post('/chat')
 def chat(query: Query):
-    fingerprint = hashlib.sha256(query.model_dump_json(exclude={'request_id'}).encode()).hexdigest()
+    fingerprint = hashlib.sha256(query_fingerprint(query).encode()).hexdigest()
     # Serial execution prevents duplicate live requests from reruns/retries in this process.
     with reg.LOCK:
+        items = selected_documents(query)
         with reg.connect() as db:
             previous = db.execute('SELECT * FROM requests WHERE id=?', (query.request_id,)).fetchone()
             if previous:
@@ -149,7 +231,7 @@ def chat(query: Query):
                 return json.loads(previous['result'])
             db.execute('INSERT INTO requests VALUES(?,?,?)', (query.request_id, fingerprint,
                 json.dumps({'status': 'interrupted_or_in_progress', 'error': 'This ID is reserved. Inspect call ledger before explicitly submitting a new request.'})))
-        result = respond(query.question, query.mode, run_context={
+        result = respond(query.question, query.mode, snapshot_items=items, run_context={
             'client_request_id': query.request_id,
             'external_processing_confirmed': query.external_processing_confirmed,
         })
@@ -161,8 +243,9 @@ def chat(query: Query):
 @router.post('/compare')
 def compare_query(query: Query):
     from app.rag.comparison import compare
-    fingerprint = hashlib.sha256(('benign-compare-v1:' + query.model_dump_json(exclude={'request_id'})).encode()).hexdigest()
+    fingerprint = hashlib.sha256(('benign-compare-v1:' + query_fingerprint(query)).encode()).hexdigest()
     with reg.LOCK:
+        items = selected_documents(query)
         with reg.connect() as db:
             previous = db.execute('SELECT * FROM requests WHERE id=?', (query.request_id,)).fetchone()
             if previous:
@@ -172,7 +255,7 @@ def compare_query(query: Query):
             db.execute('INSERT INTO requests VALUES(?,?,?)', (query.request_id, fingerprint,
                 json.dumps({'status':'interrupted_or_in_progress','error':'Comparison ID reserved. No automatic replay.'})))
         result = compare(query.question, query.request_id,
-                         external_processing_confirmed=query.external_processing_confirmed)
+                         external_processing_confirmed=query.external_processing_confirmed, snapshot_items=items)
         with reg.connect() as db:
             db.execute('UPDATE requests SET result=? WHERE id=?', (json.dumps(result), query.request_id))
         return result
@@ -196,13 +279,15 @@ def evaluation_dashboard():
 @router.get('/evaluation-v3/artifacts/{artifact}')
 def evaluation_artifact(artifact: str):
     from starlette.responses import FileResponse
-    from app.evaluation.simple_dashboard import artifact_path, CHARTS
+    from app.evaluation.simple_dashboard import artifact_path, derived_artifact_current, CHARTS
     try:
         path = artifact_path(artifact)
     except FileNotFoundError:
         raise HTTPException(404, 'Evaluation artifact unavailable') from None
-    if artifact in CHARTS and not evaluation_dashboard()['charts_current']:
-        raise HTTPException(409, 'Charts are stale; regenerate the local report')
+    if not derived_artifact_current(artifact):
+        raise HTTPException(409, 'Evaluation evidence is stale; regenerate its local audit/report')
+    if (artifact in CHARTS or artifact.startswith('case_evaluation.') or artifact == 'CASE_EVALUATION.md') and not evaluation_dashboard()['charts_current']:
+        raise HTTPException(409, 'Evaluation artifacts are stale; regenerate the local report')
     media = 'image/png' if artifact.endswith('.png') else 'application/json' if artifact.endswith('.json') else 'text/csv' if artifact.endswith('.csv') else 'text/markdown'
     return FileResponse(path, media_type=media, filename=artifact)
 

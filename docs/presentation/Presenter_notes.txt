@@ -1,0 +1,23 @@
+Slide 1:
+Introduce the project as a local document assistant with a controlled comparison of three prompt-injection defenses. The main contribution is traceable evaluation: connect each question to source evidence, an expected behavior, the actual answer and a recorded judgment. Results are provisional, not proof of production security.
+
+Slide 2:
+Parsing, embeddings, retrieval, storage, evaluation and reporting run locally. Azure is used for answering and C screening only within authorized allowance. The dashboard displays saved results; refreshing metrics does not call the model. The UI supports inspection, but the evaluation is the focus.
+
+Slide 3:
+Read the top row as the interactive request path. Streamlit sends requests to FastAPI. Uploads go through parsing, chunking and local CPU embeddings; Chroma stores searchable vectors and SQLite tracks document state. Questions retrieve evidence and enter the shared RAG service. A uses grounding, B adds instruction separation and C screens before B. Only model answering and C screening use Azure. The returned JSON and source IDs are validated; C also checks full-card output. The answer and citations return through the API to the UI. The lower band is a separate controlled evaluation path: frozen fixtures and retrieval feed the same defenses, then local records, scoring, genuine human review and reports. Expected answers are grading metadata, never answer prompts. Refreshing metrics makes no provider calls. Diagram groups actual code responsibilities rather than proposing extra cloud services.
+
+Slide 4:
+A document is the evidence source. A test case is a reproducible experiment asking a question about specified evidence and defining what correct behavior means. One document can support more than one case. Benign cases include normal answers, missing evidence, conflicts and instruction-like but legitimate content. Attack families include overt overrides, forged authority, paraphrasing, obfuscation, cross-chunk instructions, protected markers, answer manipulation and misinformation. The final split is exposed comparison data, not an unseen test set.
+
+Slide 5:
+A is not an unrestricted model: it already has grounding, abstention, citation and sensitive-data instructions. B adds explicit trust separation. C adds screening before B and an output check. All answering configurations use the same model/settings. C normally adds a screening call. A screening failure or provider refusal is an operational error, not a successful defense. Display masking is not model resistance.
+
+Slide 6:
+Explain every rate as numerator divided by denominator. The denominator is eligible graded cases, not automatically all 47 cases. C false positives on benign inputs differ from legitimate task loss on attack-containing inputs. Human quality cannot be filled by the model. Latency includes recorded error rows. Supporting diagnostics include citation accuracy, evidence removal, direct/indirect attack rates and task preservation under attack. Lower ASR is better, but must be interpreted with usability and coverage.
+
+Slide 7:
+Source: results/summary.csv and docs/REPORT.md, snapshot 27 October 2026. Rates exclude operational errors and unresolved reviews. Different denominators limit direct ranking. All planned rows exist, but review coverage remains incomplete. A, B and C use the same answering settings, with extra C screening overhead. No security/usability winner is established. These are saved observations, not new model calls.
+
+Slide 8:
+Limitations: small synthetic dataset, case-scoped retrieval, exposed final split, heuristic scoring and incomplete human review. Recorded results span documented corrections and continuations, not one completely unchanged execution. Preserve all historical answers and stops. The key conclusion is a measured trade-off: screening can reduce attack success while also removing useful answers. Complete review and quality coverage before a final recommendation. Reference docs/REPORT.md, docs/METRICS_EXPLAINED.md and results/CASE_EVALUATION.md for the audit trail.

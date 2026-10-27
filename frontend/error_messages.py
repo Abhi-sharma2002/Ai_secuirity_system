@@ -1,4 +1,10 @@
 """Human-readable explanations from allowlisted operational metadata only."""
+def provider_rejected(result):
+    return any(call.get('provider_error_code') in {
+        'content_filter', 'ResponsibleAIPolicyViolation', 'content_policy_violation'
+    } for call in result.get('calls', []))
+
+
 def describe_error(result):
     traces=result.get('calls') or []
     last=traces[-1] if traces else {}

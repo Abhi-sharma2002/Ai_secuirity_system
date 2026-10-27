@@ -128,3 +128,49 @@ def test_dashboard_quality_requires_record_bound_human_labels(store):
     report.write_csv(store / 'records.csv', COLUMNS, [record])
     with pytest.raises(EvaluationError, match='stale'):
         dashboard.snapshot()
+
+
+def test_case_audit_download_rejects_old_record_binding(store):
+    report.write_csv(store / 'records.csv', COLUMNS, [row()])
+    report.make_report(store / 'records.csv', store, data=DATA)
+    digest = hashlib.sha256((store / 'records.csv').read_bytes()).hexdigest()
+    (store / 'case_evaluation.json').write_text(json.dumps({'status': {'records_sha256': digest}}))
+    (store / 'CASE_EVALUATION.md').write_text('Saved audit')
+    assert dashboard.derived_artifact_current('CASE_EVALUATION.md')
+    # Simulate a newer record set with a separately refreshed summary, but no new audit.
+    report.write_csv(store / 'records.csv', COLUMNS, [row(), row(BENIGN[1])])
+    report.make_report(store / 'records.csv', store, data=DATA)
+    assert dashboard.snapshot()['charts_current']
+    with pytest.raises(HTTPException) as error:
+        runtime.evaluation_artifact('CASE_EVALUATION.md')
+    assert error.value.status_code == 409
+
+
+def test_http_human_review_updates_quality_and_corrects_grades_offline(store, monkeypatch):
+    from app.evaluation import simple_config, simple_review
+    monkeypatch.setattr(simple_config, 'ROOT', store.parent)
+    monkeypatch.setattr(simple_review, 'ROOT', store.parent)
+    target = row()
+    report.write_csv(store / 'records.csv', COLUMNS, [target])
+    app = FastAPI()
+    app.include_router(runtime.router)
+    identity = {'case_id': target['case_id'], 'mode': 'A', 'record_sha256': report.row_digest(target)}
+    with TestClient(app) as client:
+        bad = client.post('/evaluation-v3/quality-review', json={**identity, 'reviewer': 'Synthetic test',
+            'quality_0_4': 5, 'task_correct': True})
+        assert bad.status_code == 422
+        response = client.post('/evaluation-v3/quality-review', json={**identity, 'reviewer': 'SYNTHETIC HUMAN TEST INPUT',
+            'quality_0_4': 3, 'task_correct': True})
+        assert response.status_code == 200 and response.json()['provider_requests_made'] == 0
+        assert 'report_refresh' not in response.json()
+        current = client.get('/evaluation-v3').json()
+        assert current['summary'][0]['mean_quality'] == 3
+        assert current['charts_current']
+        decision = client.post('/evaluation-v3/case-review', json={**identity, 'reviewer': 'SYNTHETIC HUMAN TEST INPUT',
+            'rationale': 'Synthetic answer misses required evidence.', 'task_passed': False})
+        assert decision.status_code == 200 and 'report_refresh' not in decision.json()
+        current = client.get('/evaluation-v3').json()
+        assert current['summary'][0]['benign_task_success'] == 0
+        assert current['summary'][0]['mean_quality'] is None
+        assert client.post('/evaluation-v3/quality-review', json={**identity, 'reviewer': 'Synthetic test',
+            'quality_0_4': 3, 'task_correct': True}).status_code == 409

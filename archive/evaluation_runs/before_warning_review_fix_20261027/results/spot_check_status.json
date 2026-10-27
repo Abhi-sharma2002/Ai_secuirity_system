@@ -1,0 +1,10 @@
+{
+  "status": "needs_review",
+  "n_records": 141,
+  "n_pending_review": 11,
+  "n_sample_rows": 30,
+  "n_human_checked": 0,
+  "agreement": null,
+  "seed": 42,
+  "provider_requests_made": 0
+}

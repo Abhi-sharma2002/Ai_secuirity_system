@@ -1,4 +1,4 @@
-"""Plan or prepare evaluation locally. Live execution is disabled by project scope."""
+"""Plan, prepare or explicitly execute the isolated Azure A/B/C comparison."""
 import argparse
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -36,6 +36,7 @@ _FINGERPRINT_FILES = ['backend/scripts/run_eval.py', 'backend/app/evaluation/sim
     'backend/app/evaluation/simple_scoring.py', 'backend/app/ingestion/parsers.py',
     'backend/app/ingestion/chunker.py', 'backend/app/rag/embeddings.py',
     'backend/app/rag/assistant.py', 'docs/SCORING.md', 'docs/SCORING_V3_AMENDMENTS.md']
+_FINGERPRINT_FILES += ['backend/app/evaluation/benchmark_scope.py', 'backend/app/llm/azure_openai.py', 'backend/app/llm/experiment_settings.py']
 
 
 def _inputs():
@@ -56,7 +57,8 @@ def _plan(data, limit=None):
             'small_check_included_by_resume': True, 'automatic_retries': 0,
             'published_default_daily_requests': None, 'published_requests_per_minute': None,
             'quota_note': 'Azure limits depend on the actual deployment and subscription; verify before live authorization.',
-            'account_remaining_requests': 'unverified', 'live_execution_enabled': False,
+            'account_remaining_requests': 'unverified',
+            'live_execution_enabled': os.getenv('LIVE_EVALUATION_ENABLED') == 'true',
             'provider_requests_made': 0, 'limits_reference': 'https://learn.microsoft.com/en-us/azure/foundry/openai/quotas-limits',
             'new_case_A_smokes': 'pending; required before full live evaluation'}
 
@@ -85,9 +87,13 @@ def _write_json(path, value):
 
 def _metadata(config, manifest_sha, identity, origin):
     files = _FINGERPRINT_FILES + [str(p.relative_to(ROOT)) for p in sorted((ROOT / 'backend/app/defenses').glob('*.py'))]
-    return {'version': 'v3-evaluation-run', 'origin': origin, 'manifest_sha256': manifest_sha,
+    metadata = {'version': 'v3-evaluation-run', 'origin': origin, 'manifest_sha256': manifest_sha,
             'config': config, 'index_identity': identity,
             'implementation_sha256': digest({name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in files})}
+    if origin.startswith('azure_live'):
+        from app.core.config import LiveSettings
+        metadata['endpoint_sha256'] = hashlib.sha256(LiveSettings.from_env().base_url.encode()).hexdigest()
+    return metadata
 
 
 def _read_rows(path, data, config):
@@ -177,18 +183,21 @@ def _record(case, mode, response, config):
             'latency_s': response['latency_s'], 'error': response['error'], 'model': config['model']}
 
 
-def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT, origin='application_execution'):
+def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT, origin='application_execution', modes='ABC'):
     """CSV orchestration, exercised by offline tests in disposable directories.
 
-    No CLI route enables this while provider execution is prohibited. There is
-    deliberately no CLI fake-response mode, provider switch or approval system.
+    There is no CLI fake-response mode, provider switch or approval system.
     """
     if os.getenv('EVAL_MODE') != '1':
         raise EvaluationError('Evaluation runner requires EVAL_MODE=1')
+    requested_modes = tuple(modes)
+    if not requested_modes or len(set(requested_modes)) != len(requested_modes) or not set(requested_modes) <= set('ABC'):
+        raise EvaluationError('Select unique evaluation modes from A/B/C')
     output = Path(output)
     with _lock(assistant.STORE / 'operation.lock'), _lock(output / '.run.lock'):
         identity = assistant._identity(config, manifest_sha)
         expected = _metadata(config, manifest_sha, identity, origin)
+        expected['execution_modes'] = list(requested_modes)
         meta_file, csv_file, journal = output / 'run_metadata.json', output / 'records.csv', output / 'attempts.jsonl'
         if resume:
             saved = json.loads(meta_file.read_text())
@@ -210,13 +219,13 @@ def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT,
         with csv_file.open('a', newline='') as handle:
             writer = csv.DictWriter(handle, fieldnames=COLUMNS, lineterminator='\n')
             for case in selected:
-                modes = [m for m in 'ABC' if (case['case_id'], m) not in rows]
-                if not modes:
+                pending_modes = [m for m in requested_modes if (case['case_id'], m) not in rows]
+                if not pending_modes:
                     continue
                 # Freeze/restore candidate chunks before any mode can dispatch.
                 hits, retrieval_error = _case_evidence(case, config, identity, output)
                 assistant._install_retrieval(case['query'], case['fixtures'], config, identity, hits)
-                for mode in modes:
+                for mode in pending_modes:
                     key = case['case_id'], mode
                     if key in started:
                         response = _error_result('Interrupted row; provider completion unknown; not automatically replayed.', hits)
@@ -240,15 +249,52 @@ def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT,
                     _journal(journal, *key, 'row_recorded')
                     rows[key] = row
                     added += 1
+                    if origin.startswith('azure_live') and row['error']:
+                        from app.evaluation.benchmark_scope import stop, may_continue
+                        if may_continue(row['error']):
+                            continue
+                        stop()
+                        raise EvaluationError('Benchmark stopped on its first operational failure; saved evidence retained; no automatic retry.')
         return {'records': len(rows), 'added': added, 'origin': origin}
 
 
+def _check_smokes(data, config, manifest_sha):
+    selected = {**data, 'cases': [c for c in data['cases'] if c['case_id'].startswith('v3-')]}
+    folder = OUTPUT / 'new_case_smokes'
+    try:
+        metadata = json.loads((folder / 'run_metadata.json').read_text())
+        expected = _metadata(config, manifest_sha, assistant._identity(config, manifest_sha), 'azure_live_smokes')
+        if any(metadata.get(k) != v for k, v in expected.items()) or metadata.get('execution_modes') != ['A']:
+            raise ValueError()
+        rows = _read_rows(folder / 'records.csv', selected, config)
+        if set(rows) != {(c['case_id'], 'A') for c in selected['cases']} or any(r['error'] for r in rows.values()):
+            raise ValueError()
+    except (OSError, ValueError, KeyError):
+        raise EvaluationError('Complete the five new-case A checks with --new-case-smokes before --all; preserve and inspect any errors.') from None
+
+
+def _refresh_reports():
+    from app.evaluation.simple_reporting import make_report
+    from app.evaluation.simple_documents import write_documents
+    from app.evaluation.case_audit import write_case_audit
+    from app.evaluation.simple_reporting import read_records
+    if (OUTPUT / 'records.csv').exists():
+        make_report(OUTPUT / 'records.csv', OUTPUT)
+        data = assistant._manifest()[0]
+        write_case_audit(OUTPUT, OUTPUT / 'records.csv', read_records(OUTPUT / 'records.csv', data), data)
+        write_documents(OUTPUT, OUTPUT.parent / 'docs', False)
+
+
 def main(argv=None):
+    from app.core.environment import load_environment
+    load_environment()
     parser = argparse.ArgumentParser(description=__doc__)
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument('--limit', type=int, help='First N cases, each in A/B/C; with --resume this is a cumulative prefix')
     selection.add_argument('--all', action='store_true')
+    selection.add_argument('--new-case-smokes', action='store_true', help='A-only checks for the five new cases; saved separately')
     parser.add_argument('--resume', action='store_true')
+    parser.add_argument('--live', action='store_true', help='Explicitly execute after separate benchmark authorization')
     operation = parser.add_mutually_exclusive_group()
     operation.add_argument('--plan', action='store_true', help='Read-only request counts; no index/model/provider calls')
     operation.add_argument('--prepare-only', action='store_true', help='Build a fresh local index using cached CPU embeddings only')
@@ -258,7 +304,11 @@ def main(argv=None):
     try:
         data, config, manifest_sha = _inputs()
         if args.plan:
-            print(json.dumps(_plan(data, args.limit), indent=2))
+            report = _plan(data, args.limit)
+            if args.new_case_smokes:
+                count = len(report['new_case_A_smoke_ids'])
+                report.update(selected_cases=count, selected_records=count, selected_calls_upper_bound=count)
+            print(json.dumps(report, indent=2))
         elif args.prepare_only:
             if args.resume:
                 raise EvaluationError('--prepare-only cannot replace the index of a resumed run')
@@ -270,7 +320,24 @@ def main(argv=None):
                 report = prepare_store(data, config, assistant.STORE, progress=lambda line: print(line, flush=True))
             print(json.dumps(report, indent=2))
         else:
-            raise EvaluationError('Provider evaluation remains disabled by project scope. Use --plan or --prepare-only; no result rows were written.')
+            if not args.live or os.getenv('LIVE_EVALUATION_ENABLED') != 'true':
+                raise EvaluationError('Provider evaluation remains disabled. Separate benchmark authorization, LIVE_EVALUATION_ENABLED=true and --live are required; no result rows were written.')
+            if not (args.all or args.limit is not None or args.new_case_smokes or args.resume):
+                raise EvaluationError('Choose --limit N, --all, --new-case-smokes or --resume explicitly')
+            os.environ['EVAL_MODE'] = '1'
+            if args.new_case_smokes:
+                selected = {**data, 'cases': [c for c in data['cases'] if c['case_id'].startswith('v3-')]}
+                report = _run(selected, config, manifest_sha, resume=args.resume,
+                              output=OUTPUT / 'new_case_smokes', origin='azure_live_smokes', modes='A')
+            else:
+                if args.all:
+                    _check_smokes(data, config, manifest_sha)
+                try:
+                    report = _run(data, config, manifest_sha, limit=args.limit, resume=args.resume,
+                                  output=OUTPUT, origin='azure_live_benchmark')
+                finally:
+                    _refresh_reports()
+            print(json.dumps(report, indent=2))
     except Exception as exc:
         parser.exit(1, assistant._error_text(exc) + '\n')
     return 0

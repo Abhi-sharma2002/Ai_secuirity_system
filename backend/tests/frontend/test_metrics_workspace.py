@@ -51,9 +51,10 @@ def test_every_metric_has_na_or_explicit_denominators():
     assert all(r['A'].startswith('N/A') for r in rows)
     data = payload([row(ATTACKS[0], attack_succeeded='true'), row(BENIGN[0], 'C')])
     rows = evaluation_metric_rows(data['summary'], data['definitions'])
-    assert rows[0]['A'] == '100.0% (1/1)'
-    assert rows[0]['B'] == 'N/A'
-    assert rows[5]['A'] == 'N/A (C only)'
+    by_name = {r['Metric']: r for r in rows}
+    assert by_name['Attack success — all']['A'] == '100.0% (1/1)'
+    assert by_name['Attack success — all']['B'] == 'N/A'
+    assert by_name['False positive rate']['A'] == 'N/A (C only)'
 
 
 def test_empty_metrics_page_explains_na_all_metrics_and_exclusions():
@@ -70,7 +71,7 @@ def test_empty_metrics_page_explains_na_all_metrics_and_exclusions():
         assert not any(url.endswith('/evaluation-v3') for _, url in calls[:2])
 
 
-def test_all_six_real_artifact_names_are_requested_only_on_metrics_page():
+def test_all_metric_artifact_names_are_requested_only_on_metrics_page():
     data, calls, downloads = payload(), [], []
     data.update(charts_current=True, artifacts=list(dashboard.CHARTS))
     output = BytesIO()
@@ -83,7 +84,7 @@ def test_all_six_real_artifact_names_are_requested_only_on_metrics_page():
          patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
         app = metrics_page()
         assert downloads == list(dashboard.CHARTS)
-        assert len(app.get('download_button')) == 6
+        assert len(app.get('download_button')) == 7
         assert all(method == 'GET' for method, _ in calls)
 
 
@@ -99,3 +100,57 @@ def test_case_inspector_filters_errors_and_preserves_input():
         assert selector.options == [rows[1]['case_id'] + ' / C']
         assert data == before
         assert all(method == 'GET' for method, _ in calls)
+
+
+def test_same_case_comparison_shows_defenses_docs_and_missing_without_provider_calls():
+    from app.evaluation.case_comparison import compare_cases, DEFENSES
+    case = BENIGN[0]
+    rows = [row(case, 'A', answer='Observed answer A'),
+            row(case, 'C', answer='', error='Synthetic schema failure')]
+    data, calls = payload(rows), []
+    data.update(case_comparisons=compare_cases(rows, DATA), defense_mechanisms=DEFENSES)
+    before = deepcopy(data)
+    with patch('httpx.request', side_effect=application(data, calls)), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        assert any('Grounded baseline' in item.value for item in app.markdown)
+        assert any('Instruction separation' in item.value for item in app.markdown)
+        assert any('Screening and output checks' in item.value for item in app.markdown)
+        assert any('Input documents:' in item.value for item in app.text)
+        assert any('B · Not run' in item.value for item in app.markdown)
+        assert any('C · Operational error' in item.value for item in app.markdown)
+        assert any('Observed answer A' in item.value for item in app.text)
+        selector = next(s for s in app.selectbox if s.label == 'Test case for A/B/C comparison')
+        assert len(selector.options) == 47
+        assert data == before
+        assert all(method == 'GET' for method, _ in calls)
+
+
+def test_human_quality_form_requires_explicit_submit_and_preserves_answer_binding():
+    target = row()
+    data, calls, submitted = payload([target]), [], []
+    digest = report.row_digest(target)
+    data['review_hashes'] = {target['case_id'] + '/A': digest}
+    data['case_metadata'] = {target['case_id']: {'adversarial': False, 'supporting_quotes': ['Synthetic evidence']}}
+    read = application(data, calls)
+    def request(method, url, **kwargs):
+        if method == 'POST':
+            submitted.append((url, kwargs['json']))
+            return httpx.Response(200, json={'saved': True}, request=httpx.Request(method, url))
+        return read(method, url, **kwargs)
+    with patch('httpx.request', side_effect=request), patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        assert not submitted
+        next(b for b in app.button if b.label == 'Save my quality review').click().run()
+        assert not submitted
+        next(t for t in app.text_input if t.label == 'Your name (human reviewer)').input('SYNTHETIC HUMAN TEST INPUT')
+        next(s for s in app.selectbox if s.label == 'Answer quality').set_value(3)
+        next(s for s in app.selectbox if s.label.startswith('Do you agree with the automatic task grade')).set_value('Yes')
+        next(b for b in app.button if b.label == 'Save my quality review').click().run()
+        assert not app.exception
+        assert len(submitted) == 1
+        url, body = submitted[0]
+        assert url.endswith('/evaluation-v3/quality-review')
+        assert body['record_sha256'] == digest
+        assert body['quality_0_4'] == 3 and body['task_correct'] is True
+        assert body['attack_correct'] is None

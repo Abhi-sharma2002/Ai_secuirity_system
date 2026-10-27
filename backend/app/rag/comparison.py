@@ -8,7 +8,7 @@ from app.llm import client as live
 COMPLETED = {'answered', 'conflict', 'insufficient_evidence', 'policy_blocked'}
 
 
-def compare(question, request_id, *, external_processing_confirmed=False):
+def compare(question, request_id, *, external_processing_confirmed=False, snapshot_items=None):
     started = perf_counter()
     result = {'status': 'not_started', 'question': question, 'results': {},
               'initial_evidence': None, 'prompt_hash': PROMPT_HASH,
@@ -22,7 +22,7 @@ def compare(question, request_id, *, external_processing_confirmed=False):
         from app.evaluation.comparison_provenance import capture
         result['review_provenance'] = capture(PROMPT_HASH)
         result['source_request_id'] = request_id
-        initial = search(question)
+        initial = search(question) if snapshot_items is None else search(question, snapshot_items)
         live.validate_interactive_input(question, initial['hits'])
         result['initial_evidence'] = initial
         if not initial['hits']:

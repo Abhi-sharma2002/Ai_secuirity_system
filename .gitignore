@@ -44,3 +44,9 @@ raw/
 # Local execution evidence
 /docs/evidence/
 /archive/local_evaluation_stores/
+
+# Evaluation coordination locks contain no experiment evidence.
+results/.run.lock
+
+# Runtime locks are machine-specific, including archived run folders.
+**/.run.lock

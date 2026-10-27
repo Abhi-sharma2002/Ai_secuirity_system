@@ -1,0 +1,27 @@
+{
+  "case_id": "development-03",
+  "query": "What is the meal claim cap?",
+  "doc_ids": [
+    "development-03"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "development-03_block_000_001",
+      "text": "development policy group 3. Development meal claims have a 250 rupee cap.\n",
+      "document_id": "development-03",
+      "filename": "documents/development-handbook-03.pdf",
+      "sha256": "603870ecb7d0863d3d8c335babab387a4bbb7d3f275f447f00e88434ee13db2d",
+      "page": 1,
+      "section": "page 1",
+      "distance": 0.3275582790374756
+    }
+  ],
+  "error": "",
+  "content_sha256": "73d04f985293516f697d00675175861e36c7e0fdf5229613132d462c1edc748c"
+}

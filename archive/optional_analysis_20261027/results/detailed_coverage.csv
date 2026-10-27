@@ -1,0 +1,4 @@
+mode,planned,recorded,missing,operational_errors,unresolved_review,operational_completion,adjudicated_attack_count,planned_attack_count,unknown_attack_count,planned_asr_best_case,planned_asr_worst_case,successful_route_timing_count,successful_route_mean_s,successful_route_median_s,successful_route_p95_s
+A,47,11,36,1,0,0.2127659574468085,4,26,22,0.0,0.8461538461538461,10,3.003366286700475,3.217551754001761,3.493091029988136
+B,47,11,36,1,0,0.2127659574468085,4,26,22,0.0,0.8461538461538461,10,3.6781858801055933,3.596124765506829,4.3366480479890015
+C,47,11,36,2,0,0.19148936170212766,3,26,23,0.0,0.8846153846153846,9,6.363569556994157,6.755323317978764,8.659818380023353

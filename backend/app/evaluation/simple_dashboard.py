@@ -3,19 +3,23 @@ import csv
 import hashlib
 import io
 import json
+import os
 
 from app.evaluation import simple_reporting as report
 from app.evaluation.simple_config import ROOT, EvaluationError, load_config
 
 CHARTS = ('asr.png', 'benign_success.png', 'false_positive.png', 'latency.png',
-          'asr_by_category.png', 'tradeoff.png')
+          'asr_by_category.png', 'tradeoff.png', 'quality.png')
 ARTIFACTS = {name: 'results/' + name for name in (
     'records.csv', 'summary.csv', 'test_cases.csv', 'report_status.json',
     'review_decisions.csv', 'spot_check.csv', 'spot_check_status.json', *CHARTS)}
 ARTIFACTS.update({'REPORT.md': 'docs/REPORT.md', 'METRICS_EXPLAINED.md': 'docs/METRICS_EXPLAINED.md'})
+ARTIFACTS.update({name: 'results/' + name for name in (
+    'case_evaluation.json', 'case_evaluation.csv', 'CASE_EVALUATION.md')})
 
 # The same keys are used by summarize(); descriptions do not calculate grades.
 DEFINITIONS = [
+    ('pdf_false_positive_rate', 'False positive rate', 'Benign C cases flagged, blocked or with any source removed / eligible benign C cases', 'Lower', 'rate'),
     ('asr_all', 'Attack success — all', 'Successful attacks / eligible adversarial rows', 'Lower', 'rate'),
     ('asr_retrieved_only', 'Attack success — exposed', 'Successful exposed attacks / eligible exposed adversarial rows', 'Lower', 'rate'),
     ('asr_direct', 'Direct attack success', 'Successful direct attacks / eligible direct attacks', 'Lower', 'rate'),
@@ -30,6 +34,7 @@ DEFINITIONS = [
     ('mean_quality', 'Human answer quality / 4', 'Mean quality_0_4 from the actual reviewed sample', 'Higher', 'quality'),
     ('agreement', 'Human agreement', 'Sample rows with all applicable automated judgments marked correct / checked rows', 'Higher', 'agreement'),
 ]
+CORE_METRICS = ('asr_all', 'benign_task_success', 'pdf_false_positive_rate', 'mean_quality', 'mean_latency_s')
 
 
 def artifact_path(name):
@@ -40,6 +45,21 @@ def artifact_path(name):
             or not path.resolve().is_relative_to(ROOT.resolve())):
         raise FileNotFoundError('Evaluation artifact unavailable')
     return path
+
+
+def derived_artifact_current(name):
+    """A separately generated case audit must still bind the current raw records."""
+    if name.startswith('case_evaluation.') or name == 'CASE_EVALUATION.md':
+        binding = 'case_evaluation.json'
+    else:
+        return True
+    try:
+        saved = json.loads(artifact_path(binding).read_text())
+        expected = saved['status']['records_sha256']
+        actual = hashlib.sha256(artifact_path('records.csv').read_bytes()).hexdigest()
+        return actual == expected
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
 
 
 def _charts_current(folder, rows, summary):
@@ -77,6 +97,7 @@ def snapshot():
     rows = report.read_records(records, data)
     checks = report.read_spot_checks(folder / 'spot_check.csv', rows)
     summary = report.summarize(rows, data, checks)
+    from app.evaluation.case_comparison import compare_cases, DEFENSES
     if (records.read_bytes() if records.exists() else None) != before:
         raise EvaluationError('Evaluation records changed during reading; refresh after the writer finishes')
     available = []
@@ -94,13 +115,17 @@ def snapshot():
                    'needs_review': sum(s['n_needs_review'] for s in summary), 'quality_reviewed': len(checks)},
         'configuration': config, 'dataset': {'cases': len(data['cases']), 'documents': len(data['fixtures'])},
         'origin': run.get('origin', 'not recorded'), 'summary': summary, 'records': rows,
+        'review_hashes': {r['case_id'] + '/' + r['mode']: report.row_digest(r) for r in rows},
+        'human_reviews': checks,
+        'case_comparisons': compare_cases(rows, data), 'defense_mechanisms': DEFENSES,
         'case_metadata': {case['case_id']: {key: case[key] for key in (
             'adversarial', 'channel', 'subtype', 'expected_task', 'expected_keywords', 'expected_evidence',
             'supporting_quotes', 'canary', 'planted_false_fact', 'human_review_required') if key in case}
             for case in data['cases']},
         'definitions': [dict(zip(('key', 'metric', 'formula', 'better', 'kind'), definition)) for definition in DEFINITIONS],
+        'core_metrics': list(CORE_METRICS),
         'charts_current': _charts_current(folder, rows, summary), 'artifacts': available,
-        'provider_execution_enabled': False,
+        'provider_execution_enabled': os.getenv('LIVE_EVALUATION_ENABLED') == 'true',
         'notes': [
             'Rates exclude errors and unresolved needs_review rows. Empty denominators are N/A, never zero or a defense win.',
             'C false-positive metrics do not apply to A/B. Their combined rate counts each affected row once.',

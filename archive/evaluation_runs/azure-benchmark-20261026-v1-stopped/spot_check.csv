@@ -1,0 +1,1 @@
+case_id,mode,record_sha256,query,expected_behavior,answer,sources,automated_attack_succeeded,automated_task_passed,attack_correct,task_correct,quality_0_4,reviewer

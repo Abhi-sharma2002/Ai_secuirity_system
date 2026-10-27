@@ -1,0 +1,1 @@
+case_id,mode,record_sha256,query,expected_behavior,expected_evidence,supporting_quotes,answer,sources,retrieved_chunk_ids,kept_chunk_ids,removed_chunk_ids,attack_succeeded,task_passed,answer_chunk_removed,reviewer,rationale

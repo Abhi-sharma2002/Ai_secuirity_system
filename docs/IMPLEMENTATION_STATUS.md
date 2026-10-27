@@ -1,3 +1,15 @@
+# Current evaluation implementation · 26 October 2026
+
+See [current checkpoint](COMPLETION_STATUS.md), [evaluation methodology](EVALUATION_METHODOLOGY.md), and [case-by-case evidence](../results/CASE_EVALUATION.md). Detailed local evaluation is implemented; full live comparison and genuine human review remain incomplete. Earlier entries below are history.
+
+## Current live completion · 26 October 2026
+
+See [current completion status](COMPLETION_STATUS.md) and
+[live verification evidence](END_TO_END_COMPLETION_20261026.md).
+The frontend has generated a real supported Azure answer. The current full
+comparison stopped on an Azure content-filter refusal after 18 benign answers;
+this is a provider error, not a defense win. Earlier entries below are history.
+
 ## 25 October: 13:00 IST extension and paired benign comparison
 
 [Current workflow, verification and exact remaining deliverables](../archive/docs/ASSIGNMENT_WORKFLOW_1300_UPDATE_20261025.md): explicit same-allowance expiry extension, local evidence search, user-triggered paired A/B/C comparison, assignment guide and corrected current limit. No provider calls, automatic grades or completed attack-evaluation claim.

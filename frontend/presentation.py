@@ -60,7 +60,7 @@ def evaluation_metric_rows(summary, definitions):
             values = modes.get(mode, {})
             value = values.get(key)
             if value is None:
-                text = 'N/A (C only)' if key in {'false_positive_rate', 'answer_chunk_removed_rate', 'false_positive_total'} and mode != 'C' else 'N/A'
+                text = 'N/A (C only)' if key in {'false_positive_rate', 'answer_chunk_removed_rate', 'false_positive_total', 'pdf_false_positive_rate'} and mode != 'C' else 'N/A'
             elif kind == 'rate':
                 text = f"{value:.1%} ({values[key+'_numerator']}/{values[key+'_denominator']})"
             elif kind == 'seconds':

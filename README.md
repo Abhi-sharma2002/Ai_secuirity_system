@@ -3,13 +3,16 @@
 A local RAG assistant that compares **A: grounded baseline**, **B: instruction
 separation**, and **C: screening plus output checks** against prompt injection.
 FastAPI and Streamlit serve the app; parsing, CPU embeddings, retrieval, Chroma,
-SQLite, evaluation and charts run locally. Current v3 live evaluation is deferred.
+SQLite, evaluation and charts run locally. All 141 v3 A/B/C rows are recorded; human review is pending.
 
-For a detailed explanation of ingestion, retrieval, A/B/C defenses, display
-masking and evaluation limits, read the
-[end-to-end defense guide](docs/END_TO_END_DEFENSE_GUIDE.md).
+Start with the [PDF requirements and study guide](docs/ASSIGNMENT_TRACEABILITY.md).
+The active dataset is `backend/benchmark_v3/manifest.json`; files under
+`backend/data/test_cases/` and `backend/benchmark/` are earlier preserved versions.
 
 ## Setup
+
+Moving machines? Follow [new-laptop setup](docs/NEW_LAPTOP_SETUP.md) for clone,
+installation, saved-results presentation and private live-answer migration.
 
 Use Python with the pinned dependencies and preserve an existing private `.env`:
 
@@ -45,40 +48,39 @@ OpenRouter is stopped and its active environment key is blank. Enter Azure's
 actual endpoint, key and deployment name locally; a key alone does not enable
 calls or renew historical authorization.
 
-The authorized Azure synthetic A/B/C check has now passed and the current local
-services have bounded manual answering enabled. See the
+Historical Azure synthetic A/B/C and manual answering checks passed. The running
+instance supports manual live answering under the existing allowance. The default
+launcher command remains local-only; use `--live-answers` for authorized manual use. See the
 [live verification record](docs/AZURE_TRIAL_VERIFICATION.md) for actual results,
 remaining allocation and expiry-removal amendment. The default launcher command above remains
 local-only; `--live-answers` requires a currently valid authorization.
 
-Open **Metrics / evaluation** to inspect the v3 comparison, formulas, A/B/C
-numerators and denominators, coverage, errors, human-review status and all six
-charts. Case details and masked table/report downloads are available there.
-This is a local read-only view; missing results show N/A and stale charts are
-withheld. Historical runs remain separate under **Saved experiments**.
-See the [metrics dashboard guide](docs/METRICS_DASHBOARD.md) for the inspection
-workflow and verification details.
+Open **Metrics / evaluation** for the five required metrics, case documents,
+expected answers, actual A/B/C answers, and explicit human-review forms.
+Start with the [PDF requirements map](docs/ASSIGNMENT_TRACEABILITY.md) and
+[human review instructions](docs/HUMAN_REVIEW.md). Missing observations show N/A.
+Historical runs remain separate under **Saved experiments**.
 
 ## Run the evaluation
 
 ```bash
 .venv/bin/python backend/scripts/validate_v3.py
 .venv/bin/python backend/scripts/run_eval.py --plan --limit 3
-HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python backend/scripts/run_eval.py --prepare-only
 .venv/bin/python backend/scripts/make_report.py
 .venv/bin/python backend/scripts/review_eval.py --prepare
 .venv/bin/python backend/scripts/write_report.py
 .venv/bin/python backend/scripts/write_report.py --check
 ```
 
-These commands work locally without provider calls. The runner prepares an
-isolated index; reporting represents missing observations as **N/A**. The
+These commands work locally without provider calls. The existing isolated
+index is preserved; `--prepare-only` is for a fresh setup with no saved run,
+and intentionally refuses to replace the index behind existing observations; reporting represents missing observations as **N/A**. The
 original benchmark is preserved; active v3 fixtures are in `backend/benchmark_v3/`.
-The CSV core supports immediate saves and resume with frozen evidence. The live
-`--limit 3`, `--all` and `--resume` execution commands currently refuse execution:
-provider evaluation remains disabled by the explicit local-only scope. The
-provider boundary must be deliberately revised under a later explicit benchmark
-authorization; setting an environment variable alone does not authorize a run.
+The CSV core supports immediate saves and resume with frozen evidence. Live execution requires a valid bounded benchmark amendment, `--live`, and
+`LIVE_EVALUATION_ENABLED=true`. Every request consumes the existing Azure ledger.
+The five new-case checks and three-case A/B/C check passed live; earlier runs stopped on screening errors. The separately authorized 27 October
+continuation has now recorded all untouched rows; its scope is closed. Failed requests are not automatically
+replayed. See [current completion evidence](docs/COMPLETION_STATUS.md).
 No delayed run or automatic authorization renewal is scheduled.
 
 The user approved the Azure compatibility amendment: `eval_config.yaml` now
@@ -112,19 +114,25 @@ for each run. Synthetic unit fixtures stay in temporary directories.
 <!-- v3-summary:start -->
 | Configuration | Recorded | ASR | Benign success | Quality |
 | --- | --- | --- | --- | --- |
-| A | 0 | N/A | N/A | N/A |
-| B | 0 | N/A | N/A | N/A |
-| C | 0 | N/A | N/A | N/A |
+| A | 47 | 11.1% | 100.0% | 4 |
+| B | 47 | 0.0% | 100.0% | 4 |
+| C | 47 | 0.0% | 100.0% | 4 |
 <!-- v3-summary:end -->
 
 The results table is generated by `backend/scripts/update_readme_results.py`
 from `results/summary.csv`. N/A means unavailable, not a defense win.
 See [the current report](docs/REPORT.md), [metric formulas](docs/METRICS_EXPLAINED.md),
 [case table](results/test_cases.csv), [raw summary](results/summary.csv), and
-[remaining deliverables](docs/COMPLETION_STATUS.md).
+[verified project status](docs/COMPLETION_STATUS.md).
+The [case-by-case audit](results/CASE_EVALUATION.md) shows expected versus observed
+behavior and scoring evidence for every planned A/B/C row.
+Current observations cover 141/141 rows, including 13 operational errors and
+11 unresolved human judgments. Graded ASR is A 2/18, B 0/19 and C 0/20.
+Four human quality ratings are recorded; these figures are not proof of security.
 
-The requested live attack demonstration and video are pending real evaluation;
-there is no recording link yet. [Demo procedure](docs/DEMO.md).
+Use the [mentor demo steps](docs/DEMO.md) or
+[play the saved-results walkthrough](docs/demo/pdf-assignment-20261027.webm).
+It shows actual benign answers and the `final-21` attack across A/B/C.
 Historical source, documents and results remain readable under [archive/](archive/README.md).
 
 The current disclosure policy withholds full payment-card numbers, including

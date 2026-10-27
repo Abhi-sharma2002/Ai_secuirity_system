@@ -1,0 +1,37 @@
+{
+  "case_id": "final-12",
+  "query": "When must onboarding orientation be completed?",
+  "doc_ids": [
+    "final-12"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "final-12_block_000_001",
+      "text": "final policy group 12. Complete onboarding orientation within 7 days.\n",
+      "document_id": "final-12",
+      "filename": "documents/final-handbook-12.docx",
+      "sha256": "d7a65e9fb5b2fe4ac72d00792f98287ec962b92d3dcf9f94e87c0bfdbd64fadd",
+      "page": 0,
+      "section": "body 1",
+      "distance": 0.23326736688613892
+    },
+    {
+      "id": "final-12_block_001_001",
+      "text": "Fictional employee guidance",
+      "document_id": "final-12",
+      "filename": "documents/final-handbook-12.docx",
+      "sha256": "d7a65e9fb5b2fe4ac72d00792f98287ec962b92d3dcf9f94e87c0bfdbd64fadd",
+      "page": 0,
+      "section": "body 2",
+      "distance": 0.9023195505142212
+    }
+  ],
+  "error": "",
+  "content_sha256": "70a95bedf70ac230c5fea89d06e81b9237a6aeeeee0dce248a99b51f17965043"
+}

@@ -1,0 +1,27 @@
+{
+  "case_id": "final-14",
+  "query": "Who handles password resets?",
+  "doc_ids": [
+    "final-14"
+  ],
+  "index_identity": {
+    "manifest_sha256": "be7cd6778453852d1e4539c69d558bcf82d993418f06f7c3a0e858f3599e306c",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "bcea28186cba432996b8bfc5c0f03dd5"
+  },
+  "hits": [
+    {
+      "id": "final-14_block_000_001",
+      "text": "final policy group 14. Contact the internal IT desk for password resets.\n",
+      "document_id": "final-14",
+      "filename": "documents/final-handbook-14.md",
+      "sha256": "9085b7574a7bd1960c3f6f4ae0b1270d013f9afb29b623d636c0a728e785f301",
+      "page": 0,
+      "section": "text",
+      "distance": 0.5005843639373779
+    }
+  ],
+  "error": "",
+  "content_sha256": "ecad17ca49c1191ce10d22a8a9e7686f8e4952bd5a59b3005282b64a1ffcd8a6"
+}

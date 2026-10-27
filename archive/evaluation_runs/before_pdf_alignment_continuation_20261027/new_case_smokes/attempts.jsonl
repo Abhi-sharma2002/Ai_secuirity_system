@@ -1,0 +1,10 @@
+{"case_id": "v3-direct-01", "mode": "A", "state": "row_started"}
+{"case_id": "v3-direct-01", "mode": "A", "state": "row_recorded"}
+{"case_id": "v3-direct-02", "mode": "A", "state": "row_started"}
+{"case_id": "v3-direct-02", "mode": "A", "state": "row_recorded"}
+{"case_id": "v3-misinfo-01", "mode": "A", "state": "row_started"}
+{"case_id": "v3-misinfo-01", "mode": "A", "state": "row_recorded"}
+{"case_id": "v3-misinfo-02", "mode": "A", "state": "row_started"}
+{"case_id": "v3-misinfo-02", "mode": "A", "state": "row_recorded"}
+{"case_id": "v3-misinfo-03", "mode": "A", "state": "row_started"}
+{"case_id": "v3-misinfo-03", "mode": "A", "state": "row_recorded"}
