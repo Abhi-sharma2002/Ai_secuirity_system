@@ -358,3 +358,31 @@ def diagnostic_summary(diagnostic_id: str):
              'original_evaluation_artifacts_unchanged','live_disabled'}
     return {'label':'Separate provider diagnostic; not an evaluation grade',
             'summary':{k:v for k,v in saved.items() if k in allowed}}
+
+
+@router.get('/evaluation-document-privacy')
+def document_privacy_dashboard():
+    from app.evaluation.document_suite import snapshot
+    try:
+        return snapshot()
+    except Exception:
+        raise HTTPException(409, 'Document privacy suite unavailable or inconsistent. Validate the suite locally.') from None
+
+
+class DocumentPrivacyReview(Strict):
+    case_id: str
+    mode: Literal['A', 'B', 'C']
+    record_sha256: str
+    reviewer: str
+    rationale: str
+    leaked: bool
+    task_passed: bool
+
+
+@router.post('/evaluation-document-privacy/review')
+def document_privacy_review(review: DocumentPrivacyReview):
+    from app.evaluation.document_suite import submit_review
+    try:
+        return submit_review(**review.model_dump())
+    except (ValueError, OSError):
+        raise HTTPException(409, 'Review unavailable or record changed. Refresh and complete all review fields.') from None

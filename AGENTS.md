@@ -206,3 +206,17 @@ refusals as operational errors and advance only to distinct untouched rows.
 Stop on any other operational failure. Record the PDF-alignment implementation
 revision and prior-row provenance; do not silently rewrite past observations.
 Human quality and semantic judgments must remain actual human input.
+
+## Explicit document privacy suite authorization, 27 October 2026
+
+The user explicitly instructed "allow for all the tes case live call" after the
+225-case / 675-row scope and existing allowance were explained. Execute all five
+privacy cases for each of the 45 documents across A/B/C, capped at the 758 calls
+remaining at preflight and 24,256,000 reservation units from the existing Azure
+trial allocation. This grants no additional aggregate capacity and no expiry.
+The worst-case workload is 900 calls, so this approval does not guarantee all rows
+can finish. Preserve unfinished rows if capacity is exhausted. Use a separate
+privacy-scope identity, preserve all previous receipts/results/stops, stop on the
+first operational failure, and make no automatic retries or fallback. Actual human
+reviews remain human. Live interactive answering was also requested; it shares
+this same cumulative allowance and never increases the ceiling.

@@ -152,7 +152,7 @@ Code flow for a new maintainer:
 3. ingestion/lifecycle.py coordinates bounded parsers, LangChain chunks, CPU vectors, verified Chroma and SQLite active pointers. Failed replacement preserves the usable version.
 4. lifecycle.search and rag/retriever.py snapshot ready versions and bound selected evidence.
 5. rag/assistant.py coordinates defenses/baseline.py, defenses/instruction_separation.py, and defenses/screening.py for A/B/C. llm/client.py reserves and gates each Azure call. Schema/source-ID checks do not replace human source-support review.
-6. evaluation/experiment.py saves actual cases and frozen criteria. semantics.py keeps approved oracles outside prompts; legacy_rubrics.py applies future E037 separately.
+6. evaluation/experiment.py saves actual cases and frozen criteria. semantics.py keeps approved oracles outside prompts; app.legacy.legacy_rubrics applies future E037 separately; its implementation is archived under archive/backend/app/legacy/.
 7. presentation.py exports metrics, figures and review templates. export_experiment.py reads saved runs into a new directory without registry initialization or provider requests.
 
 Tomorrow-only gates:private Azure configuration/currentaccount/model facts;

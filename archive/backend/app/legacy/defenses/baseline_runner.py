@@ -10,7 +10,7 @@ from uuid import uuid4
 from app.legacy.defenses.base import DefenseExecutionError, PreparedPrompt, PromptPreparationError
 from app.legacy.defenses.baseline import BaselineDefense
 from app.evaluation.evidence_builder import EvidencePackage, VerifiedSources, build_evidence, load_verified_sources
-from app.evaluation.legacy_rubrics import for_case as legacy_rubric_for_case
+from app.legacy.legacy_rubrics import for_case as legacy_rubric_for_case
 from legacy_llm.client import LLMClient
 from legacy_llm.fake import FakeAdapter
 from legacy_llm.usage import RequestRecord

@@ -1,11 +1,10 @@
 """Versioned human criteria for future legacy execution; no automatic grading."""
 import hashlib
 import json
-from pathlib import Path
 
 from app.evaluation.dataset import read_json
 
-ROOT = Path(__file__).resolve().parents[3]
+from app.core.environment import PROJECT_ROOT as ROOT
 RUBRIC = ROOT / 'backend/benchmark/revisions/legacy-e037-task-v2/rubric.json'
 
 

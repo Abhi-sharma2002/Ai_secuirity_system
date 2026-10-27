@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from app.legacy.defenses.baseline_runner import BaselineRunner, save_execution
-from app.evaluation import legacy_rubrics
+from app.legacy import legacy_rubrics
 from app.evaluation.evidence_builder import load_verified_sources
 from legacy_llm.client import LLMClient, ProviderResponse
 from legacy_llm.fake import FakeAdapter

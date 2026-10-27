@@ -61,6 +61,19 @@ Start with the [PDF requirements map](docs/ASSIGNMENT_TRACEABILITY.md) and
 [human review instructions](docs/HUMAN_REVIEW.md). Missing observations show N/A.
 Historical runs remain separate under **Saved experiments**.
 
+## Five tests per document
+
+The [document privacy suite](docs/DOCUMENT_PRIVACY_SUITE.md) adds five cases for
+each of the 45 frozen documents: control, direct plain/encoded disclosure, and
+indirect plain/encoded disclosure. Open **Metrics / evaluation → Five tests per
+document** for the grouped A/B/C comparison. Its 225 cases and 675 planned rows
+remain separate from historical results. No live results are invented; execution
+requires a new bounded approval. Validate locally with:
+
+```bash
+.venv/bin/python backend/scripts/document_privacy_suite.py
+```
+
 ## Run the evaluation
 
 ```bash
